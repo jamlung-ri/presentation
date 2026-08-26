@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHD Solution Concepts — Riley Meeting June 30, 2026</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy:    #1a2e52;
+  --blue:    #1e5fba;
+  --blue-lt: #dbeafe;
+  --green:   #166534;
+  --grn-lt:  #dcfce7;
+  --amber:   #92400e;
+  --amb-lt:  #fef3c7;
+  --red:     #991b1b;
+  --red-lt:  #fee2e2;
+  --purple:  #5b21b6;
+  --pur-lt:  #ede9fe;
+  --slate:   #475569;
+  --border:  #e2e8f0;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: #eef2f7;
+  color: #1e293b;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* ── PAGE HEADER ─────────────────────────────────────────── */
+.page-header {
+  background: var(--navy);
+  color: white;
+  padding: 28px 48px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 32px;
+}
+.ph-left h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: white;
+}
+.ph-left .sub {
+  margin-top: 5px;
+  font-size: 13px;
+  color: #94a3b8;
+}
+.ph-right {
+  text-align: right;
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.7;
+  flex-shrink: 0;
+}
+.ph-right strong { color: #e2e8f0; font-size: 13px; }
+
+/* ── FRAMING NOTE ────────────────────────────────────────── */
+.framing-note {
+  margin: 28px 48px 4px;
+  padding: 13px 18px;
+  background: var(--amb-lt);
+  border-left: 4px solid #f59e0b;
+  border-radius: 0 6px 6px 0;
+  font-size: 13px;
+  color: #78350f;
+}
+
+/* ── CONCEPT CARD ────────────────────────────────────────── */
+.concept {
+  margin: 24px 48px;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.concept-header {
+  padding: 18px 28px 16px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.concept-num {
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--border);
+  flex-shrink: 0;
+}
+.concept-title-block {}
+.concept-title {
+  font-size: 19px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.concept-tagline {
+  font-size: 13px;
+  color: var(--slate);
+  margin-top: 3px;
+}
+.concept-body {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+}
+.concept-meta {
+  padding: 20px 20px 24px;
+  border-right: 1px solid var(--border);
+  background: #f8fafc;
+}
+.meta-item { margin-bottom: 15px; }
+.meta-item:last-child { margin-bottom: 0; }
+.meta-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #94a3b8;
+  margin-bottom: 3px;
+}
+.meta-value { font-size: 12.5px; color: #334155; }
+.meta-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.badge-green  { background: var(--grn-lt); color: var(--green); }
+.badge-blue   { background: var(--blue-lt); color: var(--blue); }
+.badge-purple { background: var(--pur-lt); color: var(--purple); }
+.badge-amber  { background: var(--amb-lt); color: var(--amber); }
+
+/* ── SKETCH AREA ─────────────────────────────────────────── */
+.sketch-area {
+  padding: 28px 32px;
+}
+.sketch-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #94a3b8;
+  margin-bottom: 14px;
+}
+
+/* ── CONCEPT 1: FAMILY GUIDE — two-panel card ────────────── */
+.guide-card {
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 680px;
+}
+.guide-card-header {
+  background: var(--navy);
+  color: white;
+  padding: 11px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.guide-card-header span { color: #94a3b8; font-weight: 400; font-size: 11px; }
+.guide-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.guide-panel {
+  padding: 16px 18px;
+}
+.guide-panel-header {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.panel-green { border-right: 1px solid var(--border); }
+.panel-green .guide-panel-header { color: var(--green); border-color: var(--green); }
+.panel-red   .guide-panel-header { color: var(--red); border-color: var(--red); }
+.guide-item {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 9px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  align-items: flex-start;
+}
+.guide-icon { flex-shrink: 0; font-size: 13px; margin-top: 1px; }
+.guide-quote { color: #334155; font-style: italic; }
+.guide-note  { color: #64748b; font-size: 11px; margin-top: 2px; }
+.guide-footer {
+  background: #f8fafc;
+  border-top: 1px solid var(--border);
+  padding: 10px 18px;
+  font-size: 11.5px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.guide-footer strong { color: #334155; }
+
+.key-points {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.kp {
+  background: #f1f5f9;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #475569;
+  border: 1px solid var(--border);
+  flex: 1;
+  min-width: 160px;
+}
+.kp strong { display: block; color: #1e293b; margin-bottom: 3px; font-size: 12px; }
+
+/* ── CONCEPT 2: MOTHER APP — phone mockup + chat ─────────── */
+.app-mockup-wrap {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.phone-frame {
+  width: 220px;
+  flex-shrink: 0;
+  border: 2px dashed #cbd5e1;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+.phone-notch {
+  background: var(--navy);
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.phone-notch-dot {
+  width: 40px;
+  height: 6px;
+  background: #0f172a;
+  border-radius: 3px;
+}
+.phone-screen { padding: 0; }
+.app-bar {
+  background: var(--blue);
+  color: white;
+  padding: 10px 14px 9px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.app-bar-dot {
+  width: 7px; height: 7px;
+  background: #93c5fd;
+  border-radius: 50%;
+}
+.chat-area {
+  padding: 12px 10px;
+  min-height: 230px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: white;
+}
+.bubble {
+  padding: 8px 11px;
+  border-radius: 12px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  max-width: 86%;
+}
+.bubble-app {
+  background: var(--blue-lt);
+  color: #1e3a5f;
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+}
+.bubble-user {
+  background: var(--blue);
+  color: white;
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+  text-align: right;
+}
+.phase-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 2px;
+}
+.phase-btn {
+  background: white;
+  border: 1px solid #93c5fd;
+  color: var(--blue);
+  border-radius: 99px;
+  padding: 5px 10px;
+  font-size: 11px;
+  text-align: left;
+  cursor: default;
+}
+.phase-btn.active {
+  background: var(--blue);
+  color: white;
+  border-color: var(--blue);
+}
+.app-nav {
+  background: #f8fafc;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 4px;
+}
+.nav-item {
+  font-size: 9.5px;
+  color: #94a3b8;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.nav-item.active { color: var(--blue); }
+.nav-icon { font-size: 14px; }
+
+.app-features {
+  flex: 1;
+  min-width: 240px;
+}
+.feature-block {
+  margin-bottom: 14px;
+}
+.feature-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.feature-desc {
+  font-size: 12px;
+  color: #475569;
+  padding-left: 20px;
+}
+.data-point {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: var(--blue-lt);
+  border-radius: 6px;
+  font-size: 12px;
+  color: #1e3a5f;
+  border-left: 3px solid var(--blue);
+}
+.data-point strong { display: block; font-size: 14px; color: var(--blue); }
+
+/* ── CONCEPT 3: PROVIDER TOOLKIT — desk card ─────────────── */
+.toolkit-card {
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 680px;
+}
+.toolkit-header {
+  background: #1a2e52;
+  color: white;
+  padding: 10px 20px;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.toolkit-header span { color: #64748b; font-size: 11px; }
+.toolkit-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr 140px;
+  min-height: 180px;
+}
+.toolkit-col {
+  padding: 16px 18px;
+  border-right: 1px solid var(--border);
+}
+.toolkit-col:last-child { border-right: none; }
+.toolkit-col-title {
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #94a3b8;
+  margin-bottom: 10px;
+}
+.toolkit-headline {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+.toolkit-support {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+}
+.toolkit-support strong { color: #1e293b; }
+.question-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.question-list li {
+  font-size: 12px;
+  color: #334155;
+  padding-left: 14px;
+  position: relative;
+  line-height: 1.4;
+}
+.question-list li::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  color: var(--purple);
+  font-weight: 700;
+}
+.qr-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 12px;
+  gap: 10px;
+  background: #f8fafc;
+}
+.qr-box {
+  width: 80px;
+  height: 80px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  background: white;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 2px;
+  padding: 6px;
+}
+.qr-cell {
+  border-radius: 1px;
+  background: #cbd5e1;
+}
+.qr-cell.dark { background: #1e293b; }
+.qr-text {
+  font-size: 10px;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.4;
+}
+.toolkit-footer {
+  border-top: 1px solid var(--border);
+  padding: 9px 18px;
+  background: #f8fafc;
+  font-size: 11px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toolkit-footer strong { color: #334155; }
+
+/* ── SHARED: DISCUSSION STRIP ────────────────────────────── */
+.discussion-strip {
+  margin-top: 0;
+  padding: 14px 28px;
+  background: #fafafa;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.disc-section {}
+.disc-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+.disc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.disc-tag {
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 3px 10px;
+  font-size: 11.5px;
+  color: #475569;
+}
+.disc-tag.open { border-style: dashed; color: #94a3b8; }
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+.page-footer {
+  margin: 24px 48px 40px;
+  padding: 14px 20px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+  color: #64748b;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.page-footer strong { color: #334155; }
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<header class="page-header">
+  <div class="ph-left">
+    <h1>CHD Care Coordination — Solution Concept Sketches</h1>
+    <div class="sub">Three potential practical outputs from the qualitative study &nbsp;·&nbsp; Early concepts only &nbsp;·&nbsp; For discussion</div>
+  </div>
+  <div class="ph-right">
+    <strong>Riley Stakeholder Meeting</strong>
+    June 30, 2026 · 3:00 PM<br>
+    Pre-meeting: June 29 · 10:30 AM
+  </div>
+</header>
+
+<div class="framing-note">
+  These are <strong>sketches, not proposals.</strong> The goal is to give the room something concrete to react to — does this look right, what's missing, who would use this? Each concept is grounded in what coordinators and families described in the study data, and in suggestions raised at the June 8 and June 16 internal meetings.
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     CONCEPT 1: FAMILY GUIDE
+     ════════════════════════════════════════════════════════ -->
+<section class="concept">
+  <div class="concept-header">
+    <div class="concept-num">01</div>
+    <div class="concept-title-block">
+      <div class="concept-title">Extended Family &amp; Friends Guide</div>
+      <div class="concept-tagline">A one-page resource families can share so their support network knows how to actually help</div>
+    </div>
+  </div>
+  <div class="concept-body">
+    <div class="concept-meta">
+      <div class="meta-item">
+        <div class="meta-label">Who uses it</div>
+        <div class="meta-value">Mothers &amp; partners share with grandparents, siblings, close friends</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">When</div>
+        <div class="meta-value">At or shortly after diagnosis — coordinator hands to family</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Format</div>
+        <div class="meta-value">Print card · PDF · shareable link</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Effort</div>
+        <div class="meta-value"><span class="meta-badge badge-green">Low</span><br><span style="font-size:11px;color:#64748b;">Adapts existing palliative-care template</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Origin</div>
+        <div class="meta-value">Requested by name by Megan Bess (4/8 session)</div>
+      </div>
+    </div>
+    <div class="sketch-area">
+      <div class="sketch-label">Concept sketch — what this might look like</div>
+
+      <div class="guide-card">
+        <div class="guide-card-header">
+          Supporting a Family with a CHD Diagnosis &nbsp;&mdash;&nbsp; A Guide for Family &amp; Friends
+          <span>Riley Children's Heart Center &nbsp;·&nbsp; rileychildrens.org/heart</span>
+        </div>
+        <div class="guide-panels">
+          <div class="guide-panel panel-green">
+            <div class="guide-panel-header">
+              <span>✓</span> Things that genuinely help
+            </div>
+            <div class="guide-item">
+              <span class="guide-icon" style="color:#166534;">✓</span>
+              <div><div class="guide-quote">"We're here — what do you need right now?"</div>
+              <div class="guide-note">Offers presence without adding to their to-do list</div></div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-icon" style="color:#166534;">✓</span>
+              <div><div class="guide-quote">"Can I bring dinner on Tuesday?"</div>
+              <div class="guide-note">Specific, practical — easy to say yes to</div></div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-icon" style="color:#166534;">✓</span>
+              <div><div class="guide-quote">"I don't know what to say — but I'm not going anywhere."</div>
+              <div class="guide-note">Honest presence is more helpful than forced optimism</div></div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-icon" style="color:#166534;">✓</span>
+              <div><div class="guide-quote">"I'll handle [specific thing] so you don't have to think about it."</div>
+              <div class="guide-note">Takes a task without asking them to manage you</div></div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-icon" style="color:#166534;">✓</span>
+              <div><div class="guide-quote">"Do you want to talk about it, or talk about anything else?"</div>
+              <div class="guide-note">Gives them control over whether they re-explain the diagnosis — again</div></div>
+            </div>
+          </div>
+          <div class="guide-panel panel-red">
+            <div class="guide-panel-header">
+              <span>✕</span> Well-meaning things that often hurt
+            </div>
+            <div class="guide-item">
+              <span class="guide-icon" style="color:#991b1b;">✕</span>
+              <div><div class="guide-quote">"Everything happens for a reason."</div>
+              <div class="guide-note">Even if you believe this, it's not what someone in crisis needs to hear</div></div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-icon" style="color:#991b1b;">✕</span>
+              <div><div class="guide-quote">"At least you caught it early" / "At least it's fixable."</div>
+              <div class="guide-note">Minimizes real fear — their child has a serious heart defect</div></div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-icon" style="color:#991b1b;">✕</span>
+              <div><div class="guide-quote">"Have you tried...?" / "What about...?"</div>
+              <div class="guide-note">They have a team. Unsolicited advice adds to the noise</div></div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-icon" style="color:#991b1b;">✕</span>
+              <div><div class="guide-quote">"What do the doctors think caused this?"</div>
+              <div class="guide-note">Often unanswerable and can feel like blame</div></div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-icon" style="color:#991b1b;">✕</span>
+              <div><div class="guide-quote">Asking for updates constantly — "any news?"</div>
+              <div class="guide-note">Every update request is a task for them. Let them share when ready</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="guide-footer">
+          <span>📋</span>
+          <div><strong>For care coordinators:</strong> This resource can be printed and given at the first appointment, emailed as a PDF, or texted as a link — however is most natural for your workflow. The mother decides who to share it with.</div>
+        </div>
+      </div>
+
+      <div class="key-points">
+        <div class="kp"><strong>Why this matters in the data</strong>Extended-family contact appeared in 20+ coded instances — frequently as a burden, not a support. Mothers were "exhausted from repeatedly re-explaining the diagnosis to well-meaning relatives."</div>
+        <div class="kp"><strong>Low-effort path to build</strong>Megan noted Riley already has a similar guide for palliative patients. This would adapt that resource for cardiology — not start from scratch.</div>
+        <div class="kp"><strong>Could stand alone or feed a bigger tool</strong>Works as a standalone handout now, and as a shareable resource inside the mother app concept (Concept 2) later.</div>
+      </div>
+    </div>
+  </div>
+  <div class="discussion-strip">
+    <div class="disc-section">
+      <div class="disc-section-title">What's ready to discuss</div>
+      <div class="disc-tags">
+        <span class="disc-tag">Does existing palliative template need major changes?</span>
+        <span class="disc-tag">Who drafts and clinically reviews language?</span>
+        <span class="disc-tag">Print vs. digital vs. both?</span>
+      </div>
+    </div>
+    <div class="disc-section">
+      <div class="disc-section-title">Open questions</div>
+      <div class="disc-tags">
+        <span class="disc-tag open">Riley branding / approval process?</span>
+        <span class="disc-tag open">How does coordinator know when to hand it out?</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════
+     CONCEPT 2: MOTHER SUPPORT APP / CHATBOT
+     ════════════════════════════════════════════════════════ -->
+<section class="concept">
+  <div class="concept-header">
+    <div class="concept-num">02</div>
+    <div class="concept-title-block">
+      <div class="concept-title">Mother Support App or Chatbot</div>
+      <div class="concept-tagline">A digital resource bridging the "donut hole" — the window between a possible finding and feeling fully supported by a care team</div>
+    </div>
+  </div>
+  <div class="concept-body">
+    <div class="concept-meta">
+      <div class="meta-item">
+        <div class="meta-label">Who uses it</div>
+        <div class="meta-value">Mothers (and partners) from possible finding through mid-pregnancy management</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">When</div>
+        <div class="meta-value">The "donut hole" — possible finding → care team fully engaged</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Format</div>
+        <div class="meta-value">Mobile app · website · chatbot · undecided</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Effort</div>
+        <div class="meta-value"><span class="meta-badge badge-amber">Medium–High</span><br><span style="font-size:11px;color:#64748b;">Build vs. partner TBD; grant funds flagged</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Origin</div>
+        <div class="meta-value">Jill's idea at June 8 meeting; confirmed gap in study data</div>
+      </div>
+    </div>
+    <div class="sketch-area">
+      <div class="sketch-label">Concept sketch — one possible interface</div>
+
+      <div class="app-mockup-wrap">
+        <div class="phone-frame">
+          <div class="phone-notch"><div class="phone-notch-dot"></div></div>
+          <div class="phone-screen">
+            <div class="app-bar">
+              <div class="app-bar-dot"></div>
+              CHD Care Compass
+            </div>
+            <div class="chat-area">
+              <div class="bubble bubble-app">
+                Hi — I'm here to help you navigate. Where are you right now?
+              </div>
+              <div class="phase-buttons">
+                <div class="phase-btn active">📍 I just got a possible finding</div>
+                <div class="phase-btn">⏳ Waiting for confirmation</div>
+                <div class="phase-btn">✓ We have a diagnosis</div>
+                <div class="phase-btn">🏥 We're already in care</div>
+              </div>
+              <div class="bubble bubble-app" style="margin-top:4px;">
+                That's one of the hardest moments — a lot of uncertainty, not many answers yet. Here are some places to start.
+              </div>
+              <div class="bubble bubble-app" style="background:#dbeafe;font-size:11px;color:#1e3a5f;">
+                📚 What a "possible finding" actually means<br>
+                🔗 Trusted places to read more<br>
+                👥 Connect with other families<br>
+                ❓ Questions to bring to your next appointment
+              </div>
+            </div>
+            <div class="app-nav">
+              <div class="nav-item active"><div class="nav-icon">🏠</div>Home</div>
+              <div class="nav-item"><div class="nav-icon">📋</div>Resources</div>
+              <div class="nav-item"><div class="nav-icon">👥</div>Connect</div>
+              <div class="nav-item"><div class="nav-icon">📝</div>My Story</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-features">
+          <div class="feature-block">
+            <div class="feature-title"><span>🔀</span> Phased, readiness-based orientation</div>
+            <div class="feature-desc">Mirrors what coordinators do in person — doesn't dump all information at once. Adapts to where the family is in the journey.</div>
+          </div>
+          <div class="feature-block">
+            <div class="feature-title"><span>📚</span> Curated, vetted resource directory</div>
+            <div class="feature-desc">The "trusted starting points" coordinators said they need but don't have bandwidth to build. Candidates already named: pted.org, Mended Little Hearts, Sisters by Heart, CHD Care Compass via NAFNET.</div>
+          </div>
+          <div class="feature-block">
+            <div class="feature-title"><span>👥</span> Guided peer-connection routing</div>
+            <div class="feature-desc">Some Facebook groups help, some frighten. This routes mothers toward vetted peer support — the single strongest resilience pattern in the study (CTR-4: Maintaining Communication Networks, 34 coded instances).</div>
+          </div>
+          <div class="feature-block">
+            <div class="feature-title"><span>🏥</span> Practical prep content</div>
+            <div class="feature-desc">Care conferences, NICU stays, what to pack, what the first Riley appointment actually looks like (it's an all-day multi-provider event — most families didn't know).</div>
+          </div>
+          <div class="data-point">
+            <strong>88%</strong>
+            of mothers in the study needed psychosocial support. Most did not receive it. There are no formal guidelines for psychosocial support after prenatal CHD diagnosis. This tool fills that gap in the most accessible window.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="discussion-strip">
+    <div class="disc-section">
+      <div class="disc-section-title">What's ready to discuss</div>
+      <div class="disc-tags">
+        <span class="disc-tag">Which existing resources would you point families to today?</span>
+        <span class="disc-tag">Build vs. extend something that exists (Heartapedia, NAFNET)?</span>
+        <span class="disc-tag">App vs. website vs. chatbot — what would families actually use?</span>
+      </div>
+    </div>
+    <div class="disc-section">
+      <div class="disc-section-title">Open questions</div>
+      <div class="disc-tags">
+        <span class="disc-tag open">Who maintains it after the grant period?</span>
+        <span class="disc-tag open">Clinical/liability boundaries for a chatbot layer?</span>
+        <span class="disc-tag open">Riley-specific vs. regional scope?</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════
+     CONCEPT 3: PROVIDER DECISION TOOLKIT
+     ════════════════════════════════════════════════════════ -->
+<section class="concept">
+  <div class="concept-header">
+    <div class="concept-num">03</div>
+    <div class="concept-title-block">
+      <div class="concept-title">OB Referral Decision Toolkit</div>
+      <div class="concept-tagline">A display piece for OB offices that helps families know they can research and choose their care center — before they leave the exam room</div>
+    </div>
+  </div>
+  <div class="concept-body">
+    <div class="concept-meta">
+      <div class="meta-item">
+        <div class="meta-label">Who uses it</div>
+        <div class="meta-value">Families in OB exam rooms; also equips OBs themselves at the referral moment</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">When</div>
+        <div class="meta-value">The referral moment — right after a possible cardiac finding on anatomy scan</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Format</div>
+        <div class="meta-value">Counter card · QR code · paper handout · undecided</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Effort</div>
+        <div class="meta-value"><span class="meta-badge badge-purple">Medium</span><br><span style="font-size:11px;color:#64748b;">Content clear; distribution &amp; format TBD</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Origin</div>
+        <div class="meta-value">Dr. Markham's proposal, June 8 meeting</div>
+      </div>
+    </div>
+    <div class="sketch-area">
+      <div class="sketch-label">Concept sketch — what might sit in an OB waiting room or exam room</div>
+
+      <div class="toolkit-card">
+        <div class="toolkit-header">
+          A resource for OB offices &nbsp;·&nbsp; When a possible heart finding is detected on anatomy scan
+          <span>Counter card / display piece — draft concept</span>
+        </div>
+        <div class="toolkit-body">
+          <div class="toolkit-col">
+            <div class="toolkit-col-title">The situation</div>
+            <div class="toolkit-headline">If your OB finds a possible heart finding, you have more options than you may realize.</div>
+            <div class="toolkit-support">
+              Families are often referred to the nearest large hospital — or wherever the OB's system is affiliated — without knowing that <strong>where you go for CHD care can significantly affect outcomes.</strong><br><br>
+              Surgical volume, specialized team experience, and proximity to home all matter. You are allowed to ask about them. You are allowed to choose.
+            </div>
+          </div>
+          <div class="toolkit-col">
+            <div class="toolkit-col-title">Questions worth asking your OB</div>
+            <ul class="question-list">
+              <li>Is the center you're referring me to a <strong>surgical center</strong> for congenital heart disease — or a diagnostic center?</li>
+              <li>How many CHD cases does that program handle per year? (Volume is linked to outcomes.)</li>
+              <li>Is there a closer center with comparable experience I should know about?</li>
+              <li>Can I speak with a <strong>care coordinator</strong> there before I decide?</li>
+              <li>What does the care team look like — is there dedicated CHD coordination, MFM, and cardiology together?</li>
+            </ul>
+          </div>
+          <div class="toolkit-col qr-col">
+            <div class="qr-box">
+              <!-- Stylized QR code placeholder -->
+              <div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div>
+              <div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell"></div>
+              <div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div>
+              <div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div>
+              <div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div>
+            </div>
+            <div class="qr-text">
+              Learn more about<br>
+              CHD care centers<br>
+              <strong style="color:#334155;">rileychildrens.org<br>/heart-decision</strong>
+            </div>
+          </div>
+        </div>
+        <div class="toolkit-footer">
+          <span>ℹ️</span>
+          <div><strong>For OBs and referring providers:</strong> Research shows families trust provider authority and rarely question referral decisions. This resource isn't about redirecting — it's about giving families language to engage in the conversation. A more informed family asks better questions regardless of where they go.</div>
+        </div>
+      </div>
+
+      <div class="key-points" style="margin-top:16px;">
+        <div class="kp"><strong>Dr. Markham's core problem</strong>Local OBs refer based on institutional affiliations, not on program outcomes data. Families "aren't sophisticated enough to ask why they can't go to Riley" — and deeply trust whoever gives them the first diagnosis.</div>
+        <div class="kp"><strong>Where it fits in the pathway</strong>This intervenes at Stage 3 (Diagnosis &amp; Provider Response) — the earliest fork in the two maternal pathways finding. A bad first referral can put a family on the isolated pathway before Riley ever gets to engage them.</div>
+        <div class="kp"><strong>Political sensitivity to discuss</strong>Comparative program information is delicate — this can't read as disparaging Parkview, Cincinnati, or other systems Riley has ongoing relationships with. Framing and tone will need careful input from Riley's communications team.</div>
+      </div>
+    </div>
+  </div>
+  <div class="discussion-strip">
+    <div class="disc-section">
+      <div class="disc-section-title">What's ready to discuss</div>
+      <div class="disc-tags">
+        <span class="disc-tag">Does something like this already exist informally?</span>
+        <span class="disc-tag">Where in the OB workflow would it actually land?</span>
+        <span class="disc-tag">Paper card vs. QR-to-digital vs. both?</span>
+      </div>
+    </div>
+    <div class="disc-section">
+      <div class="disc-section-title">Open questions</div>
+      <div class="disc-tags">
+        <span class="disc-tag open">Riley-branded vs. neutral statewide vs. CDC-affiliated?</span>
+        <span class="disc-tag open">How to distribute into OB offices without active health system partnership?</span>
+        <span class="disc-tag open">Who reviews for political/clinical accuracy?</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- PAGE FOOTER -->
+<footer class="page-footer">
+  <div>
+    <strong>Source material:</strong> Coordinator feedback sessions (March–April 2026), internal team meeting (June 8), qualitative discussion meeting (June 16). These sketches are meant to generate discussion — not to pre-commit to scope, format, or build decisions.
+  </div>
+  <div style="flex-shrink:0; font-size:11px; color:#94a3b8; text-align:right;">
+    Prepared for June 29 pre-meeting<br>
+    and June 30 Riley stakeholder meeting
+  </div>
+</footer>
+
+</body>
+</html>

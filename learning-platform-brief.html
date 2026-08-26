@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learning Platform Options · Regenstrief Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #1a1510;
+    --parchment:  #f3ece0;
+    --parchment2: #e8dfce;
+    --gold:       #c88f2a;
+    --gold-light: #e8b659;
+    --ochre:      #b8621b;
+    --muted:      #6b5f4f;
+    --line:       #d8cfbf;
+    --green:      #3a5c2e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--parchment); color: var(--ink); line-height: 1.6; }
+
+  .page { max-width: 880px; margin: 0 auto; padding: 64px 48px 96px; }
+
+  /* ── Header ── */
+  .doc-header { border-bottom: 2px solid var(--ink); padding-bottom: 28px; margin-bottom: 36px; }
+  .doc-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--ochre); margin-bottom: 16px;
+  }
+  .doc-label::before { content: '— '; }
+  h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 700; letter-spacing: -0.022em; line-height: 1.05; margin-bottom: 14px; }
+  .doc-sub { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 19px; color: var(--muted); line-height: 1.45; max-width: 640px; }
+  .doc-meta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-top: 20px; display: flex; gap: 28px; flex-wrap: wrap; }
+
+  /* ── Executive summary ── */
+  .exec-summary { margin-bottom: 48px; }
+  .exec-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ochre); margin-bottom: 14px; }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 14px; }
+  .summary-card {
+    border: 1px solid var(--line);
+    padding: 16px 18px 18px;
+    position: relative;
+    background: var(--parchment);
+  }
+  .summary-card.recommended { border-color: var(--green); }
+  .summary-letter {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .summary-card.recommended .summary-letter { color: var(--green); }
+  .summary-name { font-size: 14px; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+  .summary-desc { font-size: 12px; color: var(--muted); line-height: 1.45; margin-bottom: 10px; }
+  .summary-badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    padding: 2px 8px; border: 1px solid var(--green); color: var(--green);
+    margin-bottom: 10px;
+  }
+  .summary-runway {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 10px;
+  }
+
+  /* ── Platform tags ── */
+  .platform-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+  .ptag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; letter-spacing: 0.1em;
+    padding: 2px 7px;
+    background: var(--parchment2);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .ptag.ours { background: rgba(58,92,46,0.08); border-color: var(--green); color: var(--green); }
+
+  /* ── OHIE stat strip ── */
+  .ohie-strip {
+    background: var(--ink);
+    color: rgba(255,255,255,0.9);
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  }
+  .ohie-strip-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold-light); flex-shrink: 0;
+  }
+  .ohie-stats { display: flex; gap: 20px; flex-wrap: wrap; }
+  .ohie-stat { text-align: center; }
+  .ohie-stat .num { font-size: 18px; font-weight: 700; color: var(--gold-light); line-height: 1; }
+  .ohie-stat .label { font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-top: 3px; }
+  .ohie-strip-note { font-size: 12px; color: rgba(255,255,255,0.5); font-style: italic; }
+
+  /* ── Section ── */
+  section { margin-bottom: 44px; }
+  .section-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ochre); margin-bottom: 10px; }
+  h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 14px; line-height: 1.2; }
+  p { font-size: 14px; color: var(--muted); margin-bottom: 10px; line-height: 1.6; }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--ink); font-weight: 600; }
+  a { color: var(--ochre); }
+
+  hr { border: none; border-top: 1px solid var(--line); margin: 44px 0; }
+
+  /* ── Option cards ── */
+  .options { display: flex; flex-direction: column; gap: 16px; }
+  .option { border: 1px solid var(--ink); background: var(--parchment); }
+  .option-bar { height: 4px; background: var(--ochre); }
+  .option-bar.green { background: var(--green); }
+  .option-bar.gold  { background: var(--gold); }
+  .option-bar.muted { background: var(--line); }
+  .option-inner { padding: 18px 22px 20px; }
+  .option-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+  .option-title { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+  .option-tag { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; padding: 3px 9px; border: 1px solid currentColor; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .option-tag.green { color: var(--green); }
+  .option-tag.ochre { color: var(--ochre); }
+  .option-tag.muted { color: var(--muted); border-color: var(--line); }
+  .option-desc { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 12px; }
+
+  .callout { background: var(--parchment2); border-left: 3px solid var(--ochre); padding: 12px 16px; margin-bottom: 12px; }
+  .callout p { font-size: 13px; line-height: 1.5; margin: 0; }
+  .callout-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ochre); margin-bottom: 5px; }
+
+  .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
+  .col-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .col-label.pro { color: var(--green); }
+  .col-label.con { color: var(--ochre); }
+  .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .bullet-list li { font-size: 12px; color: var(--muted); line-height: 1.4; padding-left: 12px; position: relative; }
+  .bullet-list li::before { content: '·'; position: absolute; left: 0; color: var(--line); }
+
+  /* ── Insight grid ── */
+  .insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .insight { background: var(--parchment2); padding: 14px 16px; border-left: 3px solid var(--ochre); }
+  .insight.green { border-left-color: var(--green); }
+  .insight-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ochre); margin-bottom: 5px; }
+  .insight.green .insight-label { color: var(--green); }
+  .insight p { font-size: 12px; line-height: 1.5; margin: 0; }
+
+  /* ── Questions list ── */
+  .q-list { display: flex; flex-direction: column; gap: 8px; }
+  .q-item { display: flex; gap: 12px; align-items: flex-start; }
+  .q-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--ochre); flex-shrink: 0; min-width: 22px; padding-top: 2px; }
+  .q-text { font-size: 13px; line-height: 1.5; }
+  .q-text span { color: var(--muted); }
+
+  /* ── Footer ── */
+  footer { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 56px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+
+  @media (max-width: 640px) {
+    .page { padding: 36px 24px 72px; }
+    .summary-grid { grid-template-columns: 1fr; }
+    .pros-cons { grid-template-columns: 1fr; }
+    .insight-grid { grid-template-columns: 1fr; }
+    .ohie-stats { gap: 14px; }
+  }
+  @media print { body { background: white; } .page { padding: 32px; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="doc-header">
+    <div class="doc-label">Internal Brief · GHI · LOINC/HDS · CBMI</div>
+    <h1>A Learning Platform for Regenstrief</h1>
+    <p class="doc-sub">Three practical paths for providing free content while staying financially sustainable.</p>
+    <div class="doc-meta">
+      <span>Joe Amlung</span>
+      <span>May 2026</span>
+      <span>~4 min read</span>
+    </div>
+  </header>
+
+  <!-- ── Executive Summary ── -->
+  <div class="exec-summary">
+    <div class="exec-eyebrow">At a Glance</div>
+
+    <div class="summary-grid">
+      <div class="summary-card recommended">
+        <div class="summary-letter">Option A · Recommended</div>
+        <div class="summary-name">Free Content, Paid Certifications</div>
+        <div class="summary-desc">Open courses, fees for verified Regenstrief credentials. OHIE Academy already runs this.</div>
+        <div class="summary-badge">Start here</div>
+        <div class="platform-tags">
+          <span class="ptag ours">OHIE Academy</span>
+          <span class="ptag">atingi (GIZ)</span>
+          <span class="ptag">edX</span>
+          <span class="ptag">Coursera</span>
+          <span class="ptag">OpenWHO</span>
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-letter">Option B · Novel</div>
+        <div class="summary-name">Developer Publishing Fees</div>
+        <div class="summary-desc">RI-adjacent vendors pay to publish under the Regenstrief brand. Learners stay free.</div>
+        <div class="summary-runway">Layer in after A is established</div>
+        <div class="platform-tags">
+          <span class="ptag">Udemy</span>
+          <span class="ptag">Apple App Store</span>
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-letter">Option C · Longer Runway</div>
+        <div class="summary-name">Institutional / Enterprise Licensing</div>
+        <div class="summary-desc">Health systems and MoHs pay for cohort tools, reporting, and LMS integration.</div>
+        <div class="summary-runway">Viable once catalog is proven</div>
+        <div class="platform-tags">
+          <span class="ptag">Coursera for Business</span>
+          <span class="ptag">Udemy Business</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ohie-strip">
+      <div class="ohie-strip-label">We Already Run This →<br>OHIE Academy</div>
+      <div class="ohie-stats">
+        <div class="ohie-stat"><div class="num">16</div><div class="label">Free Courses</div></div>
+        <div class="ohie-stat"><div class="num">750+</div><div class="label">Learners</div></div>
+        <div class="ohie-stat"><div class="num">59</div><div class="label">Certified</div></div>
+        <div class="ohie-stat"><div class="num">$22</div><div class="label">Cert Fee</div></div>
+      </div>
+      <div class="ohie-strip-note"><a href="https://academy.ohie.org" style="color:rgba(232,182,89,0.8);">academy.ohie.org</a> · Managed by Regenstrief since 2021</div>
+    </div>
+  </div>
+
+  <!-- ── Starting Point ── -->
+  <section>
+    <div class="section-eyebrow">Starting Point</div>
+    <h2>We Have Three Advantages Most Platforms Lack</h2>
+    <p>
+      <strong>We already operate the model.</strong> OHIE Academy has run free-course/paid-cert since 2021 — 750+ learners, 59 certified, at a $22 price point. Expanding it to LOINC, FHIR, and clinical data standards is a scope question, not a proof-of-concept question.
+    </p>
+    <p>
+      <strong>We already publish on a second platform.</strong> Regenstrief, GIZ, and Jembi have jointly launched 4 HIS courses on atingi — GIZ's BMZ-funded platform reaching 1.35M+ LMIC development sector learners in 31 languages. The partner channel into that audience already exists.
+    </p>
+    <p>
+      <strong>LOINC is a built-in credentialing anchor.</strong> Udemy and Coursera spent years constructing authority through university partnerships. A Regenstrief certificate on LOINC or FHIR carries genuine institutional weight — and could command a meaningfully higher price point ($149–$299) — from day one.
+    </p>
+    <p>
+      <strong>We may not need to build new infrastructure.</strong> IU Expand (<a href="https://expand.iu.edu">expand.iu.edu</a>) is Indiana University's Canvas-based continuing-education marketplace — already used across IU schools and departments to sell paid courses and credentials. As part of IU, Regenstrief could explore publishing and selling courses there without standing up a new platform, lowering the risk for an early test of the paid-cert model.
+    </p>
+  </section>
+
+  <hr>
+
+  <!-- ── Three Options ── -->
+  <section>
+    <div class="section-eyebrow">Three Paths</div>
+    <h2>Practical Models for Free Content + Sustainable Revenue</h2>
+
+    <div class="options">
+
+      <!-- Option A -->
+      <div class="option">
+        <div class="option-bar green"></div>
+        <div class="option-inner">
+          <div class="option-head">
+            <div class="option-title">A · Free Content, Paid Certifications</div>
+            <div class="option-tag green">Recommended Starting Point</div>
+          </div>
+          <p class="option-desc">
+            All courses are free to audit. Learners pay for a <strong>verified Regenstrief certificate</strong> — e.g., LOINC Practitioner at $149, Clinical Data Standards track at $299, with CME credit where applicable.
+          </p>
+          <div class="callout">
+            <div class="callout-label">Live precedent — OHIE Academy</div>
+            <p>Regenstrief has run this model since 2021 at <a href="https://academy.ohie.org">academy.ohie.org</a>: 16 free HIE courses, $22 Foundations cert, 59 certified in 2 years. Expanding to LOINC/FHIR is a natural extension.</p>
+          </div>
+          <div class="pros-cons">
+            <div>
+              <div class="col-label pro">Works because</div>
+              <ul class="bullet-list">
+                <li>Aligns with open-access mission</li>
+                <li>RI cert carries real credential value <span class="ptag" style="display:inline; font-size:8px; padding:1px 5px;">unlike Teachable</span></li>
+                <li>LOINC + FHIR + HL7 have global demand</li>
+                <li>CME credit adds institutional pull</li>
+              </ul>
+            </div>
+            <div>
+              <div class="col-label con">Watch out for</div>
+              <ul class="bullet-list">
+                <li>Cert revenue requires volume to sustain</li>
+                <li>Assessment + renewal infrastructure needed</li>
+                <li>Works better with B2B alongside it <span class="ptag" style="display:inline; font-size:8px; padding:1px 5px;">edX lesson</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Option B -->
+      <div class="option">
+        <div class="option-bar gold"></div>
+        <div class="option-inner">
+          <div class="option-head">
+            <div class="option-title">B · Developer / Creator Publishing Fees</div>
+            <div class="option-tag ochre">Novel for Health Informatics</div>
+          </div>
+          <p class="option-desc">
+            RI-adjacent vendors, developers, and academic partners pay to publish under the Regenstrief brand — buying access to our audience and credentialing trust. Learners still get free content.
+          </p>
+          <div class="pros-cons">
+            <div>
+              <div class="col-label pro">Works because</div>
+              <ul class="bullet-list">
+                <li>Learners stay free — mission intact</li>
+                <li>Vendors pay for legitimacy + distribution <span class="ptag" style="display:inline; font-size:8px; padding:1px 5px;">Udemy model, inverted</span></li>
+                <li>Scales catalog without adding RI staff</li>
+                <li>Builds ecosystem around RI standards</li>
+              </ul>
+            </div>
+            <div>
+              <div class="col-label con">Watch out for</div>
+              <ul class="bullet-list">
+                <li>Needs editorial curation policy first</li>
+                <li>Risk of "pay to play" perception</li>
+                <li>RI brand must be protected</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Option C -->
+      <div class="option">
+        <div class="option-bar muted"></div>
+        <div class="option-inner">
+          <div class="option-head">
+            <div class="option-title">C · Free Public + Institutional Licensing</div>
+            <div class="option-tag muted">Longer Runway</div>
+          </div>
+          <p class="option-desc">
+            Content stays free. Health systems and ministries of health pay for <strong>organizational access</strong> — custom tracks, cohort management, progress dashboards, and LMS integration.
+          </p>
+          <div class="pros-cons">
+            <div>
+              <div class="col-label pro">Works because</div>
+              <ul class="bullet-list">
+                <li>Mirrors how health systems actually buy training <span class="ptag" style="display:inline; font-size:8px; padding:1px 5px;">Coursera for Business</span> <span class="ptag" style="display:inline; font-size:8px; padding:1px 5px;">Udemy Business</span></li>
+                <li>GHI relationships open MoH-level doors</li>
+                <li>High-ticket, low-volume — viable at smaller scale</li>
+              </ul>
+            </div>
+            <div>
+              <div class="col-label con">Watch out for</div>
+              <ul class="bullet-list">
+                <li>Long institutional sales cycles</li>
+                <li>Requires account management capacity</li>
+                <li>Needs a proven catalog first</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ── What we learned ── -->
+  <section>
+    <div class="section-eyebrow">What the Landscape Shows</div>
+    <h2>Six Patterns Worth Noting</h2>
+    <div class="insight-grid">
+      <div class="insight">
+        <div class="insight-label">Free content alone doesn't sustain</div>
+        <p>edX ran it for 9 years and sold for $800M. OpenWHO works because WHO absorbs costs as infrastructure. Without institutional backing, free needs a revenue layer.</p>
+      </div>
+      <div class="insight green">
+        <div class="insight-label">Credentialing is our moat</div>
+        <p>LOINC, FHIR, HL7 proficiency certs backed by Regenstrief carry weight no commercial platform can replicate — and what makes the paid tier credible.</p>
+      </div>
+      <div class="insight">
+        <div class="insight-label">B2B is the common survival move</div>
+        <p>Every platform that lasted — Coursera, Udemy Business, Open edX — pivoted to institutional licensing. Individual learner revenue rarely sustains at scale.</p>
+      </div>
+      <div class="insight green">
+        <div class="insight-label">The infrastructure already exists</div>
+        <p>Open edX (free, self-hosted) is what OpenWHO runs on. A Regenstrief instance could be stood up in weeks — the question is staffing and governance, not technology.</p>
+      </div>
+      <div class="insight">
+        <div class="insight-label">atingi — a live LMIC channel</div>
+        <p>Regenstrief already publishes HIS courses on atingi (GIZ's development sector platform). 1.35M+ learners, 31 languages, zero cost. Expanding health informatics content there requires no new deal.</p>
+      </div>
+      <div class="insight">
+        <div class="insight-label">FutureLearn — governance risk</div>
+        <p>Academic-founded (Open University UK), sold to private equity in 2022. 18M+ learners but deteriorating partner terms. Lower priority than atingi for LMIC reach or Coursera for credentialing.</p>
+      </div>
+    </div>
+    <div class="platform-tags" style="margin-top:12px;">
+      <span class="ptag">edX → sold 2021</span>
+      <span class="ptag">OpenWHO → WHO-funded</span>
+      <span class="ptag">Coursera → $757M revenue 2025</span>
+      <span class="ptag">Udemy Business → $566M subscriptions 2025</span>
+      <span class="ptag">Open edX → self-hosted by 1000s of institutions</span>
+      <span class="ptag ours">atingi → GIZ-funded, 1.35M+ learners</span>
+      <span class="ptag">FutureLearn → PE-acquired 2022</span>
+      <span class="ptag">IU Expand → existing IU CE channel</span>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ── Direction ── -->
+  <section>
+    <div class="section-eyebrow">Suggested Direction</div>
+    <h2>Start A + B, Build Toward C</h2>
+    <p>
+      Launch with free content + paid Regenstrief certifications (A) to establish the platform and prove demand. Layer in developer publishing fees (B) to grow the catalog without requiring RI staff to author everything. Once the content is real, institutional licensing (C) becomes viable — MoH partners will pay for cohort tools when they can see the curriculum. This is essentially what edX attempted, but our certification authority gives the paid tier value from day one rather than after years of brand-building.
+    </p>
+  </section>
+
+  <hr>
+
+  <!-- ── Questions ── -->
+  <section>
+    <div class="section-eyebrow">Open Questions</div>
+    <h2>What We Need to Decide</h2>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-num">01</div>
+        <div class="q-text"><strong>What does a Regenstrief certificate mean?</strong> <span>RI credential vs. LOINC credential vs. consortium cert — who sets the exam, who renews it?</span></div>
+      </div>
+      <div class="q-item">
+        <div class="q-num">02</div>
+        <div class="q-text"><strong>Who are the first learners?</strong> <span>Frontline health workers in LMICs (→ free, offline-first), US clinical informaticists (→ CME, institutional), or both?</span></div>
+      </div>
+      <div class="q-item">
+        <div class="q-num">03</div>
+        <div class="q-text"><strong>Who can publish?</strong> <span>RI staff only? Vetted partners? Any developer for a fee? Curation policy must exist before the doors open.</span></div>
+      </div>
+      <div class="q-item">
+        <div class="q-num">04</div>
+        <div class="q-text"><strong>GHI, LOINC, CBMI — or all three?</strong> <span>Governance determines who controls the roadmap, owns the brand, and shares in revenue.</span></div>
+      </div>
+      <div class="q-item">
+        <div class="q-num">05</div>
+        <div class="q-text"><strong>What's the year-one budget floor?</strong> <span>Open edX hosting (~$5–15K/yr) + one course producer + cert program design. How much runway before we need revenue?</span></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer style="max-width:880px; margin:0 auto; padding:0 48px 48px;">
+  <span>Regenstrief Institute · GHI · LOINC/HDS · CBMI</span>
+  <span>Joe Amlung · May 2026</span>
+  <span>Full research: learning-platform-models.md</span>
+</footer>
+
+</body>
+</html>

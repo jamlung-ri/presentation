@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survey Model Deep Dive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body, h1, h2, h3, h4, p, ul, ol, li, figure, table, th, td { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
+  img, svg { display: block; max-width: 100%; }
+  a { color: inherit; }
+
+  :root {
+    --paper: #F1F4F4;
+    --paper-raised: #FFFFFF;
+    --ink: #131A1D;
+    --ink-soft: #4B5A5E;
+    --ink-faint: #7C8A8D;
+    --line: #D7DEDE;
+    --accent: #146B6E;
+    --accent-soft: #DDEEEE;
+    --accent-ink: #0D4E50;
+    --amber: #9C5B14;
+    --amber-soft: #F5E7D3;
+    --amber-ink: #6E3F0C;
+    --code-bg: #E7EDED;
+    --shadow: rgba(20,40,42,0.10);
+    --new-fill: #DDEEEE;
+    --old-fill: #F0EDE6;
+    --old-ink: #6E6252;
+    --part-fill: #EDE6F3;
+    --part-ink: #5B3B7A;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0F1518;
+      --paper-raised: #171F23;
+      --ink: #E7EEEE;
+      --ink-soft: #A9B7B9;
+      --ink-faint: #77878A;
+      --line: #29343A;
+      --accent: #62CBCA;
+      --accent-soft: #16302F;
+      --accent-ink: #8EDEDD;
+      --amber: #E3A25A;
+      --amber-soft: #33230F;
+      --amber-ink: #F0BB80;
+      --code-bg: #1A2226;
+      --shadow: rgba(0,0,0,0.45);
+      --new-fill: #16302F;
+      --old-fill: #241F17;
+      --old-ink: #B7A98C;
+      --part-fill: #241C30;
+      --part-ink: #C7A6E8;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0F1518;
+    --paper-raised: #171F23;
+    --ink: #E7EEEE;
+    --ink-soft: #A9B7B9;
+    --ink-faint: #77878A;
+    --line: #29343A;
+    --accent: #62CBCA;
+    --accent-soft: #16302F;
+    --accent-ink: #8EDEDD;
+    --amber: #E3A25A;
+    --amber-soft: #33230F;
+    --amber-ink: #F0BB80;
+    --code-bg: #1A2226;
+    --shadow: rgba(0,0,0,0.45);
+    --new-fill: #16302F;
+    --old-fill: #241F17;
+    --old-ink: #B7A98C;
+    --part-fill: #241C30;
+    --part-ink: #C7A6E8;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 { font-family: "IBM Plex Serif", Georgia, serif; text-wrap: balance; color: var(--ink); font-weight: 600; }
+  code, .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  ::selection { background: var(--accent-soft); color: var(--accent-ink); }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .shell { display: grid; grid-template-columns: 250px minmax(0, 1fr); max-width: 1200px; margin: 0 auto; }
+  nav.toc { position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto; padding: 40px 20px 40px 32px; border-right: 1px solid var(--line); }
+  .toc-eyebrow { font-family: "IBM Plex Mono"; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 18px; }
+  .toc a { display: block; font-size: 13.5px; color: var(--ink-soft); text-decoration: none; padding: 6px 0; border-left: 2px solid transparent; padding-left: 12px; margin-left: -13px; }
+  .toc a:hover { color: var(--ink); }
+  .toc a.active { color: var(--accent-ink); border-left-color: var(--accent); font-weight: 500; }
+  .toc-sub { padding-left: 24px !important; font-size: 12.5px !important; }
+  .toc-status { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-faint); line-height: 1.7; }
+  .toc-status strong { color: var(--ink-soft); font-weight: 600; }
+
+  main { padding: 56px 48px 120px; min-width: 0; }
+
+  header.masthead { margin-bottom: 64px; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: "IBM Plex Mono"; font-size: 11.5px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft); padding: 5px 10px; border-radius: 3px; margin-bottom: 20px; }
+  h1.title { font-size: clamp(32px, 4vw, 44px); line-height: 1.15; letter-spacing: -0.01em; max-width: 18ch; }
+  .dek { margin-top: 16px; font-size: 18px; color: var(--ink-soft); max-width: 66ch; line-height: 1.55; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--ink-faint); }
+  .meta-row .k { color: var(--ink-soft); font-weight: 600; }
+
+  section { margin-bottom: 76px; }
+  section > .section-head { margin-bottom: 28px; }
+  .kicker { font-family: "IBM Plex Mono"; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px; }
+  h2 { font-size: 28px; letter-spacing: -0.01em; }
+  h2 + .section-dek { margin-top: 10px; color: var(--ink-soft); font-size: 15.5px; max-width: 70ch; }
+  h3 { font-size: 19px; margin-bottom: 4px; }
+  p { color: var(--ink-soft); }
+  p + p { margin-top: 12px; }
+
+  /* concept block: What it is / How it's represented / Example */
+  .concept { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 6px; padding: 26px 28px; margin-bottom: 24px; box-shadow: 0 1px 2px var(--shadow); }
+  .concept-label { display: inline-block; font-family: "IBM Plex Mono"; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border-radius: 3px; margin-bottom: 10px; }
+  .concept-label.code { background: var(--new-fill); color: var(--accent-ink); }
+  .concept-label.part { background: var(--part-fill); color: var(--part-ink); }
+  .concept-label.member { background: var(--amber-soft); color: var(--amber-ink); }
+  .concept h3 { margin-bottom: 10px; }
+  .concept-what { font-size: 15px; color: var(--ink); margin-bottom: 16px; }
+  .field-schema { background: var(--code-bg); border-radius: 5px; padding: 14px 16px; margin: 14px 0; font-family: "IBM Plex Mono"; font-size: 13px; line-height: 1.8; overflow-x: auto; }
+  .field-schema .fk { color: var(--accent-ink); }
+  .field-schema .fc { color: var(--ink-faint); }
+  .example-block { margin-top: 18px; padding-top: 18px; border-top: 1px dashed var(--line); }
+  .example-label { font-family: "IBM Plex Mono"; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+  .example-label .src { color: var(--accent-ink); }
+  .why-block { margin-top: 14px; font-size: 13.5px; color: var(--ink-soft); background: var(--paper); border-radius: 5px; padding: 12px 14px; border-left: 3px solid var(--accent); }
+  .why-block strong { color: var(--ink); }
+  .open-note { margin-top: 14px; font-size: 13.5px; color: var(--amber-ink); background: var(--amber-soft); border-radius: 5px; padding: 12px 14px; border-left: 3px solid var(--amber); }
+  .open-note strong { color: var(--amber-ink); }
+  .open-note a { text-decoration: underline; }
+
+  /* real-data table */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .data-table th, .data-table td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); font-family: "IBM Plex Mono"; }
+  .data-table th { color: var(--ink-faint); font-weight: 500; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.03em; background: var(--code-bg); }
+  .data-table td { color: var(--ink); }
+  .data-scroll { overflow-x: auto; border-radius: 5px; border: 1px solid var(--line); }
+  .loinc { color: var(--accent-ink); font-weight: 600; }
+  .part-code { color: var(--part-ink); font-weight: 600; }
+
+  /* compare panels */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+  @media (max-width: 760px) { .compare { grid-template-columns: 1fr; } }
+  .compare-panel { border-radius: 6px; border: 1px solid var(--line); overflow: hidden; }
+  .compare-panel .panel-head { padding: 10px 16px; font-family: "IBM Plex Mono"; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
+  .compare-panel.old .panel-head { background: var(--old-fill); color: var(--old-ink); }
+  .compare-panel.new .panel-head { background: var(--new-fill); color: var(--accent-ink); }
+  .compare-panel .panel-body { background: var(--paper); padding: 14px 16px; font-size: 13px; }
+  .compare-panel .panel-body p { font-size: 12.5px; margin-top: 8px; }
+
+  figure.diagram { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 6px; padding: 22px; overflow-x: auto; margin: 16px 0; }
+  figure.diagram svg { min-width: 560px; }
+  figcaption { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--ink-soft); line-height: 1.6; }
+  figcaption strong { color: var(--ink); }
+  .svg-box-label { font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600; }
+  .svg-box-sub { font-family: "IBM Plex Sans", sans-serif; font-size: 10.5px; }
+  .svg-arrow-label { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: 0.02em; }
+
+  .taxonomy-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+  .taxonomy-list li { font-size: 14px; color: var(--ink); padding-left: 18px; position: relative; }
+  .taxonomy-list li::before { content: "\2013"; position: absolute; left: 0; color: var(--ink-faint); }
+
+  .glossary-table { width: 100%; border-collapse: collapse; }
+  .glossary-table td { padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; vertical-align: top; }
+  .glossary-table td:first-child { font-family: "IBM Plex Mono"; font-weight: 600; color: var(--accent-ink); width: 190px; padding-right: 16px; }
+  .glossary-table td:last-child { color: var(--ink-soft); }
+
+  footer.page-foot { margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--ink-faint); }
+
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    nav.toc { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--line); padding: 24px; }
+    main { padding: 40px 24px 100px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc" aria-label="Section navigation">
+    <div class="toc-eyebrow">Contents</div>
+    <a href="#big-picture">The big picture</a>
+    <a href="#parts-vs-codes">Parts vs. codes</a>
+    <a href="#questions">Questions</a>
+    <a href="#collections">Collections</a>
+    <a href="#headers">Headers &amp; organizers</a>
+    <a href="#versioning">Versioning</a>
+    <a href="#scoring">Scores &amp; interpretation</a>
+    <a href="#scope">Context vs. instructions</a>
+    <a href="#method">The Method field</a>
+    <a href="#open">Still open</a>
+    <a href="#glossary">Glossary</a>
+    <div class="toc-status">
+      <strong>Companion to:</strong> the readout<br>
+      <strong>Reflects:</strong> F2F Day 2, through 11:46<br>
+      <strong>Workspace:</strong> loinc-survey-modeling
+    </div>
+  </nav>
+
+  <main>
+    <header class="masthead">
+      <div class="eyebrow">Survey &amp; Modeling working group &middot; reference</div>
+      <h1 class="title">The survey model, in depth</h1>
+      <p class="dek">How each piece of a survey gets represented under the resolved design &mdash; concept by concept, with real examples from today's LOINC data and from the surveys we've worked through together. Where something is still unsettled, that's called out inline rather than glossed over.</p>
+      <div class="meta-row">
+        <div><span class="k">Companion to</span> the group readout (decisions, timeline, open issues)</div>
+        <div><span class="k">This document</span> is the reference: what each concept means and how to build one</div>
+      </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <section id="big-picture">
+      <div class="section-head">
+        <div class="kicker">00 &middot; Orientation</div>
+        <h2>The big picture</h2>
+        <p class="section-dek">Two kinds of building block, and one linking mechanism, are all a survey is built from.</p>
+      </div>
+
+      <p>Everything in the new model is one of two things: a <strong>LOINC code</strong> (something that could plausibly show up on its own in an exchanged instance) or a <strong>LOINC Part</strong> (a reusable building block that only ever has meaning inside something larger). LOINC codes come in three flavors &mdash; <strong>Collections</strong> (survey instruments, sections, panels &mdash; anything that groups other things), <strong>Questions</strong> (built from Parts), and <strong>Score/interpretation codes</strong>. Everything nests via one mechanism: <code>COLLECTION_ITEM</code>, a linking table, not a self-referential column.</p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 900 300" role="img" aria-label="Diagram: a Collection links to member Questions, sub-Collections, and a score code via COLLECTION_ITEM. A Question is itself composed of a Preamble Part, an Issue Part, and a bound Answer List.">
+          <defs>
+            <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+            </marker>
+          </defs>
+          <rect x="350" y="10" width="200" height="50" rx="4" fill="var(--new-fill)" stroke="var(--accent)" stroke-width="1.4"></rect>
+          <text x="450" y="31" text-anchor="middle" class="svg-box-label" fill="var(--accent-ink)">Collection</text>
+          <text x="450" y="47" text-anchor="middle" class="svg-box-sub" fill="var(--accent-ink)" opacity="0.8">LOINC code</text>
+
+          <line x1="450" y1="60" x2="95" y2="120" stroke="currentColor" stroke-width="1" marker-end="url(#arrow2)" opacity="0.55"></line>
+          <line x1="450" y1="60" x2="290" y2="120" stroke="currentColor" stroke-width="1" marker-end="url(#arrow2)" opacity="0.55"></line>
+          <line x1="450" y1="60" x2="480" y2="120" stroke="currentColor" stroke-width="1" marker-end="url(#arrow2)" opacity="0.55"></line>
+          <line x1="450" y1="60" x2="700" y2="120" stroke="currentColor" stroke-width="1" marker-end="url(#arrow2)" opacity="0.55"></line>
+          <text x="450" y="92" text-anchor="middle" class="svg-arrow-label" fill="currentColor" opacity="0.7">COLLECTION_ITEM</text>
+
+          <rect x="20" y="124" width="150" height="46" rx="4" fill="none" stroke="currentColor" stroke-width="1.2"></rect>
+          <text x="95" y="144" text-anchor="middle" class="svg-box-label" fill="currentColor">Question</text>
+          <text x="95" y="159" text-anchor="middle" class="svg-box-sub" fill="currentColor" opacity="0.75">LOINC code</text>
+
+          <rect x="215" y="124" width="150" height="46" rx="4" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3"></rect>
+          <text x="290" y="144" text-anchor="middle" class="svg-box-label" fill="currentColor">Sub-Collection</text>
+          <text x="290" y="159" text-anchor="middle" class="svg-box-sub" fill="currentColor" opacity="0.75">nests recursively</text>
+
+          <rect x="405" y="124" width="150" height="46" rx="4" fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="1.2"></rect>
+          <text x="480" y="144" text-anchor="middle" class="svg-box-label" fill="var(--amber-ink)">Header</text>
+          <text x="480" y="159" text-anchor="middle" class="svg-box-sub" fill="var(--amber-ink)" opacity="0.85">member, not a type</text>
+
+          <rect x="625" y="124" width="150" height="46" rx="4" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3"></rect>
+          <text x="700" y="144" text-anchor="middle" class="svg-box-label" fill="currentColor" opacity="0.85">Score code</text>
+          <text x="700" y="159" text-anchor="middle" class="svg-box-sub" fill="currentColor" opacity="0.6">3rd code role</text>
+
+          <line x1="95" y1="170" x2="95" y2="204" stroke="var(--part-ink)" stroke-width="1.4"></line>
+          <text x="112" y="191" class="svg-arrow-label" fill="var(--part-ink)">composed of</text>
+          <line x1="95" y1="204" x2="35" y2="236" stroke="var(--part-ink)" stroke-width="1" marker-end="url(#arrow2)"></line>
+          <line x1="95" y1="204" x2="155" y2="236" stroke="var(--part-ink)" stroke-width="1" marker-end="url(#arrow2)"></line>
+          <line x1="95" y1="204" x2="280" y2="236" stroke="var(--part-ink)" stroke-width="1" marker-end="url(#arrow2)"></line>
+
+          <rect x="0" y="240" width="110" height="44" rx="4" fill="var(--part-fill)" stroke="var(--part-ink)" stroke-width="1.1"></rect>
+          <text x="55" y="260" text-anchor="middle" class="svg-box-label" fill="var(--part-ink)" font-size="10.5">Preamble</text>
+          <text x="55" y="274" text-anchor="middle" class="svg-box-sub" fill="var(--part-ink)" opacity="0.85" font-size="9.5">Part</text>
+
+          <rect x="120" y="240" width="110" height="44" rx="4" fill="var(--part-fill)" stroke="var(--part-ink)" stroke-width="1.1"></rect>
+          <text x="175" y="260" text-anchor="middle" class="svg-box-label" fill="var(--part-ink)" font-size="10.5">Issue</text>
+          <text x="175" y="274" text-anchor="middle" class="svg-box-sub" fill="var(--part-ink)" opacity="0.85" font-size="9.5">Part</text>
+
+          <rect x="240" y="240" width="130" height="44" rx="4" fill="var(--part-fill)" stroke="var(--part-ink)" stroke-width="1.1"></rect>
+          <text x="305" y="260" text-anchor="middle" class="svg-box-label" fill="var(--part-ink)" font-size="10.5">Answer list</text>
+          <text x="305" y="274" text-anchor="middle" class="svg-box-sub" fill="var(--part-ink)" opacity="0.85" font-size="9.5">bound, not overridable</text>
+        </svg>
+        <figcaption>
+          A <strong>Collection</strong> is the top of the tree &mdash; a survey instrument, a section, a lab panel. Its members are linked via <strong><span class="mono">COLLECTION_ITEM</span></strong>, never a self-referential parent column. Members can be Questions, nested sub-Collections, Headers (structural but not answerable), or a score/interpretation code. A Question is not atomic &mdash; it's built from three Parts, shown below it.
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="parts-vs-codes">
+      <div class="section-head">
+        <div class="kicker">01 &middot; Foundation</div>
+        <h2>Parts vs. codes</h2>
+        <p class="section-dek">The single question that decides everything else: would this ever need to stand alone in an exchanged instance?</p>
+      </div>
+
+      <div class="concept">
+        <span class="concept-label code">Gets a LOINC code</span>
+        <h3>If yes &mdash; it's exchangeable</h3>
+        <p class="concept-what">Questions, Collections (survey instruments, sections, panels), and score/interpretation codes all get real LOINC identifiers, because a system receiving patient data might see any of them as the code on an observation.</p>
+      </div>
+      <div class="concept">
+        <span class="concept-label part">Gets a LOINC Part</span>
+        <h3>If no &mdash; it's a building block</h3>
+        <p class="concept-what">A bare preamble, a bare issue/question-stem, collection instructions, reference text &mdash; none of these are ever the code on an observation by themselves. They exist to compose something that does get a code. Parts are reusable (the same preamble Part can pair with many different Issue Parts) but not independently exchangeable.</p>
+        <div class="example-block">
+          <div class="example-label">Example &middot; <span class="src">real, from <code>survey-concept-model-v2.md</code></span></div>
+          <div class="field-schema">
+            <span class="fc">Part</span> <span class="part-code">LP900001-1</span> &mdash; &ldquo;Over the last 2 weeks, how often have you been bothered by the following problems?&rdquo;<br>
+            <span class="fc">never appears alone on an observation &mdash; only inside</span> <span class="loinc">69725-0</span>, <span class="loinc">68509-9</span>, <span class="loinc">44255-8</span>, <span class="loinc">44250-9</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="questions">
+      <div class="section-head">
+        <div class="kicker">02 &middot; Questions</div>
+        <h2>Questions: preamble + issue + answer list</h2>
+        <p class="section-dek">A question's identity is the combination of three Parts, not a single string.</p>
+      </div>
+
+      <div class="concept">
+        <span class="concept-label code">LOINC code, composite</span>
+        <h3>How it's represented</h3>
+        <p class="concept-what">A question code is defined by exactly three things, each independently a Part: a <strong>preamble</strong> (shared context), an <strong>issue</strong> (the specific symptom/subject), and a <strong>bound answer list</strong>. Change any one of the three and it's a different question &mdash; a new code, not an edit.</p>
+        <div class="field-schema">
+          <span class="fk">Question</span> = <span class="fc">Preamble Part</span> + <span class="fc">Issue Part</span> + <span class="fc">Answer List</span> <span class="fc">(bound, not overridable)</span>
+        </div>
+        <div class="example-block">
+          <div class="example-label">Example &middot; <span class="src">real data, PHQ-4 question 1</span></div>
+          <div class="data-scroll">
+            <table class="data-table">
+              <tr><th>Piece</th><th>Value</th></tr>
+              <tr><td>Preamble part</td><td><span class="part-code">LP900001-1</span> &mdash; &ldquo;Over the last 2 weeks, how often have you been bothered by the following problems?&rdquo;</td></tr>
+              <tr><td>Issue part</td><td><span class="part-code">LP900002-1</span> &mdash; &ldquo;Feeling nervous, anxious, or on edge&rdquo;</td></tr>
+              <tr><td>Answer list</td><td><span class="mono">LL358-3</span> (NORMATIVE)</td></tr>
+              <tr><td>Composite code</td><td><span class="loinc">69725-0</span></td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="why-block"><strong>Why a composite, not a single string:</strong> the same preamble pairs with different issues across PHQ-4's four questions (69725-0, 68509-9, 44255-8, 44250-9), and the same issue could in principle pair with a different preamble elsewhere &mdash; keeping the pieces as separate, reusable Parts is what makes both directions of reuse possible.</div>
+      </div>
+
+      <div class="concept">
+        <span class="concept-label part">Two rules that follow from this</span>
+        <h3>No overrides. Exact wording matters.</h3>
+        <p class="concept-what">Because the answer list is part of a question's identity, <strong>there is no more <code>AnswerListIdOverride</code></strong> &mdash; binding a different list means minting a different code. And because wording is part of the issue Part's identity, <strong>any variation &mdash; word order, punctuation, capitalization &mdash; makes a different question</strong>, removing the old subjective &ldquo;close enough&rdquo; judgment call.</p>
+        <div class="compare">
+          <div class="compare-panel old">
+            <div class="panel-head">Old &middot; PanelsAndForms.csv</div>
+            <div class="panel-body">
+              <span class="mono">69725-0</span> reused; <span class="mono">AnswerListIdOverride = LL358-3</span> attached per context.
+              <p>A second context wanting a different list would override the <em>same</em> code again.</p>
+            </div>
+          </div>
+          <div class="compare-panel new">
+            <div class="panel-head">New &middot; Composite identity</div>
+            <div class="panel-body">
+              A different list means a different composite code &mdash; there's no code left to override.
+              <p>Content is knowable directly from the code, every time.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="collections">
+      <div class="section-head">
+        <div class="kicker">03 &middot; Collections</div>
+        <h2>Collections: the generalized &ldquo;panel&rdquo;</h2>
+        <p class="section-dek">One typed construct replaces panel, subset organizer, convenience grouper, and every other ad hoc grouping type.</p>
+      </div>
+
+      <div class="concept">
+        <span class="concept-label code">LOINC code, typed</span>
+        <h3>How it's represented</h3>
+        <p class="concept-what">A Collection carries a <strong>type</strong> (survey instrument, lab panel &mdash; only ~4&ndash;5 types expected) and links to its members through <code>COLLECTION_ITEM</code> rows, matching a shared collection-link number &mdash; not a self-referential <code>ParentId</code> column the way <code>PanelsAndForms.csv</code> works today.</p>
+        <div class="field-schema">
+          <span class="fk">COLLECTION_ITEM</span>: <span class="fc">CollectionLoincNum</span> &rarr; <span class="fc">ItemLoincNum</span> <span class="fc">(item can be a Question, another Collection, a Header, or a score code)</span>
+        </div>
+      </div>
+
+      <div class="concept">
+        <span class="concept-label member">The defining rule, confirmed 2026-08-26</span>
+        <h3>Permissive by default; rule-bound only if marked</h3>
+        <p class="concept-what">A Collection's membership is <strong>permissive</strong> (a class/type declaration &mdash; contents can genuinely vary) unless explicitly marked <strong>rule-bound</strong> (fixed or complex-rule content). This is a general rule, not survey-specific.</p>
+        <div class="example-block">
+          <div class="example-label">Example &middot; <span class="src">real data, IRF-PAI Section GG</span></div>
+          <p>Section GG (&ldquo;Functional Abilities and Goals&rdquo;) is the exact pattern that motivated this rule: its parent/pooling structure repeats across assessment contexts (admission, discharge, different care settings) with genuinely different question sets and answer lists underneath &mdash; some contexts don't have the whole section at all. Real child rows from today's data:</p>
+          <div class="data-scroll" style="margin-top: 10px;">
+            <table class="data-table">
+              <tr><th>Loinc</th><th>ObservationIdInForm</th><th>DisplayNameForForm</th></tr>
+              <tr><td><span class="loinc">83218-8</span></td><td>GG0170A3</td><td>Roll left and right</td></tr>
+              <tr><td><span class="loinc">83216-2</span></td><td>GG0170B3</td><td>Sit to lying</td></tr>
+              <tr><td><span class="loinc">83278-2</span></td><td>GG0170H3</td><td>Does the patient walk?</td></tr>
+            </table>
+          </div>
+          <p style="margin-top: 8px;">A different assessment context (a different Collection using the same GG-series structure) can legitimately include a different subset of these &mdash; that's the permissive pattern, not a data-quality problem to fix.</p>
+        </div>
+      </div>
+
+      <div class="open-note"><strong>Still open:</strong> the exact mechanism for a rule-bound Collection's rules ("simple or complex") isn't designed yet, and the case that originally motivated wanting <em>fixed</em> content &mdash; redundancy checking across overlapping lab orders &mdash; hasn't been revisited since the permissive default won out. Tracked internally as model-stress-tests.md, #1.</div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="headers">
+      <div class="section-head">
+        <div class="kicker">04 &middot; Headers</div>
+        <h2>Headers &amp; subset organizers</h2>
+        <p class="section-dek">Structural, not answerable &mdash; and now reused across contexts instead of re-coded each time.</p>
+      </div>
+
+      <div class="concept">
+        <span class="concept-label member">Member of a Collection, not a type of its own</span>
+        <h3>How it's represented</h3>
+        <p class="concept-what">A header (e.g., &ldquo;Administrative Information,&rdquo; &ldquo;Part 1&rdquo;) gets a real LOINC code and is a <em>member</em> of its Collection &mdash; but it functions as reference info/coding instructions, not as something a user answers.</p>
+        <div class="example-block">
+          <div class="example-label">Example &middot; <span class="src">real data &mdash; the exact old pattern being retired</span></div>
+          <p>Four real rows, all conceptually the same header (&ldquo;Administrative Information&rdquo;) on CMS's LCDS assessment family, each minted as a <em>separate</em> code because the version/context was folded into the component:</p>
+          <div class="data-scroll" style="margin-top: 10px;">
+            <table class="data-table">
+              <tr><th>Loinc</th><th>Component (as published)</th></tr>
+              <tr><td><span class="loinc">85636-9</span></td><td>LCDS v4.00 - Administrative information - admission</td></tr>
+              <tr><td><span class="loinc">85663-3</span></td><td>LCDS v3.00 - Administrative information - discharge</td></tr>
+              <tr><td><span class="loinc">85673-2</span></td><td>LCDS v4.00 - Administrative information - expired</td></tr>
+            </table>
+          </div>
+          <p style="margin-top: 8px;"><strong>This is precisely the pattern the header-reuse policy retires.</strong> Under the confirmed rule, &ldquo;Administrative Information&rdquo; would be one permissive header code, reused across admission/discharge/expired via <code>COLLECTION_ITEM</code>, with the version-specific content recorded per-instance rather than baked into three different component strings.</p>
+        </div>
+      </div>
+
+      <div class="why-block"><strong>Why it was done the old way:</strong> two independent causes, both confirmed on 2026-08-26 &mdash; a technical constraint (LOINC doesn't allow duplicate Long Common Names) and a separate internal system policy against duplicate names in a table. Embedding the version into the component satisfied both, at the cost of fragmenting one concept into several codes.</div>
+
+      <div class="open-note"><strong>Still open:</strong> this release only cleaned up top-level section headers this way. Sub-panels and sub-sections still show the legacy embedded-version pattern in places &mdash; CMS's next phase is expected to extend the cleanup there, not yet scheduled.</div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="versioning">
+      <div class="section-head">
+        <div class="kicker">05 &middot; Versioning</div>
+        <h2>Versioning &amp; meaning permanence</h2>
+        <p class="section-dek">A code's meaning never changes underneath it. A new version is a new code &mdash; version lives beside the code, never inside it.</p>
+      </div>
+
+      <div class="concept">
+        <span class="concept-label code">Core rule</span>
+        <h3>How it's represented</h3>
+        <p class="concept-what">When a survey instrument materially changes, it gets an entirely new LOINC code. Version is captured as its own database element, never embedded in the component or name. A collector code represents one specific external thing considered at one point in time &mdash; not a general, ever-shifting thing.</p>
+        <div class="field-schema">
+          <span class="fk">Identity</span> = <span class="fc">LOINC number alone</span> &mdash; never <span class="fc">number + version</span><br>
+          <span class="fk">Version</span> = <span class="fc">separate attribute</span>, alongside the code, not inside its meaning
+        </div>
+      </div>
+
+      <div class="concept">
+        <span class="concept-label part">The cautionary case</span>
+        <h3>What goes wrong without this rule</h3>
+        <p class="concept-what">MDS 2.0 content could not be reused when MDS 3.0 was built, in real part because 2.0-era items had the version identifier embedded directly in the component itself &mdash; there was no clean way to say &ldquo;this is the same underlying thing, just a newer release.&rdquo; The LCDS example above (three codes for one conceptual header) is the same failure mode, caught on camera in current data.</p>
+      </div>
+
+      <div class="why-block"><strong>Whose version is it:</strong> for CMS instruments, the version number is assigned by CMS, not by LOINC/Regenstrief &mdash; numbering can have gaps since it isn't the team's to control. If CMS wants to materially change core content, that's their job to issue as a new version, not LOINC's to accommodate by editing the existing code. This already matches how CMS operates, so it requires no additional training of CMS.</div>
+
+      <div class="concept">
+        <span class="concept-label member">Not every collector gets a version at all</span>
+        <h3>Version only applies to genuinely static content</h3>
+        <p class="concept-what">&ldquo;Version, by its very nature, is stating that content is static.&rdquo; A <strong>permissive</strong> collector (see Collections, above) carries no version of its own &mdash; its content is scoped by LOINC's own publication/release cycle instead. Only a <strong>rule-bound</strong> collector representing an externally-versioned object (e.g., CMS's own MDS release) carries a version, and LOINC is holding that external version, not assigning one.</p>
+        <div class="field-schema">
+          <span class="fk">Permissive collector</span> &rarr; <span class="fc">no version of its own; content scoped by LOINC's release</span><br>
+          <span class="fk">Rule-bound collector</span> &rarr; <span class="fc">carries the version of the external object it represents</span>
+        </div>
+      </div>
+
+      <div class="why-block"><strong>Rules can also change:</strong> for a rule-bound collector, changing the rule itself &mdash; not just the content &mdash; is grounds for a new concept: &ldquo;if you have different rules, then that's a different concept... you change the rule, you got a new object.&rdquo;</div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="scoring">
+      <div class="section-head">
+        <div class="kicker">06 &middot; Scoring</div>
+        <h2>Scores &amp; interpretation</h2>
+        <p class="section-dek">Three code roles per survey. LOINC represents the outcome, never the algorithm.</p>
+      </div>
+
+      <div class="concept">
+        <span class="concept-label code">Three roles, one survey</span>
+        <h3>How it's represented</h3>
+        <ul class="taxonomy-list">
+          <li>A code for the whole instrument (the top-level Collection)</li>
+          <li>Collection code(s) for groupings of questions</li>
+          <li>A final score/result or interpretation code</li>
+        </ul>
+        <p class="concept-what" style="margin-top: 14px;">A screener gets exactly <strong>one</strong> interpretation code, bound to a value set covering every possible outcome level &mdash; never one code per branch. Sub-scores bind to the collection that produces them, so a screener doesn't need a single overall &ldquo;instrument score&rdquo; if only part of it produces a number.</p>
+        <div class="example-block">
+          <div class="example-label">Example &middot; <span class="src">from the F2F Day 1 walkthrough &mdash; Expanded Food Security Screener</span></div>
+          <p>Collection 1 (yes/no items 1A/1B) and Collection 2 (scored items 2A&ndash;2F, summing to point ranges) sit inside one screener. Only Collection 2 produces a numeric sub-score. The screener's overall outcome is a single <strong>Priority Level</strong> interpretation code, bound to an answer list of levels A through E &mdash; not a total score, and not one code per possible path through the questions.</p>
+        </div>
+      </div>
+
+      <div class="why-block"><strong>What LOINC doesn't do:</strong> compute or publish the calculated score itself &mdash; that's a downstream vendor's job (e.g., IQVIA administering and tabulating). LOINC provides the code for the resulting value, not the scoring methodology, especially for IP-controlled instruments.</div>
+
+      <div class="open-note"><strong>Still open:</strong> whether interpretive/scoring context (e.g., point ranges like &ldquo;0 to 1 points&rdquo;) should be embedded in an interpretation code's answer strings, for traceability to the source worksheet &mdash; argued both ways, never resolved. Tracked internally as model-stress-tests.md, #12.</div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="scope">
+      <div class="section-head">
+        <div class="kicker">07 &middot; Scope</div>
+        <h2>Form context vs. form instructions</h2>
+        <p class="section-dek">The litmus test that decides what metadata LOINC keeps capturing.</p>
+      </div>
+
+      <div class="concept">
+        <span class="concept-label member">The test</span>
+        <h3>How it's applied</h3>
+        <p class="concept-what">If someone unfamiliar with the survey needs a piece of information, looking only at the LOINC representation, to fully understand a received value &mdash; it's <strong>form context</strong>. Pure how-to-fill-out-the-form direction, not needed to interpret a value once received, is a <strong>form (coding) instruction</strong>.</p>
+        <div class="example-block">
+          <div class="example-label">Example &middot; <span class="src">real data &mdash; skip logic captured as text</span></div>
+          <div class="field-schema">
+            <span class="fk">GG0170H3</span> <span class="fc">CodingInstructions:</span><br>
+            &ldquo;If 0, Skip to GG0170Q3. Does the patient use a wheelchair/scooter? If 2, Continue to GG0170I. Walk 10 feet.&rdquo;
+          </div>
+          <p>This is captured as reference text tied to the item, never as an executable rule &mdash; a computable version of skip logic was tried in the past (with a contact transcribed as &ldquo;John Hosler&rdquo;) and abandoned: &ldquo;that was a misunderstanding... never representative of the computer.&rdquo;</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <span class="concept-label member">In progress, not fully closed</span>
+        <h3>Instructions become identified objects, but not positioned ones</h3>
+        <p class="concept-what">Instructions, skip logic, and example text should get their own identifier in a separate table &mdash; not anonymous embedded text the way they exist today (&ldquo;they're just table and table entry&hellip; all non-identified&rdquo;). They need to be tied to the LOINC(s) they apply to, but LOINC does <strong>not</strong> take on encoding exactly where they render on a form: &ldquo;I do not think we have an obligation to make it clear where it appears on the form.&rdquo;</p>
+        <div class="open-note"><strong>Still open:</strong> flagged the same day as something the team needs to &ldquo;finish and clarify&rdquo; &mdash; proposed, not yet finalized.</div>
+      </div>
+
+      <div class="concept">
+        <span class="concept-label code">In scope</span>
+        <span class="concept-label part" style="margin-left: 6px;">Out of scope</span>
+        <h3>Where the line sits</h3>
+        <ul class="taxonomy-list">
+          <li><strong>In:</strong> form context/instructions, Observation ID, required/optional/conditional flags, cardinality, skip-logic text, question sequence, header/subset-organizer codes, one interpretation code per screener, Target &amp; Administrator as structured elements</li>
+          <li><strong>Out:</strong> computing/publishing scores, proprietary scoring methodology, executable branching logic, usage guidance (&ldquo;who should use this&rdquo;), administration mode as a distinct code, interpretive/eligibility framing text, client-specific billing elements in the public table, curating which instrument to use</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="method">
+      <div class="section-head">
+        <div class="kicker">08 &middot; Method</div>
+        <h2>The Method field</h2>
+        <p class="section-dek">One small, easy-to-lose convention, made explicit.</p>
+      </div>
+      <div class="concept">
+        <span class="concept-label part">Convention, not new structure</span>
+        <h3>How it's applied</h3>
+        <p class="concept-what"><code>Method</code> is not populated on individual survey question codes &mdash; only at the panel/survey level, and on score codes. This preserves question reuse: a question tied to a specific survey's <code>Method</code> couldn't be reused by a different survey using the same question.</p>
+        <div class="open-note"><strong>Status:</strong> referenced as an existing but previously-undocumented decision. Tracked internally as a draft decision record &mdash; still needs confirmation of who decided it and when before promotion.</div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="open">
+      <div class="section-head">
+        <div class="kicker">09 &middot; Loose ends</div>
+        <h2>Still open</h2>
+        <p class="section-dek">This document describes the model as currently resolved. Two companion documents, kept in the internal working repo, track what isn't.</p>
+      </div>
+      <ul class="taxonomy-list">
+        <li><code>overview/state-of-discussion.md</code> &mdash; the full resolved/open decision log, chronologically sourced</li>
+        <li><code>overview/model-stress-tests.md</code> &mdash; concrete examples that break or strain the model, each with a status and illustration notes</li>
+      </ul>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="glossary">
+      <div class="section-head">
+        <div class="kicker">10 &middot; Reference</div>
+        <h2>Glossary</h2>
+      </div>
+      <table class="glossary-table">
+        <tr><td>Collection</td><td>Generalized replacement for &ldquo;panel&rdquo; &mdash; a typed grouping construct (survey instrument, lab panel, etc.)</td></tr>
+        <tr><td>Collection Item</td><td>A member of a Collection: a Question, a sub-Collection, a Header, or a score code</td></tr>
+        <tr><td><span class="mono">COLLECTION_ITEM</span></td><td>The linking table itself &mdash; a shared collection-link number, not a self-referential parent column</td></tr>
+        <tr><td>Preamble (Part)</td><td>Shared lead-in text/context that modifies the meaning of the issue(s) that follow</td></tr>
+        <tr><td>Issue (Part)</td><td>The specific symptom/condition/subject text within a question</td></tr>
+        <tr><td>LOINC Part</td><td>A reusable, non-independently-exchangeable building block &mdash; only has meaning inside a composite code</td></tr>
+        <tr><td>Header / subset organizer</td><td>A structural member of a Collection; gets a code but isn't itself answerable</td></tr>
+        <tr><td>Permissive collector</td><td>A Collection whose membership can vary release to release &mdash; the default, unless marked rule-bound</td></tr>
+        <tr><td>Rule-bound collector</td><td>A Collection with fixed or rule-governed membership &mdash; mechanism for authoring the rule is still undesigned</td></tr>
+        <tr><td>Survey interpretation</td><td>The single code representing a screener's overall outcome, not per-branch</td></tr>
+        <tr><td>Form context</td><td>Metadata needed to fully understand a received instance value from the LOINC representation alone</td></tr>
+        <tr><td>Form (coding) instructions</td><td>Pure how-to-fill-out-the-form direction; distinct from form context</td></tr>
+        <tr><td>Answer list override</td><td>The now-eliminated practice of reusing a question code with a swapped-in answer list</td></tr>
+        <tr><td>Object identifier</td><td>An existing internal mechanism scoping how a given code is used in a specific place, separate from the code itself</td></tr>
+      </table>
+
+      <footer class="page-foot">
+        Companion to the group readout. Prepared from working notes in the <strong>loinc-survey-modeling</strong> repo &mdash; a workspace document, not a ratified decision record. Real data examples are drawn from the current <code>PanelsAndForms.csv</code> release file except where noted as coming from a Day 1/Day 2 walkthrough of an in-progress submission.
+      </footer>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+    var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+    function onScroll() {
+      var y = window.scrollY + 120;
+      var activeIndex = 0;
+      sections.forEach(function (s, i) { if (s && s.offsetTop <= y) activeIndex = i; });
+      links.forEach(function (a, i) { a.classList.toggle('active', i === activeIndex); });
+    }
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>

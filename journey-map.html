@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CHD Care Journey Map</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; font-size: 13px; background: #f8f9fa; color: #222; }
+
+  h1 { padding: 16px 20px 4px; font-size: 17px; color: #1a2a4a; }
+  .subtitle { padding: 0 20px 12px; font-size: 12px; color: #666; }
+
+  /* Legend */
+  .legend { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 20px 14px; }
+  .legend-item { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+
+  /* Journey table */
+  .scroll-wrap { overflow-x: auto; padding: 0 20px 20px; }
+  table { border-collapse: collapse; table-layout: fixed; width: max-content; min-width: 100%; }
+  col.label-col { width: 90px; }
+  col.stage-col { width: 220px; }
+
+  thead th { background: #1e3a6e; color: white; font-size: 11px; font-weight: 700;
+              padding: 8px 6px; text-align: center; border: 1px solid #2c4f8c;
+              white-space: normal; line-height: 1.4; }
+  thead th.lane-header { background: #f0f0f0; color: #333; font-size: 11px; }
+
+  td.lane-label { font-size: 12px; font-weight: 700; text-align: center;
+                   padding: 8px 4px; vertical-align: middle; border: 1px solid #ddd;
+                   writing-mode: vertical-rl; text-orientation: mixed;
+                   letter-spacing: 1px; text-transform: uppercase; }
+  td.lane-label.care { background: #dbeafe; color: #1e3a6e; }
+  td.lane-label.mother { background: #fee2d5; color: #7a2a0a; }
+
+  td.stage-cell { vertical-align: top; border: 1px solid #ddd; padding: 6px; }
+  td.stage-cell.care-row { background: #f0f6ff; }
+  td.stage-cell.mother-row { background: #fff8f5; }
+
+  .cell { display: flex; flex-direction: column; gap: 4px; min-height: 40px; }
+  .cell.empty { color: #bbb; font-size: 13px; display: flex; align-items: center;
+                 justify-content: center; min-height: 40px; }
+
+  .chip { position: relative; overflow: hidden; border-radius: 4px;
+           padding: 4px 6px 4px 8px; font-size: 11px; line-height: 1.35;
+           display: flex; justify-content: space-between; align-items: center;
+           gap: 4px; }
+  .chip-bar { position: absolute; left: 0; top: 0; bottom: 0; z-index: 0; border-radius: 4px 0 0 4px; }
+  .chip-text { position: relative; z-index: 1; flex: 1; }
+  .chip-count { position: relative; z-index: 1; font-weight: 700; white-space: nowrap;
+                 font-size: 10px; color: #555; }
+
+</style>
+</head>
+<body>
+
+<h1>CHD Care Coordination Journey — Aggregated Swim-Lane Map</h1>
+<p class="subtitle">N = 19 participants &nbsp;·&nbsp; Bar within each chip = proportion of participants who experienced that code &nbsp;·&nbsp; Codes ranked by prevalence within each stage</p>
+
+<div class="legend"><span class="legend-item" style="border-left:4px solid #1a5fa8;background:#dbeafe;color:#1a5fa8">Provider / System</span><span class="legend-item" style="border-left:4px solid #1e4d8c;background:#bfdbfe;color:#1e4d8c">Care Coordination</span><span class="legend-item" style="border-left:4px solid #b94a1a;background:#fee2d5;color:#b94a1a">Emotional Experience</span><span class="legend-item" style="border-left:4px solid #1a6b2e;background:#d1fae5;color:#1a6b2e">Social Support</span><span class="legend-item" style="border-left:4px solid #5b3f8c;background:#ede9fe;color:#5b3f8c">Logistical Burden</span><span class="legend-item" style="border-left:4px solid #8c6a00;background:#fef3c7;color:#8c6a00">Resilience / Coping</span><span class="legend-item" style="border-left:4px solid #444444;background:#f3f4f6;color:#444444">Context</span></div>
+
+<div class="scroll-wrap">
+<table>
+  <colgroup>
+    <col class="label-col">
+    <col class="stage-col"><col class="stage-col"><col class="stage-col"><col class="stage-col"><col class="stage-col"><col class="stage-col"><col class="stage-col"><col class="stage-col">
+  </colgroup>
+  <thead>
+    <tr>
+      <th class="lane-header"></th>
+      <th>1. Background &<br>Pregnancy Start</th><th>2. CHD Detection &<br>Initial Suspicion</th><th>3. Diagnosis &<br>Provider Response</th><th>4. Care Planning &<br>Coordination</th><th>5. Mid-Pregnancy<br>Management</th><th>6. Delivery<br>& Birth</th><th>7. Post-Birth<br>& NICU</th><th>8. Long-term<br>Coping</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="lane-label care">Care System</td>
+      <td class="stage-cell care-row"><div class="cell empty">—</div></td><td class="stage-cell care-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:100%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>6</strong> CHD at Anatomy Scan</span>
+      <span class="chip-count">19/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:84%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>7</strong> Waiting for Confirmation</span>
+      <span class="chip-count">16/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:78%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>11</strong> Local Provider Limitations</span>
+      <span class="chip-count">15/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:78%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>13</strong> Referral to Specialty Care</span>
+      <span class="chip-count">15/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:73%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>65</strong> Non-Ideal Local Provider Communication</span>
+      <span class="chip-count">14/19</span>
+    </div></div></td><td class="stage-cell care-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:100%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>16</strong> Positive Provider Communication</span>
+      <span class="chip-count">19/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:89%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>17</strong> Provider Reassurance & Honesty</span>
+      <span class="chip-count">17/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:89%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>18</strong> Visual / Educational Aids</span>
+      <span class="chip-count">17/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:89%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>22</strong> Post-Diagnosis Info Meeting</span>
+      <span class="chip-count">17/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:84%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>12</strong> Specialist/MFM Competence</span>
+      <span class="chip-count">16/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:57%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>23</strong> Perceived Provider Abandonment</span>
+      <span class="chip-count">11/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:26%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>64</strong> Managed Expectations About CHD Life</span>
+      <span class="chip-count">5/19</span>
+    </div></div></td><td class="stage-cell care-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:94%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>14</strong> Multidisciplinary Care Team</span>
+      <span class="chip-count">18/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:94%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>15</strong> Care Coordinator Support</span>
+      <span class="chip-count">18/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:89%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>24</strong> Early Positive Care Experience</span>
+      <span class="chip-count">17/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:89%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>29</strong> No Relay Burden on Mother</span>
+      <span class="chip-count">17/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:84%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>20</strong> Mental Health Services Offered</span>
+      <span class="chip-count">16/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:78%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>21</strong> Communication Modes</span>
+      <span class="chip-count">15/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:63%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>104</strong> Self-as-Coordinator Burden</span>
+      <span class="chip-count">12/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:57%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>86</strong> Second Opinion / Out-of-State Care</span>
+      <span class="chip-count">11/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:57%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>105</strong> Referral Delay / Miscommunication Harm</span>
+      <span class="chip-count">11/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:47%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>67</strong> Financial Counseling / Support Services</span>
+      <span class="chip-count">9/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:47%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>85</strong> No Care Coordinator / Post-Birth Gap</span>
+      <span class="chip-count">9/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:36%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>83</strong> Language Barrier with Providers</span>
+      <span class="chip-count">7/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:26%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>66</strong> Care Conference</span>
+      <span class="chip-count">5/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:26%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>84</strong> Patient-Initiated Provider Change</span>
+      <span class="chip-count">5/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:21%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>118</strong> Tour of Hospital / Care Facilities</span>
+      <span class="chip-count">4/19</span>
+    </div></div></td><td class="stage-cell care-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:73%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>28</strong> Coordination Under COVID</span>
+      <span class="chip-count">14/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:63%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>10</strong> Pregnancy Complications Post-Dx</span>
+      <span class="chip-count">12/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:63%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>19</strong> Internet Research</span>
+      <span class="chip-count">12/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:63%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>25</strong> Medical Emergency Response</span>
+      <span class="chip-count">12/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:42%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>26</strong> Transfers Between Facilities</span>
+      <span class="chip-count">8/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:42%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>27</strong> Relocation & Housing Support</span>
+      <span class="chip-count">8/19</span>
+    </div></div></td><td class="stage-cell care-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:78%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>30</strong> Birth Plan & Post-Birth Coord.</span>
+      <span class="chip-count">15/19</span>
+    </div></div></td><td class="stage-cell care-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:73%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>99</strong> NICU / CVICU Experience</span>
+      <span class="chip-count">14/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:68%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>100</strong> Surgical & Procedural Experience</span>
+      <span class="chip-count">13/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:63%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>103</strong> Unpreparedness for Post-Birth Reality</span>
+      <span class="chip-count">12/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:42%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>102</strong> Home Medical Monitoring</span>
+      <span class="chip-count">8/19</span>
+    </div></div></td><td class="stage-cell care-row"><div class="cell empty">—</div></td>
+    </tr>
+    <tr>
+      <td class="lane-label mother">Mother</td>
+      <td class="stage-cell mother-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #444444;background:#f3f4f6;">
+      <div class="chip-bar" style="width:100%;background:#44444455;"></div>
+      <span class="chip-text"><strong>1</strong> Demographics & Background</span>
+      <span class="chip-count">19/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #444444;background:#f3f4f6;">
+      <div class="chip-bar" style="width:89%;background:#44444455;"></div>
+      <span class="chip-text"><strong>4</strong> Early Pregnancy Course</span>
+      <span class="chip-count">17/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #444444;background:#f3f4f6;">
+      <div class="chip-bar" style="width:89%;background:#44444455;"></div>
+      <span class="chip-text"><strong>62</strong> Working During Pregnancy</span>
+      <span class="chip-count">17/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #444444;background:#f3f4f6;">
+      <div class="chip-bar" style="width:78%;background:#44444455;"></div>
+      <span class="chip-text"><strong>60</strong> Pregnancy Type</span>
+      <span class="chip-count">15/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #444444;background:#f3f4f6;">
+      <div class="chip-bar" style="width:73%;background:#44444455;"></div>
+      <span class="chip-text"><strong>82</strong> Delayed Prenatal Care Initiation</span>
+      <span class="chip-count">14/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #444444;background:#f3f4f6;">
+      <div class="chip-bar" style="width:68%;background:#44444455;"></div>
+      <span class="chip-text"><strong>5</strong> Maternal Health Complications</span>
+      <span class="chip-count">13/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #444444;background:#f3f4f6;">
+      <div class="chip-bar" style="width:52%;background:#44444455;"></div>
+      <span class="chip-text"><strong>61</strong> External Life Stressors</span>
+      <span class="chip-count">10/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #444444;background:#f3f4f6;">
+      <div class="chip-bar" style="width:36%;background:#44444455;"></div>
+      <span class="chip-text"><strong>2</strong> Prior Pregnancy Loss</span>
+      <span class="chip-count">7/19</span>
+    </div></div></td><td class="stage-cell mother-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:94%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>34</strong> Managing Diagnostic Uncertainty</span>
+      <span class="chip-count">18/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a5fa8;background:#dbeafe;">
+      <div class="chip-bar" style="width:84%;background:#1a5fa855;"></div>
+      <span class="chip-text"><strong>7</strong> Waiting for Confirmation</span>
+      <span class="chip-count">16/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #444444;background:#f3f4f6;">
+      <div class="chip-bar" style="width:68%;background:#44444455;"></div>
+      <span class="chip-text"><strong>63</strong> Late Diagnosis / Fewer Appts</span>
+      <span class="chip-count">13/19</span>
+    </div></div></td><td class="stage-cell mother-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:100%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>32</strong> Negative Response to Diagnosis</span>
+      <span class="chip-count">19/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:89%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>40</strong> Information Overload</span>
+      <span class="chip-count">17/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:73%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>33</strong> Frustration w/ Changing Diagnosis</span>
+      <span class="chip-count">14/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:68%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>41</strong> Processing the Diagnosis</span>
+      <span class="chip-count">13/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:63%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>70</strong> Negative Self-Research Feelings</span>
+      <span class="chip-count">12/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:52%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>107</strong> PTSD Symptoms During Pregnancy</span>
+      <span class="chip-count">10/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:52%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>109</strong> Peripartum Anxiety – Delivery Location</span>
+      <span class="chip-count">10/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:26%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>106</strong> Anticipatory Grief – Prenatal Fear of Loss</span>
+      <span class="chip-count">5/19</span>
+    </div></div></td><td class="stage-cell mother-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:94%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>46</strong> Extended Family Support</span>
+      <span class="chip-count">18/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:89%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>45</strong> Spousal / Partner Support</span>
+      <span class="chip-count">17/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:84%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>39</strong> Confidence in Care Plan</span>
+      <span class="chip-count">16/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:78%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>36</strong> General Pregnancy Stress</span>
+      <span class="chip-count">15/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:78%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>48</strong> Online Peer Support (Engagement)</span>
+      <span class="chip-count">15/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:68%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>47</strong> Online Peer Support (Joining)</span>
+      <span class="chip-count">13/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:63%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>49</strong> COVID Impact on Partner Presence</span>
+      <span class="chip-count">12/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:63%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>112</strong> Absent / Inaccessible Peer Support</span>
+      <span class="chip-count">12/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:57%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>68</strong> Inadequate Mental Health Support</span>
+      <span class="chip-count">11/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:52%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>51</strong> Personal CHD Peer Connection</span>
+      <span class="chip-count">10/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:52%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>69</strong> Inadequate Friend/Family Support</span>
+      <span class="chip-count">10/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:31%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>71</strong> Lack of Practical Spousal Support</span>
+      <span class="chip-count">6/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:26%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>50</strong> Family Financial Support</span>
+      <span class="chip-count">5/19</span>
+    </div></div></td><td class="stage-cell mother-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #5b3f8c;background:#ede9fe;">
+      <div class="chip-bar" style="width:100%;background:#5b3f8c55;"></div>
+      <span class="chip-text"><strong>59</strong> Appointment & Care Mgmt Burden</span>
+      <span class="chip-count">19/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:78%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>36</strong> General Pregnancy Stress</span>
+      <span class="chip-count">15/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:78%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>111</strong> Hospital Staff as Informal Support</span>
+      <span class="chip-count">15/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:73%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>37</strong> Ongoing Maternal Stress (CHD Role)</span>
+      <span class="chip-count">14/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #5b3f8c;background:#ede9fe;">
+      <div class="chip-bar" style="width:73%;background:#5b3f8c55;"></div>
+      <span class="chip-text"><strong>54</strong> Childcare Burden</span>
+      <span class="chip-count">14/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #5b3f8c;background:#ede9fe;">
+      <div class="chip-bar" style="width:73%;background:#5b3f8c55;"></div>
+      <span class="chip-text"><strong>55</strong> Travel Burden & Geographic Distance</span>
+      <span class="chip-count">14/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:63%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>89</strong> Depression & Social Isolation</span>
+      <span class="chip-count">12/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #5b3f8c;background:#ede9fe;">
+      <div class="chip-bar" style="width:57%;background:#5b3f8c55;"></div>
+      <span class="chip-text"><strong>56</strong> Employment Disruption & FMLA</span>
+      <span class="chip-count">11/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:52%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>38</strong> Living with Chronic Uncertainty</span>
+      <span class="chip-count">10/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:52%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>110</strong> Employer / Workplace Support</span>
+      <span class="chip-count">10/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #5b3f8c;background:#ede9fe;">
+      <div class="chip-bar" style="width:47%;background:#5b3f8c55;"></div>
+      <span class="chip-text"><strong>58</strong> Communicating Dx to Siblings</span>
+      <span class="chip-count">9/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:42%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>88</strong> Anger & Resentment</span>
+      <span class="chip-count">8/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:36%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>119</strong> Communicating Dx to Extended Family</span>
+      <span class="chip-count">7/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #5b3f8c;background:#ede9fe;">
+      <div class="chip-bar" style="width:26%;background:#5b3f8c55;"></div>
+      <span class="chip-text"><strong>57</strong> Prioritizing Child Over Career</span>
+      <span class="chip-count">5/19</span>
+    </div></div></td><td class="stage-cell mother-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:57%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>31</strong> Mother-Baby Separation at Birth</span>
+      <span class="chip-count">11/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:47%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>87</strong> Relief as Emotional Turning Point</span>
+      <span class="chip-count">9/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:42%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>88</strong> Anger & Resentment</span>
+      <span class="chip-count">8/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:42%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>108</strong> Post-Traumatic Growth</span>
+      <span class="chip-count">8/19</span>
+    </div></div></td><td class="stage-cell mother-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:68%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>101</strong> Active Patient Self-Advocacy</span>
+      <span class="chip-count">13/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1e4d8c;background:#bfdbfe;">
+      <div class="chip-bar" style="width:63%;background:#1e4d8c55;"></div>
+      <span class="chip-text"><strong>103</strong> Unpreparedness for Post-Birth Reality</span>
+      <span class="chip-count">12/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:57%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>31</strong> Mother-Baby Separation at Birth</span>
+      <span class="chip-count">11/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:47%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>87</strong> Relief as Emotional Turning Point</span>
+      <span class="chip-count">9/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #b94a1a;background:#fee2d5;">
+      <div class="chip-bar" style="width:36%;background:#b94a1a55;"></div>
+      <span class="chip-text"><strong>42</strong> Grief & Bereavement (Child Loss)</span>
+      <span class="chip-count">7/19</span>
+    </div></div></td><td class="stage-cell mother-row"><div class="cell">
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:78%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>77</strong> Self-Education About CHD</span>
+      <span class="chip-count">15/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:73%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>53</strong> Advice to Future Mothers</span>
+      <span class="chip-count">14/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:68%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>44</strong> Strength & Resilience Identity</span>
+      <span class="chip-count">13/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:57%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>35</strong> Hope as Active Coping</span>
+      <span class="chip-count">11/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:57%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>73</strong> Organization Strategies</span>
+      <span class="chip-count">11/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:57%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>116</strong> CTR-4: Maintaining Comm. Networks</span>
+      <span class="chip-count">11/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:47%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>91</strong> Religious / Spiritual Support</span>
+      <span class="chip-count">9/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:42%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>75</strong> Prioritizing Family Time (Coping)</span>
+      <span class="chip-count">8/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:42%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>78</strong> Reframing as Positive Experience</span>
+      <span class="chip-count">8/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:42%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>113</strong> CTR-1: Crafting Normalcy</span>
+      <span class="chip-count">8/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:42%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>115</strong> CTR-3: Affirming Identity Anchors</span>
+      <span class="chip-count">8/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:36%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>76</strong> Medical Knowledge as Coping</span>
+      <span class="chip-count">7/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:36%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>114</strong> CTR-2: Foregrounding Productive Action</span>
+      <span class="chip-count">7/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:36%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>117</strong> CTR-5: Developing Alternative Logics</span>
+      <span class="chip-count">7/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:31%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>95</strong> Faith as Active Coping</span>
+      <span class="chip-count">6/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:26%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>90</strong> Formal Therapeutic Support</span>
+      <span class="chip-count">5/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #1a6b2e;background:#d1fae5;">
+      <div class="chip-bar" style="width:26%;background:#1a6b2e55;"></div>
+      <span class="chip-text"><strong>92</strong> Reciprocal Peer Advocacy / Giving Back</span>
+      <span class="chip-count">5/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:15%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>74</strong> Work as Distraction (Coping)</span>
+      <span class="chip-count">3/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:15%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>97</strong> Emotional Co-Regulation w/ Partner</span>
+      <span class="chip-count">3/19</span>
+    </div>
+    <div class="chip" style="border-left:3px solid #8c6a00;background:#fef3c7;">
+      <div class="chip-bar" style="width:10%;background:#8c6a0055;"></div>
+      <span class="chip-text"><strong>96</strong> Formal Therapy as Active Coping</span>
+      <span class="chip-count">2/19</span>
+    </div></div></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</body>
+</html>

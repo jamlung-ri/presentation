@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sustainable Learning Platforms · Regenstrief 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #1a1510;
+    --parchment:  #f3ece0;
+    --parchment2: #e8dfce;
+    --gold:       #c88f2a;
+    --gold-light: #e8b659;
+    --ochre:      #b8621b;
+    --muted:      #6b5f4f;
+    --line:       #d8cfbf;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; background: var(--ink); overflow: hidden; font-family: 'Inter', system-ui, sans-serif; }
+
+  #deck { width: 100%; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: none;
+    background: var(--parchment);
+    color: var(--ink);
+    padding: 56px 80px 90px;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .slide.active { display: flex; }
+
+  .slide--title {
+    background-image:
+      radial-gradient(ellipse 900px 600px at 85% -10%, rgba(232,182,89,0.18), transparent 60%),
+      radial-gradient(ellipse 700px 500px at -10% 90%, rgba(200,143,42,0.14), transparent 60%);
+  }
+
+  /* ── Typography ── */
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--ochre); margin-bottom: 24px;
+  }
+  .eyebrow::before { content: '— '; }
+
+  .slide-title {
+    font-size: clamp(44px, 5.5vw, 80px);
+    font-weight: 700; letter-spacing: -0.025em; line-height: 0.95;
+    margin-bottom: 28px; max-width: 16ch;
+  }
+  .slide-title .accent { color: var(--ochre); }
+
+  .slide-subtitle {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-size: clamp(17px, 1.8vw, 24px);
+    line-height: 1.45; color: var(--muted); max-width: 640px;
+  }
+
+  .slide-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted); margin-top: 44px;
+  }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--ochre); margin-bottom: 10px;
+  }
+
+  h2.slide-h {
+    font-size: clamp(28px, 3.5vw, 52px);
+    font-weight: 700; letter-spacing: -0.02em; line-height: 1;
+    margin-bottom: 28px;
+  }
+
+  .statement {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(28px, 3.5vw, 48px);
+    line-height: 1.2; max-width: 820px; margin-bottom: 24px;
+  }
+
+  .body {
+    font-size: 16px; line-height: 1.6; color: var(--muted); max-width: 700px;
+  }
+
+  .rule { width: 48px; height: 3px; background: var(--ochre); margin-bottom: 28px; }
+
+  /* ── Two-column layout ── */
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+
+  /* ── Item list ── */
+  .item-list { display: flex; flex-direction: column; gap: 13px; }
+  .item { display: flex; gap: 14px; align-items: flex-start; }
+  .item-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em; color: var(--ochre);
+    flex-shrink: 0; min-width: 26px; padding-top: 3px;
+  }
+  .item-body .label { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  .item-body .desc { font-size: 13px; color: var(--muted); line-height: 1.4; }
+
+  /* ── Table ── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th {
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted); padding: 7px 11px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .data-table td {
+    padding: 9px 11px; border-bottom: 1px solid var(--line);
+    vertical-align: top; line-height: 1.4;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table td:first-child { font-weight: 600; }
+  .tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 2px 7px; border: 1px solid var(--ochre); color: var(--ochre);
+    margin-left: 4px;
+  }
+
+  /* ── Callout ── */
+  .callout {
+    background: var(--parchment2);
+    border-left: 3px solid var(--ochre);
+    padding: 14px 18px; margin-top: 20px; max-width: 700px;
+  }
+  .callout p { font-size: 14px; line-height: 1.5; }
+  .callout-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ochre); margin-bottom: 7px;
+  }
+
+  /* ── Nav chrome ── */
+  #nav-chrome {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 40px;
+    background: var(--ink);
+    color: rgba(255,255,255,0.45);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    z-index: 100;
+    user-select: none;
+  }
+  #nav-chrome .counter { color: var(--gold-light); }
+  #nav-chrome .hint { opacity: 0.4; font-size: 9px; }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+  <!-- 01 · Title -->
+  <section class="slide slide--title active">
+    <div class="eyebrow">Research Scan · May 2026</div>
+    <h1 class="slide-title">Sustainable<br>Learning<br><span class="accent">Platforms</span></h1>
+    <p class="slide-subtitle">
+      Business models, financing, and governance — a landscape scan to inform a Regenstrief-centric health informatics learning platform.
+    </p>
+    <div class="slide-meta">GHI · LOINC / HDS · CBMI · Regenstrief · Joe Amlung</div>
+  </section>
+
+  <!-- 02 · The Question -->
+  <section class="slide">
+    <div class="section-label">Context</div>
+    <div class="rule"></div>
+    <p class="statement">What would it take to build a Regenstrief-centric learning platform — and who has done it before?</p>
+    <p class="body">
+      This scan covers how platforms like Udemy, Coursera, edX, OpenWHO, FutureLearn, atingi (GIZ), Teachable, and Open edX finance themselves, share revenue with creators, govern content, and scale infrastructure — with direct implications for GHI, LOINC/HDS, and CBMI.
+    </p>
+  </section>
+
+  <!-- 03 · Seven Archetypes -->
+  <section class="slide">
+    <div class="section-label">The Landscape</div>
+    <h2 class="slide-h">Seven Platform Archetypes</h2>
+    <div class="item-list">
+      <div class="item">
+        <div class="item-num">01</div>
+        <div class="item-body">
+          <div class="label">Commercial Marketplace</div>
+          <div class="desc">Udemy — crowdsourced instructors, per-course sales, platform keeps 63% of organic revenue</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">02</div>
+        <div class="item-body">
+          <div class="label">Enterprise Subscription (B2B)</div>
+          <div class="desc">Coursera for Business, Udemy Business — bulk access sold to companies; dominant revenue driver; combined platform targets ~$1.5B</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">03</div>
+        <div class="item-body">
+          <div class="label">Academic / Nonprofit MOOC</div>
+          <div class="desc">Original edX (MIT + Harvard) — free audits, certificate upsell, institutionally governed; never reached financial sustainability alone</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">04</div>
+        <div class="item-body">
+          <div class="label">Mission-Funded Public Good</div>
+          <div class="desc">OpenWHO — grant/budget funded, free, offline-capable, 75 languages, 9.2M enrollments over 7 years</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">05</div>
+        <div class="item-body">
+          <div class="label">Hosted SaaS Creator Tool</div>
+          <div class="desc">Teachable, Thinkific — org pays flat monthly SaaS fee ($39–$400), keeps 100% of course revenue, full IP control</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">06</div>
+        <div class="item-body">
+          <div class="label">Development Sector Grant Platform</div>
+          <div class="desc">atingi (GIZ) — BMZ-funded, free to all, 1.35M+ learners in 31 languages, open to partner content publishing; Regenstrief already publishes here</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">07</div>
+        <div class="item-body">
+          <div class="label">PE-Acquired MOOC</div>
+          <div class="desc">FutureLearn — academic-founded (Open University UK), sold to private equity 2022; 18M+ learners; freemium + subscription; governance risk for academic partners</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · Financing -->
+  <section class="slide">
+    <div class="section-label">Research Question 1</div>
+    <h2 class="slide-h">How Platforms Finance Themselves</h2>
+    <table class="data-table">
+      <thead>
+        <tr><th>Model</th><th>Platform(s)</th><th>Key detail</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Per-course marketplace</td><td>Udemy</td><td>Student buys one course; platform earns 63% commission on organic sales</td></tr>
+        <tr><td>Subscription (B2C)</td><td>Coursera Plus, Udemy Personal</td><td>Flat all-access fee; $566M of Udemy's $790M 2025 revenue was subscriptions</td></tr>
+        <tr><td>Enterprise licensing (B2B)</td><td>Coursera for Business/Gov, Udemy Business</td><td>Bulk access for teams; dominant growth driver; merged platform targets ~$1.5B</td></tr>
+        <tr><td>Degree tuition + rev share</td><td>Coursera</td><td>Coursera takes 25–40% of online degree tuition from university partners</td></tr>
+        <tr><td>Freemium → certificate upsell</td><td>edX (original), Coursera</td><td>Free audit; pay for verified certificate — financially fragile alone at scale</td></tr>
+        <tr><td>Hosted SaaS fee</td><td>Teachable, Thinkific</td><td>Creator pays $39–$400/mo; zero transaction fees on higher tiers</td></tr>
+        <tr><td>Grant + institutional budget</td><td>OpenWHO</td><td>WHO budget + HPI infrastructure; free to all learners — public good model</td></tr>
+        <tr><td>Development sector grant</td><td>atingi (GIZ)</td><td>Funded by German BMZ; free to all learners and partners; 1.35M+ users, 550+ courses, 31 languages; open to partner content publishing</td></tr>
+        <tr><td>Freemium + subscription (B2C)</td><td>FutureLearn</td><td>Free audit; ~£39–£79/course for certificate; $280/yr unlimited subscription; 18M+ learners; PE-acquired by Global University Systems in 2022</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 05 · Revenue Sharing -->
+  <section class="slide">
+    <div class="section-label">Research Question 2</div>
+    <h2 class="slide-h">Revenue Sharing for Content Creators</h2>
+    <table class="data-table">
+      <thead>
+        <tr><th>Platform</th><th>Creator share</th><th>Condition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Udemy (organic sale)</td><td>37%</td><td>Platform-driven discovery — majority of sales</td></tr>
+        <tr><td>Udemy (creator-referred)</td><td>97%</td><td>Creator drives traffic via coupon or direct link</td></tr>
+        <tr><td>Udemy Business subscription</td><td>15% <span class="tag">↓ from 20%</span></td><td>Pro-rated by minutes watched; declining annually since 2024</td></tr>
+        <tr><td>Coursera (university partner)</td><td>60–75% of course revenue</td><td>Tiered by degree production volume; universities also get 6–15% of gross + 20% of gross profit</td></tr>
+        <tr><td>Coursera (online degree tuition)</td><td>60–75%</td><td>Coursera keeps 25–40% service fee</td></tr>
+        <tr><td>Teachable / Thinkific</td><td>~100%</td><td>Creator keeps all revenue; platform earns from the SaaS subscription instead</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <div class="callout-label">Implication</div>
+      <p>Teachable/Thinkific is cleanest for IP and revenue retention. Coursera partnership offers global reach at a 25–40% cut with platform dependency risk.</p>
+    </div>
+  </section>
+
+  <!-- 06 · edX Story -->
+  <section class="slide">
+    <div class="section-label">Research Question 3 · The Cautionary Tale</div>
+    <h2 class="slide-h">The edX Story</h2>
+    <div class="cols">
+      <div class="item-list">
+        <div class="item">
+          <div class="item-num">2012</div>
+          <div class="item-body">
+            <div class="label">MIT + Harvard launch edX</div>
+            <div class="desc">Nonprofit, mission-driven, free MOOCs for global learners</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">2018</div>
+          <div class="item-body">
+            <div class="label">Sustainability crisis</div>
+            <div class="desc">Certificate upsell alone couldn't sustain platform scale; began experimenting with paid tiers</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">2021</div>
+          <div class="item-body">
+            <div class="label">Sold to 2U Inc. for ~$800M</div>
+            <div class="desc">Proceeds → new nonprofit (Center for Reimagining Learning) now stewarding Open edX platform</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">Now</div>
+          <div class="item-body">
+            <div class="label">Open edX survives as open source</div>
+            <div class="desc">Community-governed, Apache-style; institutions self-host or use commercial partners (e.g., edunext)</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="callout" style="margin-top:0;">
+          <div class="callout-label">Lesson</div>
+          <p>Nonprofit + MOOC scale is very hard without an endowment or a B2B pivot. The open-source platform survived — the nonprofit MOOC brand did not.</p>
+        </div>
+        <div class="callout">
+          <div class="callout-label">What survived</div>
+          <p>Open edX is now consortium-governed with fragmented but resilient community support. This is a viable model for Regenstrief — but requires dev/ops investment to self-host.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 · OpenWHO -->
+  <section class="slide">
+    <div class="section-label">The Health Analog</div>
+    <h2 class="slide-h">OpenWHO — Closest Model for Regenstrief</h2>
+    <div class="cols">
+      <div class="item-list">
+        <div class="item">
+          <div class="item-num">→</div>
+          <div class="item-body">
+            <div class="label">Launched 2017 by WHO</div>
+            <div class="desc">Built on Open edX; hosted by Hasso Plattner Institute on private OpenStack cloud</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">→</div>
+          <div class="item-body">
+            <div class="label">Free, offline-capable, 75 languages</div>
+            <div class="desc">Self-paced; designed for low-bandwidth frontline responders in any country or territory</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">→</div>
+          <div class="item-body">
+            <div class="label">9.2M enrollments, 315+ courses in 7 years</div>
+            <div class="desc">Just-in-time emergency response learning for COVID, Ebola, mpox, and more</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">→</div>
+          <div class="item-body">
+            <div class="label">Funded by WHO budget + HPI partnership</div>
+            <div class="desc">Zero tuition, zero subscription — sustained as public health infrastructure, not a product</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="callout" style="margin-top:0;">
+          <div class="callout-label">For Regenstrief</div>
+          <p>If framed as global health informatics infrastructure, this model is the most mission-aligned — but requires sustained institutional budget commitment or large grant backing (Gates Foundation, Wellcome, NIH).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 · OHIE Academy -->
+  <section class="slide">
+    <div class="section-label">We Already Run This Model</div>
+    <h2 class="slide-h">OHIE Academy — Regenstrief's Own Precedent</h2>
+    <div class="cols">
+      <div class="item-list">
+        <div class="item">
+          <div class="item-num">→</div>
+          <div class="item-body">
+            <div class="label">Launched January 2021</div>
+            <div class="desc">Regenstrief Institute manages the Academy as secretariat of OpenHIE; grew out of in-person training at the 2019 Addis Ababa community meeting</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">→</div>
+          <div class="item-body">
+            <div class="label">16 free, self-paced courses</div>
+            <div class="desc">Covering HIE architecture, identity management, OpenHIE community concepts — free to all registered learners</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">→</div>
+          <div class="item-body">
+            <div class="label">Paid certification: $22</div>
+            <div class="desc">Foundations of Health Information Exchange — 27 MCQs, max 2 attempts, downloadable certificate</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">→</div>
+          <div class="item-body">
+            <div class="label">750+ users · 59 certifications (2-year mark)</div>
+            <div class="desc">Small but real — proof the free-course/paid-cert model works in Regenstrief's hands at a global health informatics audience</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="callout" style="margin-top:0;">
+          <div class="callout-label">The key insight</div>
+          <p>We don't need to look to OpenWHO or edX as aspirational models — we already operate one. The question is whether to expand the OHIE Academy model to cover LOINC, FHIR, clinical data standards, and CBMI content, and how to fund that expansion.</p>
+        </div>
+        <div class="callout">
+          <div class="callout-label">What's different at scale</div>
+          <p>Credentialing authority grows with scope. A LOINC Practitioner cert or FHIR proficiency badge from Regenstrief would carry substantially more weight than the current HIE Foundations cert — and could command a higher price point.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 · atingi & FutureLearn -->
+  <section class="slide">
+    <div class="section-label">The Missing Platforms</div>
+    <h2 class="slide-h">atingi &amp; FutureLearn</h2>
+    <div class="cols">
+      <div>
+        <div class="callout" style="margin-top:0;">
+          <div class="callout-label">atingi (GIZ) — already our partner</div>
+          <p>GIZ, Jembi, and Regenstrief have already launched 4 HIS courses on atingi — GIZ's BMZ-funded platform reaching 1.35M+ LMIC development sector learners in 31 languages. Free to all, open to partner organizations, zero cost to publish.</p>
+        </div>
+        <div class="callout">
+          <div class="callout-label">For Regenstrief</div>
+          <p>atingi is the fastest path to LMIC scale at zero cost. The partnership infrastructure is live. Expanding health informatics content here requires no new platform deal — just more courses.</p>
+        </div>
+      </div>
+      <div>
+        <div class="callout" style="margin-top:0; border-left-color: var(--muted);">
+          <div class="callout-label" style="color: var(--muted);">FutureLearn — governance risk</div>
+          <p>Founded by The Open University (UK) in 2012; sold to Global University Systems (private equity) in 2022. 18M+ learners, 260+ partner institutions. Freemium + subscription model. Health content present but not a dominant focus.</p>
+        </div>
+        <div class="callout" style="border-left-color: var(--muted);">
+          <div class="callout-label" style="color: var(--muted);">For Regenstrief</div>
+          <p>The learner base is significant — but PE ownership since 2022 means partner terms are less stable than academic-governed alternatives. Lower-priority option versus atingi for LMIC reach or Coursera for credentialing weight.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · Governance -->
+  <section class="slide">
+    <div class="section-label">Research Question 4</div>
+    <h2 class="slide-h">Governance Models</h2>
+    <table class="data-table">
+      <thead>
+        <tr><th>Model</th><th>Example</th><th>Tradeoff</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>For-profit, VC-backed</td><td>Udemy, early Coursera</td><td>Fast scale; commercial incentives misalign with academic/mission priorities</td></tr>
+        <tr><td>Publicly traded</td><td>Coursera (COUR)</td><td>Shareholder accountability; quarterly earnings pressure; merger vulnerability (→ 2026 Udemy deal)</td></tr>
+        <tr><td>Nonprofit MOOC</td><td>Original edX (2012–2021)</td><td>Mission-aligned but financially fragile; eventually collapsed into commercial sale</td></tr>
+        <tr><td>Open source consortium</td><td>Sakai LMS, Open edX community</td><td>Shared governance, no licensing fees, community-driven — slower but mission-stable and federable</td></tr>
+        <tr><td>WHO/UN institutional</td><td>OpenWHO</td><td>Fully grant/budget-funded; mission-pure; depends on institutional continuity and political will</td></tr>
+        <tr><td>Hosted SaaS vendor</td><td>Teachable, Thinkific</td><td>Content org keeps full control; platform is a vendor not a partner — vendor lock-in risk over time</td></tr>
+        <tr><td>PE-acquired MOOC</td><td>FutureLearn (GUS)</td><td>Academic-founded; commercial mission creep post-acquisition; partner terms and governance deteriorate; material risk for mission-driven institutions</td></tr>
+        <tr><td>Development sector public good</td><td>atingi (GIZ)</td><td>Grant-funded, free, open partner publishing; mission-stable; scope limited to LMIC/development sector audience</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 11 · Scaling -->
+  <section class="slide">
+    <div class="section-label">Research Question 5</div>
+    <h2 class="slide-h">What Scaling Actually Requires</h2>
+    <div class="cols">
+      <div class="item-list">
+        <div class="item">
+          <div class="item-num">01</div>
+          <div class="item-body">
+            <div class="label">Content production</div>
+            <div class="desc">SME time, instructional design, QA — Udemy crowdsources 73,000+ instructors; OpenWHO uses WHO staff</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">02</div>
+          <div class="item-body">
+            <div class="label">Translation &amp; localization</div>
+            <div class="desc">OpenWHO supports 75 languages with volunteer translation — a major, ongoing, underestimated cost</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">03</div>
+          <div class="item-body">
+            <div class="label">Infrastructure</div>
+            <div class="desc">CDN-distributed or private cloud; offline access for low-bandwidth; LMS integrations for enterprise deployments</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">04</div>
+          <div class="item-body">
+            <div class="label">Credentialing</div>
+            <div class="desc">What does a certificate mean? Who recognizes it? Coursera has university backing; WHO has global public health authority</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="callout" style="margin-top:0;">
+          <div class="callout-label">For LOINC / HDS specifically</div>
+          <p>Credentialing is the highest-value differentiator. A LOINC or FHIR proficiency certificate with Regenstrief backing carries institutional weight that a Teachable course cannot replicate — and is a genuine moat.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 · Options for Regenstrief -->
+  <section class="slide">
+    <div class="section-label">Synthesis</div>
+    <h2 class="slide-h">Options for Regenstrief / GHI / LOINC-HDS / CBMI</h2>
+    <table class="data-table">
+      <thead>
+        <tr><th>Option</th><th>Model analog</th><th>Fit</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Hosted SaaS (Teachable / Thinkific)</td><td>Full control, predictable cost, keep revenue</td><td>Fast start; Regenstrief controls IP; limited credentialing weight and global reach</td></tr>
+        <tr><td>Open edX self-hosted</td><td>Open source, consortium-ready</td><td>Requires dev/ops investment; fits institutional scale; can federate with partners globally</td></tr>
+        <tr><td>Coursera / Udemy partnership</td><td>Reach + credentialing, but revenue share + lock-in</td><td>Good for global reach; 25–40% revenue cut; platform dependency risk as entity evolves</td></tr>
+        <tr><td>OpenWHO model (grant-funded)</td><td>Free, WHO-style, institutionally backed</td><td>Best mission fit if framed as global health infrastructure; needs sustained institutional budget or grant</td></tr>
+        <tr><td>atingi partnership (GIZ distribution)</td><td>Publish to GIZ's existing LMIC platform</td><td>Zero cost; 1.35M+ learner reach in LMICs; Regenstrief partnership already active; scope limited to development/LMIC audience</td></tr>
+        <tr><td>Consortium (Sakai / Open edX style)</td><td>GHI + LOINC + CBMI co-govern and co-fund</td><td>Fits multi-stakeholder structure; slower to build; strongest long-term sustainability and alignment</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 13 · Questions to bring -->
+  <section class="slide">
+    <div class="section-label">Next Steps</div>
+    <h2 class="slide-h">Questions to Bring to the Room</h2>
+    <div class="item-list">
+      <div class="item">
+        <div class="item-num">01</div>
+        <div class="item-body">
+          <div class="label">Product or public infrastructure?</div>
+          <div class="desc">Is the goal revenue generation, or a global health informatics public good funded by grants/institutional budget?</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">02</div>
+        <div class="item-body">
+          <div class="label">Who are the primary learners?</div>
+          <div class="desc">Frontline health workers (→ OpenWHO model), institutions (→ B2B), or independent researchers (→ Coursera partnership)?</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">03</div>
+        <div class="item-body">
+          <div class="label">IP and credentialing ownership?</div>
+          <div class="desc">Who owns the curriculum? What does a certificate mean, and who backs it — Regenstrief alone, or a consortium?</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">04</div>
+        <div class="item-body">
+          <div class="label">Multi-stakeholder governance?</div>
+          <div class="desc">Regenstrief-only, or a consortium across GHI, LOINC/HDS, and CBMI — each contributing content and co-governing decisions?</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">05</div>
+        <div class="item-body">
+          <div class="label">Sustainable funding floor?</div>
+          <div class="desc">What's the minimum viable revenue or grant coverage to sustain content QA, infrastructure, and translation over 5+ years?</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="nav-chrome">
+  <span>Sustainable Learning Platforms · Regenstrief 2026</span>
+  <span class="counter" id="counter">1 / 13</span>
+  <span class="hint">← → Space · F fullscreen · Click to advance</span>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let cur = 0;
+  const total = slides.length;
+  const counter = document.getElementById('counter');
+
+  function go(n) {
+    slides[cur].classList.remove('active');
+    cur = Math.max(0, Math.min(total - 1, n));
+    slides[cur].classList.add('active');
+    counter.textContent = (cur + 1) + ' / ' + total;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); go(cur - 1); }
+    if (e.key === 'f' || e.key === 'F')  document.documentElement.requestFullscreen?.();
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End')  go(total - 1);
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+  document.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) go(dx < 0 ? cur + 1 : cur - 1);
+  });
+
+  document.getElementById('deck').addEventListener('click', () => go(cur + 1));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+# OS cruft
+Thumbs.db
+.DS_Store
+
+# Editor and assistant settings
+.claude/
+.vscode/
+*.code-workspace
+
+# Research data and working folders — not for the presentation repo
+Analysis/
+Backups/
+Code-Classification/
+CTR Mapping/
+Development/
+Miro-Feedback/
+Paper-writing/
+Potential-Projects/
+Study-Documentation/
+Transcripts/
+
+# Working notes
+To-Dos.md
+

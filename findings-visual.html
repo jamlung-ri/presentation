@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHD Care Coordination — Findings</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #1e3a5f;
+  --blue: #2563eb;
+  --blue-soft: #dbeafe;
+  --coral: #dc4f4f;
+  --coral-soft: #fee2e2;
+  --green: #16a34a;
+  --green-soft: #dcfce7;
+  --amber: #d97706;
+  --amber-soft: #fef3c7;
+  --purple: #7c3aed;
+  --purple-soft: #ede9fe;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --text: #1f2937;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--gray-50);
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--navy);
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0 1.5rem;
+}
+nav::-webkit-scrollbar { display: none; }
+.nav-brand {
+  color: white;
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 0.9rem 1.5rem 0.9rem 0;
+  white-space: nowrap;
+  border-right: 1px solid rgba(255,255,255,0.15);
+  margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+nav a {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0 0.9rem;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s, border-color 0.15s;
+}
+nav a:hover { color: white; border-bottom-color: rgba(255,255,255,0.35); }
+
+/* ── SECTION LAYOUT ── */
+.section { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
+.eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-500);
+  margin-bottom: 0.6rem;
+}
+.section-title {
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 0.75rem;
+  line-height: 1.25;
+}
+.section-intro {
+  font-size: 0.95rem;
+  color: var(--gray-600);
+  max-width: 680px;
+  margin-bottom: 1.75rem;
+}
+
+/* ── HERO ── */
+#story { background: var(--navy); }
+#story .section { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+.hero-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 0.75rem;
+}
+.hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 0.35rem;
+}
+.hero-sub {
+  font-size: 0.87rem;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 2rem;
+}
+.central-finding {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+.central-finding strong { color: white; }
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+.hero-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.stat-tile {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 10px;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 200px;
+}
+.stat-tile .num {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: white;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.stat-tile .lbl {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.35;
+}
+
+.domain-block { display: flex; flex-direction: column; justify-content: center; padding-top: 0.25rem; }
+.domain-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 0.9rem;
+}
+.drow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.55rem;
+}
+.dname { font-size: 0.8rem; color: rgba(255,255,255,0.7); width: 170px; flex-shrink: 0; }
+.dbar { height: 8px; border-radius: 4px; flex-shrink: 0; }
+.dpct { font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.7); }
+.domain-note { font-size: 0.7rem; color: rgba(255,255,255,0.35); font-style: italic; margin-top: 0.4rem; }
+
+/* ── WHY THIS MATTERS ── */
+#why { background: white; border-bottom: 1px solid var(--gray-200); }
+.context-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.ctx-card {
+  border-radius: 10px;
+  border: 1px solid var(--gray-200);
+  padding: 1.1rem 1.25rem;
+  background: var(--gray-50);
+}
+.ctx-card .num {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+.ctx-card .desc {
+  font-size: 0.84rem;
+  color: var(--gray-700);
+  line-height: 1.5;
+  margin-bottom: 0.4rem;
+}
+.ctx-card .cite-tag {
+  font-size: 0.72rem;
+  color: var(--gray-500);
+  font-style: italic;
+}
+.ctx-card.c1 { border-top: 3px solid var(--coral); }
+.ctx-card.c1 .num { color: var(--coral); }
+.ctx-card.c2 { border-top: 3px solid var(--amber); }
+.ctx-card.c2 .num { color: var(--amber); }
+.ctx-card.c3 { border-top: 3px solid var(--blue); }
+.ctx-card.c3 .num { color: var(--blue); }
+.gap-bridge {
+  background: var(--navy);
+  color: rgba(255,255,255,0.88);
+  border-radius: var(--radius);
+  padding: 0.9rem 1.25rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+.gap-bridge strong { color: white; }
+
+/* ── PARTICIPANTS ── */
+#participants { background: var(--gray-50); border-bottom: 1px solid var(--gray-200); }
+.demo-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.demo-tile {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  text-align: center;
+}
+.demo-tile .num { font-size: 1.35rem; font-weight: 800; color: var(--navy); }
+.demo-tile .lbl { font-size: 0.74rem; color: var(--gray-500); line-height: 1.3; }
+.callout {
+  background: var(--blue-soft);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 8px 8px 0;
+  padding: 0.875rem 1.125rem;
+  font-size: 0.9rem;
+  color: var(--gray-700);
+  line-height: 1.6;
+}
+.callout strong { color: var(--navy); }
+
+/* ── PRACTICES ── */
+#practices { background: white; }
+.practices-list { display: flex; flex-direction: column; gap: 1.1rem; }
+.pcard {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.pcard-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem 0.9rem;
+  background: white;
+}
+.pnum {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background: var(--navy);
+  color: white;
+  font-size: 0.88rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+.pmeta { flex: 1; }
+.pname { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.15rem; }
+.pdesc { font-size: 0.84rem; color: var(--gray-500); line-height: 1.45; }
+.pstat {
+  flex-shrink: 0;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.22rem 0.6rem;
+  border-radius: 100px;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+.pstat.blue { background: var(--blue-soft); color: var(--blue); }
+.pstat.amber { background: var(--amber-soft); color: var(--amber); }
+
+.pcard-body { padding: 0.9rem 1.4rem 1.1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.pquote-row { display: flex; gap: 0.75rem; align-items: flex-start; }
+.mavatar {
+  flex-shrink: 0;
+  width: 2.2rem;
+  height: 2.2rem;
+  background: var(--blue-soft);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  margin-top: 0.1rem;
+}
+.pquote {
+  background: white;
+  border-left: 3px solid var(--blue);
+  border-radius: 0 8px 8px 0;
+  padding: 0.7rem 1rem;
+  font-size: 0.86rem;
+  font-style: italic;
+  color: var(--gray-700);
+  line-height: 1.6;
+  flex: 1;
+}
+.pquote cite {
+  display: block;
+  font-style: normal;
+  font-size: 0.76rem;
+  color: var(--gray-500);
+  margin-top: 0.35rem;
+}
+.pinsights { display: flex; flex-wrap: wrap; gap: 0.5rem; padding-left: 2.95rem; }
+.pchip {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: 100px;
+  padding: 0.22rem 0.7rem;
+  font-size: 0.79rem;
+  color: var(--gray-600);
+  line-height: 1.4;
+}
+
+/* ── TWO PATHWAYS ── */
+#pathways { background: var(--gray-50); border-top: 1px solid var(--gray-200); }
+.pathway-intro {
+  font-size: 0.93rem;
+  color: var(--gray-600);
+  max-width: 680px;
+  margin-bottom: 1.75rem;
+  line-height: 1.65;
+}
+.pathway-intro em { font-style: normal; font-weight: 600; color: var(--text); }
+.pathway-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.pathway { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--gray-200); }
+.pathway-head { padding: 0.9rem 1.25rem; font-size: 0.9rem; font-weight: 700; color: white; }
+.pathway.good .pathway-head { background: var(--green); }
+.pathway.gap  .pathway-head { background: var(--coral); }
+.pathway ol { list-style: none; counter-reset: steps; padding: 0.75rem 1.25rem; }
+.pathway.good ol { background: var(--green-soft); }
+.pathway.gap  ol { background: var(--coral-soft); }
+.pathway ol li {
+  counter-increment: steps;
+  font-size: 0.85rem;
+  color: var(--gray-700);
+  padding: 0.38rem 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  gap: 0.6rem;
+  line-height: 1.45;
+}
+.pathway ol li:last-child { border-bottom: none; }
+.pathway ol li::before { content: counter(steps); font-weight: 700; flex-shrink: 0; font-size: 0.8rem; margin-top: 0.1rem; }
+.pathway.good ol li::before { color: var(--green); }
+.pathway.gap  ol li::before { color: var(--coral); }
+.pathway-outcome { padding: 0.65rem 1.25rem; font-size: 0.84rem; font-weight: 600; }
+.pathway.good .pathway-outcome { background: #bbf7d0; color: #14532d; }
+.pathway.gap  .pathway-outcome { background: #fecaca; color: #7f1d1d; }
+.pathway-bridge {
+  background: var(--navy);
+  color: rgba(255,255,255,0.9);
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  text-align: center;
+}
+.pathway-bridge strong { color: white; }
+
+/* ── RILEY ── */
+#riley { background: white; border-top: 1px solid var(--gray-200); }
+.riley-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.rcard { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1.1rem 1.25rem; box-shadow: var(--shadow); }
+.rcard .icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
+.rcard .rtitle { font-size: 0.9rem; font-weight: 700; color: var(--navy); margin-bottom: 0.35rem; }
+.rcard .rtext { font-size: 0.84rem; color: var(--gray-600); line-height: 1.55; }
+.riley-nuance {
+  background: var(--amber-soft);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 8px 8px 0;
+  padding: 0.875rem 1.125rem;
+  font-size: 0.875rem;
+  color: var(--gray-700);
+  line-height: 1.6;
+}
+.riley-nuance strong { color: #92400e; }
+
+/* ── RESILIENCE / CTR ── */
+#resilience { background: var(--gray-50); border-top: 1px solid var(--gray-200); }
+.ctr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.ctr-table th {
+  text-align: left;
+  padding: 0.65rem 1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  background: var(--navy);
+  color: white;
+}
+.ctr-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--gray-100);
+  color: var(--gray-700);
+  vertical-align: top;
+  background: white;
+}
+.ctr-table tr:last-child td { border-bottom: none; }
+.ctr-table tr:nth-child(even) td { background: var(--gray-50); }
+.ctr-process { font-weight: 700; color: var(--navy); }
+.ctr-desc { font-size: 0.78rem; font-style: italic; color: var(--gray-500); margin-top: 0.2rem; }
+.top-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.12rem 0.45rem;
+  border-radius: 100px;
+  background: var(--purple-soft);
+  color: var(--purple);
+  margin-left: 0.35rem;
+  vertical-align: middle;
+  font-style: normal;
+}
+.ctr-examples { display: flex; flex-direction: column; gap: 0.3rem; }
+.ctr-ex { font-size: 0.84rem; color: var(--gray-700); }
+.ctr-note {
+  background: var(--purple-soft);
+  border-left: 3px solid var(--purple);
+  border-radius: 0 8px 8px 0;
+  padding: 0.875rem 1.125rem;
+  font-size: 0.875rem;
+  color: var(--gray-700);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.ctr-note strong { color: var(--purple); }
+.ctr-aside { font-size: 0.84rem; color: var(--gray-600); line-height: 1.6; }
+
+/* ── IMPLICATIONS ── */
+#gaps { background: white; border-top: 1px solid var(--gray-200); }
+.gaps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+.gap-block { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.gap-head { padding: 0.875rem 1.25rem; font-size: 0.84rem; font-weight: 700; color: white; }
+.gap-block.unevaluated .gap-head { background: var(--amber); }
+.gap-block.undocumented .gap-head { background: var(--blue); }
+.gap-block ul { list-style: none; padding: 0.875rem 1.25rem; }
+.gap-block ul li {
+  font-size: 0.85rem;
+  color: var(--gray-700);
+  padding: 0.38rem 0;
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  gap: 0.55rem;
+  line-height: 1.5;
+}
+.gap-block ul li:last-child { border-bottom: none; }
+.gap-block ul li::before { content: "–"; color: var(--gray-400); flex-shrink: 0; }
+
+/* Concept sketches teaser */
+.teaser-card {
+  background: var(--navy);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.teaser-left { flex: 1; min-width: 200px; }
+.teaser-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 0.4rem;
+}
+.teaser-title { font-size: 1.05rem; font-weight: 700; color: white; margin-bottom: 0.35rem; }
+.teaser-desc { font-size: 0.87rem; color: rgba(255,255,255,0.65); line-height: 1.55; }
+.teaser-concepts { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.tconcept {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.85);
+  flex: 1;
+  min-width: 150px;
+}
+.tconcept .tnum { font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 0.2rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+.tconcept .tname { font-weight: 600; margin-bottom: 0.25rem; }
+.tconcept .tdesc { font-size: 0.76rem; color: rgba(255,255,255,0.5); line-height: 1.4; }
+.teaser-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: white;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.teaser-link:hover { background: rgba(255,255,255,0.22); }
+
+/* ── FOOTER ── */
+footer { background: var(--navy); padding: 2.5rem 1.5rem; text-align: center; }
+.footer-inner { max-width: 900px; margin: 0 auto; }
+footer p { font-size: 0.82rem; color: rgba(255,255,255,0.5); margin-bottom: 0.3rem; }
+footer strong { color: rgba(255,255,255,0.8); }
+.refs { text-align: left; margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.25rem; }
+.refs p { font-size: 0.73rem; color: rgba(255,255,255,0.35); margin-bottom: 0.35rem; line-height: 1.55; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 660px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .context-cards { grid-template-columns: 1fr; }
+  .pathway-grid { grid-template-columns: 1fr; }
+  .gaps-grid { grid-template-columns: 1fr; }
+  .hero-title { font-size: 1.5rem; }
+  .nav-brand { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAVIGATION ── -->
+<nav>
+  <span class="nav-brand">CHD Care Coordination</span>
+  <a href="#story">Overview</a>
+  <a href="#why">Significance</a>
+  <a href="#participants">Participants</a>
+  <a href="#practices">Six Practices</a>
+  <a href="#pathways">Two Pathways</a>
+  <a href="#riley">Riley Insights</a>
+  <a href="#resilience">Resilience</a>
+  <a href="#gaps">Implications</a>
+</nav>
+
+<!-- ── HERO ── -->
+<div id="story">
+  <div class="section">
+    <div class="hero-eyebrow">CHD Care Coordination Study &middot; Indiana &middot; June 2026</div>
+    <h1 class="hero-title">Findings Visual</h1>
+    <p class="hero-sub">19 in-depth interviews &middot; 2,536 coded segments &middot; Riley Hospital stakeholder meeting</p>
+
+    <div class="central-finding">
+      Mothers navigating a prenatal CHD diagnosis face a simultaneous crisis of <strong>medical complexity, emotional overwhelm, and logistical burden.</strong> Their experiences reveal where the care system falls short &mdash; and where it holds. <strong>Coordination quality, not just diagnosis severity, shapes the maternal experience.</strong>
+    </div>
+
+    <div class="hero-grid">
+      <div class="hero-stats">
+        <div class="stat-tile">
+          <div class="num">19</div>
+          <div class="lbl">in-depth interviews conducted in Indiana</div>
+        </div>
+        <div class="stat-tile">
+          <div class="num">2,536</div>
+          <div class="lbl">coded moments across all interviews</div>
+        </div>
+        <div class="stat-tile">
+          <div class="num">42 min</div>
+          <div class="lbl">average interview length</div>
+        </div>
+      </div>
+
+      <div class="domain-block">
+        <div class="domain-label">Content distribution &middot; 2,536 coded segments</div>
+        <div class="drow">
+          <div class="dname">Care Coordination</div>
+          <div class="dbar" style="width:172px; background:#60a5fa;"></div>
+          <div class="dpct">43%</div>
+        </div>
+        <div class="drow">
+          <div class="dname">Emotional Experience</div>
+          <div class="dbar" style="width:104px; background:#f87171;"></div>
+          <div class="dpct">26%</div>
+        </div>
+        <div class="drow">
+          <div class="dname">Social Support</div>
+          <div class="dbar" style="width:76px; background:#4ade80;"></div>
+          <div class="dpct">19%</div>
+        </div>
+        <div class="drow">
+          <div class="dname">Resilience</div>
+          <div class="dbar" style="width:52px; background:#a78bfa;"></div>
+          <div class="dpct">13%</div>
+        </div>
+        <div class="domain-note">Care coordination was directly asked about in the interview guide &mdash; this proportion reflects both prevalence and structured interview attention.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── WHY THIS MATTERS ── -->
+<div id="why">
+  <div class="section">
+    <div class="eyebrow">Field Context</div>
+    <h2 class="section-title">Why This Study Was Needed</h2>
+
+    <div class="context-cards">
+      <div class="ctx-card c1">
+        <div class="num">25&ndash;50%</div>
+        <div class="desc">of CHD parents report clinically elevated depression and/or anxiety; up to 30% meet criteria for PTSD &mdash; with mothers consistently reporting more severe symptoms than fathers</div>
+        <div class="cite-tag">Woolf-King et al., 2017 &mdash; systematic review, 30 studies</div>
+      </div>
+      <div class="ctx-card c2">
+        <div class="num">39%</div>
+        <div class="desc">of mothers exceeded clinical cut-off for traumatic stress in the weeks after a prenatal CHD diagnosis, with anxiety and depression scores significantly higher than normal pregnancies</div>
+        <div class="cite-tag">Rychik et al., 2013 &mdash; N=59, prenatal CHD specifically</div>
+      </div>
+      <div class="ctx-card c3">
+        <div class="num">79%</div>
+        <div class="desc">of fetal cardiac programs have a dedicated care coordinator &mdash; but no formal evidence base exists for what that coordination actually does for mothers&rsquo; experiences</div>
+        <div class="cite-tag">Patel et al., 2025 &mdash; Fetal Heart Society survey, n=95 programs</div>
+      </div>
+    </div>
+
+    <div class="gap-bridge">
+      Despite two decades of research documenting this burden, no formal clinical guidelines exist for psychosocial support after prenatal CHD diagnosis &mdash; and no study had systematically asked mothers what actually helped. <strong>This study provides the first account from the mothers themselves.</strong>
+    </div>
+  </div>
+</div>
+
+<!-- ── PARTICIPANTS ── -->
+<div id="participants">
+  <div class="section">
+    <div class="eyebrow">Study Sample</div>
+    <h2 class="section-title">Who We Talked To</h2>
+
+    <div class="demo-row">
+      <div class="demo-tile">
+        <div class="num">34.1</div>
+        <div class="lbl">Mean age (range 24&ndash;43)</div>
+      </div>
+      <div class="demo-tile">
+        <div class="num">89%</div>
+        <div class="lbl">White non-Hispanic</div>
+      </div>
+      <div class="demo-tile">
+        <div class="num">79%</div>
+        <div class="lbl">Employed during pregnancy</div>
+      </div>
+      <div class="demo-tile">
+        <div class="num">89%</div>
+        <div class="lbl">Child living at time of interview</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>How diagnosis happened:</strong> Every participant was initially flagged at a routine anatomy scan. For most, a silent ultrasound technician and a cautious local OB left them waiting days or weeks before confirmation &mdash; a limbo period that nearly every mother described as one of the hardest parts of the entire experience.
+    </div>
+  </div>
+</div>
+
+<!-- ── SIX PRACTICES ── -->
+<div id="practices">
+  <div class="section">
+    <div class="eyebrow">Main Finding</div>
+    <h2 class="section-title">Six Practices That Shaped the Experience</h2>
+    <p class="section-intro">When these practices were present, mothers felt held by the system. When absent or inconsistent, mothers found themselves filling the gaps on their own.</p>
+
+    <div class="practices-list">
+
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="pnum">1</div>
+          <div class="pmeta">
+            <div class="pname">Proactive Coordinator Engagement</div>
+            <div class="pdesc">Care team reaches out early &mdash; before the mother has time to spiral without guidance.</div>
+          </div>
+        </div>
+        <div class="pcard-body">
+          <div class="pquote-row">
+            <div class="mavatar">&#x1F469;</div>
+            <div class="pquote">
+              &ldquo;I think the worst part of my pregnancy was knowing that something was going on and that I wasn&rsquo;t in a good place to get that taken care of. When I did finally get to talk to [children&rsquo;s hospital] and get in with them, it was like a huge weight lifted off my shoulders.&rdquo;
+              <cite>&mdash; Participant #61</cite>
+            </div>
+          </div>
+          <div class="pinsights">
+            <span class="pchip">&#x1F554; The window between suspicion and confirmation was one of the hardest moments</span>
+            <span class="pchip">&#x26A1; Early outreach transformed uncertainty into something navigable</span>
+            <span class="pchip">&#x1F91D; First contact set the tone for how held the mother would feel throughout</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="pnum">2</div>
+          <div class="pmeta">
+            <div class="pname">Coordinated Provider-to-Provider Communication</div>
+            <div class="pdesc">A dedicated coordinator bridges the care team &mdash; so the mother doesn&rsquo;t have to.</div>
+          </div>
+        </div>
+        <div class="pcard-body">
+          <div class="pquote-row">
+            <div class="mavatar">&#x1F469;</div>
+            <div class="pquote">
+              &ldquo;The case manager is what held it all together.&rdquo;
+              <cite>&mdash; Participant #56</cite>
+            </div>
+          </div>
+          <div class="pquote-row">
+            <div class="mavatar">&#x1F469;</div>
+            <div class="pquote">
+              &ldquo;I think the most positive thing and experience was like the level of coordination with the fetal center group.&rdquo;
+              <cite>&mdash; Participant #34</cite>
+            </div>
+          </div>
+          <div class="pinsights">
+            <span class="pchip">&#x1F517; Connected local OB, MFM, and specialty cardiology as one coherent picture</span>
+            <span class="pchip">&#x1F4DE; Served as the point of contact between appointments &mdash; mothers could reach out with questions</span>
+            <span class="pchip">&#x1F5C2;&#xFE0F; Relayed clinical updates so mothers didn&rsquo;t become the messenger between providers</span>
+            <span class="pchip">&#x1F5FA;&#xFE0F; Tracked where the family was in the journey and anticipated what was coming next</span>
+            <span class="pchip">&#x1F4AC; Reduced the emotional toll of re-explaining a complex diagnosis at each new encounter</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="pnum">3</div>
+          <div class="pmeta">
+            <div class="pname">Phased, Readiness-Based Information Delivery</div>
+            <div class="pdesc">Information arrives in emotionally sensitive stages &mdash; providers gauge readiness before advancing.</div>
+          </div>
+        </div>
+        <div class="pcard-body">
+          <div class="pquote-row">
+            <div class="mavatar">&#x1F469;</div>
+            <div class="pquote">
+              &ldquo;I really do think things went positive and got more exciting after we had gotten the actual CHD diagnosis and had a game plan. I think I could enjoy my pregnancy again.&rdquo;
+              <cite>&mdash; Participant #40</cite>
+            </div>
+          </div>
+          <div class="pinsights">
+            <span class="pchip">&#x1F4D0; Hand-drawn diagrams and visual tools made complex anatomy concrete without overwhelming</span>
+            <span class="pchip">&#x1F4AD; Even excellent delivery couldn&rsquo;t fully land when grief, fear, and shock were competing for the same mental space</span>
+            <span class="pchip">&#x23F1; Pacing across multiple contacts matters &mdash; a single session is rarely enough</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="pnum">4</div>
+          <div class="pmeta">
+            <div class="pname">Multidisciplinary Team Involvement</div>
+            <div class="pdesc">Specialists, social work, and practical guidance come together in an integrated encounter.</div>
+          </div>
+        </div>
+        <div class="pcard-body">
+          <div class="pquote-row">
+            <div class="mavatar">&#x1F469;</div>
+            <div class="pquote">
+              &ldquo;I had a full day with I think maybe like 7 specialists and doctors. I met with a social worker, a genetic counselor. And then we all sat down at a table&hellip; I was able to ask more questions just about my son&rsquo;s outlook and prognosis and what his life might look like.&rdquo;
+              <cite>&mdash; Participant #106</cite>
+            </div>
+          </div>
+          <div class="pinsights">
+            <span class="pchip">&#x1F91D; Integration mattered more than volume &mdash; seeing the team together was the value</span>
+            <span class="pchip">&#x1F9E9; Bundled visits reduced the sense that care was fragmented across disconnected providers</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="pnum">5</div>
+          <div class="pmeta">
+            <div class="pname">Peer Support and Guided Learning</div>
+            <div class="pdesc">Families are proactively connected to peer networks &mdash; not left to find them on their own.</div>
+          </div>
+        </div>
+        <div class="pcard-body">
+          <div class="pquote-row">
+            <div class="mavatar">&#x1F469;</div>
+            <div class="pquote">
+              &ldquo;You just build a strength that other people don&rsquo;t understand and a quality that they don&rsquo;t build&hellip; you become a different type of mom.&rdquo;
+              <cite>&mdash; Participant #40</cite>
+            </div>
+          </div>
+          <div class="pinsights">
+            <span class="pchip">&#x1F4AC; Peer communities offered the one space where no explanation was required</span>
+            <span class="pchip">&#x1F50D; Most mothers found these communities on their own &mdash; the care team rarely guided them there</span>
+            <span class="pchip">&#x26A0;&#xFE0F; Without guidance, online searching could lead to frightening worst-case encounters</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-head">
+          <div class="pnum">6</div>
+          <div class="pmeta">
+            <div class="pname">Birth Preparation</div>
+            <div class="pdesc">Emotional and practical preparation helps families arrive at delivery with confidence, not shock.</div>
+          </div>
+        </div>
+        <div class="pcard-body">
+          <div class="pquote-row">
+            <div class="mavatar">&#x1F469;</div>
+            <div class="pquote">
+              &ldquo;I learned the importance of advocating for him and I guess in turn, you know, like during the pregnancy, advocate for yourself too.&rdquo;
+              <cite>&mdash; Participant #29</cite>
+            </div>
+          </div>
+          <div class="pinsights">
+            <span class="pchip">&#x1F4CB; Good preparation built self-advocacy, not just information</span>
+            <span class="pchip">&#x1F3E5; NICU environment, separation, and monitoring needed concrete preview</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── TWO PATHWAYS ── -->
+<div id="pathways">
+  <div class="section">
+    <div class="eyebrow">Conceptual Framework</div>
+    <h2 class="section-title">The Two Maternal Pathways</h2>
+    <p class="pathway-intro">
+      These are not two types of mothers. They are <em>two care contexts</em> that mothers were placed in &mdash; often without choice. The same mother, in a different care context, follows a different path.
+    </p>
+
+    <div class="pathway-grid">
+      <div class="pathway good">
+        <div class="pathway-head">When the System Absorbs the Burden</div>
+        <ol>
+          <li>Early, proactive outreach &mdash; mother is not left waiting in the window between suspicion and care</li>
+          <li>Information is paced to emotional readiness, not delivered all at once</li>
+          <li>A coordinator serves as the consistent bridge &mdash; mother does not relay between providers</li>
+          <li>Specialists, social work, and guidance come together in an integrated encounter</li>
+          <li>Peer support resources are offered proactively &mdash; mother is guided, not left to search alone</li>
+          <li>Preparation before delivery helps the family arrive with confidence rather than shock</li>
+          <li>Resilience is scaffolded &mdash; providers help the mother mark milestones and maintain confidence</li>
+        </ol>
+        <div class="pathway-outcome">Confidence &middot; Preparedness &middot; Sense of being held by the system</div>
+      </div>
+
+      <div class="pathway gap">
+        <div class="pathway-head">When the Mother Fills the Gaps</div>
+        <ol>
+          <li>Late or fragmented referral &mdash; local provider limitations leave the mother in limbo</li>
+          <li>Information is delivered in volume, without pacing &mdash; overwhelm precedes understanding</li>
+          <li>No coordinator, or presence is inconsistent across the care journey</li>
+          <li>Mother must relay her own history between her local care team and the specialty center</li>
+          <li>Online searching is unsupported &mdash; outcomes vary by what she happens to find</li>
+          <li>No structured preparation before delivery &mdash; some realities of birth and NICU arrive as surprises</li>
+          <li>Mother must advocate for herself to access what should have been offered proactively</li>
+        </ol>
+        <div class="pathway-outcome">Chronic stress &middot; Unpreparedness &middot; Exhaustion from self-advocacy</div>
+      </div>
+    </div>
+
+    <div class="pathway-bridge">
+      <strong>Self-advocacy is not a personality trait.</strong> It is what happens when the system leaves gaps that the mother must fill herself.
+    </div>
+  </div>
+</div>
+
+<!-- ── RILEY CONFIRMATIONS ── -->
+<div id="riley">
+  <div class="section">
+    <div class="eyebrow">Member Checking &middot; March&ndash;April 2026</div>
+    <h2 class="section-title">What Riley&rsquo;s Care Coordinators Confirmed</h2>
+    <p class="section-intro">Three sessions with Riley/IU Health MFM care coordinators validated and deepened these findings.</p>
+
+    <div class="riley-grid">
+      <div class="rcard">
+        <div class="icon">&#x1F9ED;</div>
+        <div class="rtitle">Coordination Is Emotional Triage</div>
+        <div class="rtext">Coordinators actively pace information, gauge emotional readiness, and prevent worst-case spirals. <em>When</em> to give information is as important as what to give.</div>
+      </div>
+      <div class="rcard">
+        <div class="icon">&#x1F3E5;</div>
+        <div class="rtitle">The Care Conference Is a Major Bundled Intervention</div>
+        <div class="rtext">Not a meeting &mdash; a full-day structure integrating specialist access, scans, hospital tour, social work, financial guidance, and expectation-setting.</div>
+      </div>
+      <div class="rcard">
+        <div class="icon">&#x1F4CB;</div>
+        <div class="rtitle">Staged Communication Is the Key Practice</div>
+        <div class="rtext">A phased model: early contact &rarr; partial orientation at 20 weeks &rarr; fuller delivery at 28 weeks &rarr; nurse navigator renewal before birth.</div>
+      </div>
+      <div class="rcard">
+        <div class="icon">&#x1F50E;</div>
+        <div class="rtitle">&ldquo;Don&rsquo;t Google&rdquo; Should Become Guided Navigation</div>
+        <div class="rtext">The real message: keep track of questions, bring them back to providers, use trusted starting points. Riley currently lacks a branded patient education ecosystem.</div>
+      </div>
+      <div class="rcard">
+        <div class="icon">&#x1F4AA;</div>
+        <div class="rtitle">Resilience Is Provider-Scaffolded</div>
+        <div class="rtext">Coordinators actively help mothers celebrate milestones, normalize reactions, and maintain continuity with preferred providers. Resilience is built <em>together</em>.</div>
+      </div>
+      <div class="rcard">
+        <div class="icon">&#x1F3E0;</div>
+        <div class="rtitle">Hospital Preparation Is a Genuine Priority</div>
+        <div class="rtext">Families need concrete preparation for what the NICU looks like, how separation works, what monitoring tools are available. Coordinators invest real time here.</div>
+      </div>
+    </div>
+
+    <div class="riley-nuance">
+      <strong>Important nuance:</strong> Some of what mothers experience as &ldquo;above and beyond&rdquo; care at Riley depends on institutional infrastructure &mdash; staffing, programmatic support, social work availability, coordinator time. The findings should not attribute benefits only to individual provider goodwill. <strong>The system enables the people.</strong>
+    </div>
+  </div>
+</div>
+
+<!-- ── RESILIENCE / CTR ── -->
+<div id="resilience">
+  <div class="section">
+    <div class="eyebrow">Theoretical Framework</div>
+    <h2 class="section-title">How Mothers Built Resilience</h2>
+    <p class="section-intro">We applied Buzzanell&rsquo;s Communication Theory of Resilience (CTR) to the data &mdash; the first time CTR has been applied to prenatal CHD. All five processes were present.</p>
+
+    <table class="ctr-table">
+      <thead>
+        <tr>
+          <th style="width:38%">CTR Process</th>
+          <th>What it looks like in the data</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="ctr-process">Maintaining Communication Networks</span><span class="top-badge">Most prevalent</span>
+            <div class="ctr-desc">Using relationships &mdash; peers, family, providers &mdash; as a buffer and source of support</div>
+          </td>
+          <td>
+            <div class="ctr-examples">
+              <div class="ctr-ex">&#x1F4BB; Online CHD communities (Facebook groups, forums)</div>
+              <div class="ctr-ex">&#x1F91D; Peer connection with other CHD families</div>
+              <div class="ctr-ex">&#x1F3E0; Extended family networks</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span class="ctr-process">Foregrounding Productive Action</span>
+            <div class="ctr-desc">Directing energy toward what can be done, rather than what cannot be controlled</div>
+          </td>
+          <td>
+            <div class="ctr-examples">
+              <div class="ctr-ex">&#x1F4DA; Self-education and active research</div>
+              <div class="ctr-ex">&#x1F5C2;&#xFE0F; Organizational strategies (schedules, notes, questions)</div>
+              <div class="ctr-ex">&#x1F9E0; Seeking therapy or mental health support</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span class="ctr-process">Affirming Identity Anchors</span>
+            <div class="ctr-desc">Drawing on stable aspects of self &mdash; roles, values, expertise &mdash; to stay grounded</div>
+          </td>
+          <td>
+            <div class="ctr-examples">
+              <div class="ctr-ex">&#x1FA7A; Medical or healthcare background as a coping resource</div>
+              <div class="ctr-ex">&#x1F4AA; Claiming a strength or resilience identity</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span class="ctr-process">Crafting Normalcy</span>
+            <div class="ctr-desc">Creating routines and reframings that make everyday life feel manageable despite disruption</div>
+          </td>
+          <td>
+            <div class="ctr-examples">
+              <div class="ctr-ex">&#x1F4BC; Work as a source of distraction and routine</div>
+              <div class="ctr-ex">&#x1F46A; Prioritizing family time and ordinary moments</div>
+              <div class="ctr-ex">&#x1F501; Reframing the experience as something navigable</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span class="ctr-process">Developing Alternative Logics</span>
+            <div class="ctr-desc">Finding new frameworks for meaning &mdash; why this happened, what it means, what comes next</div>
+          </td>
+          <td>
+            <div class="ctr-examples">
+              <div class="ctr-ex">&#x1F4A1; Meaning-making and reframing the diagnosis</div>
+              <div class="ctr-ex">&#x1F331; Finding growth or purpose through the experience</div>
+              <div class="ctr-ex">&#x1F91D; Offering advice and solidarity to future CHD mothers</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="ctr-note">
+      <strong>Key finding:</strong> Mothers are not coping alone &mdash; they are coping <em>through relationships and communities.</em> Communication networks were the dominant resilience mechanism. When a mother finds her peer community, it doesn&rsquo;t just feel good. It is how she rebuilds.
+    </div>
+
+    <div class="ctr-aside">
+      <strong>A missed opportunity:</strong> Mothers sometimes attributed resilience to their baby (&ldquo;my baby is so strong&rdquo;) rather than to themselves. Providers can actively affirm maternal resilience in ordinary conversation &mdash; something coordinators can do without additional infrastructure.
+    </div>
+  </div>
+</div>
+
+<!-- ── IMPLICATIONS ── -->
+<div id="gaps">
+  <div class="section">
+    <div class="eyebrow">Research Implications</div>
+    <h2 class="section-title">What This Study Fills</h2>
+    <p class="section-intro">These findings sit at the intersection of two distinct gaps in the prenatal CHD literature.</p>
+
+    <div class="gaps-grid">
+      <div class="gap-block unevaluated">
+        <div class="gap-head">Practiced Everywhere, Evidence Nowhere</div>
+        <ul>
+          <li>Care coordinator presence is nearly universal across major fetal programs &mdash; but no formal evidence base exists for its effectiveness</li>
+          <li>Anatomical diagrams for CHD explanation &mdash; hand-drawn or electronic, used in nearly every account, completely unstudied</li>
+          <li>Prenatal hospital tours and NICU familiarization &mdash; practiced at major centers, no outcome data</li>
+          <li>Peer support programs such as Mended Little Hearts &mdash; widely endorsed and valued by mothers, no evaluative literature</li>
+        </ul>
+      </div>
+      <div class="gap-block undocumented">
+        <div class="gap-head">Documented Here for the First Time</div>
+        <ul>
+          <li>Guided self-research &mdash; &ldquo;Don&rsquo;t Google CHD&rdquo; reframed as structured information navigation toward trusted starting points</li>
+          <li>Spouse-shared care coordination &mdash; formal division of coordination tasks between partners</li>
+          <li>Work as coping mechanism &mdash; for some a stressor, for others a valued outlet and source of identity</li>
+          <li>Visual aids for explaining CHD to extended family &mdash; mothers create their own tools; no published literature</li>
+          <li>&ldquo;Unique wins&rdquo; reframing &mdash; extra ultrasounds and monitoring visits positioned as positive milestones</li>
+          <li>Healthcare professionals as patients &mdash; medical self-knowledge as both resource and source of heightened anxiety</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="teaser-card">
+      <div class="teaser-left">
+        <div class="teaser-label">Up Next &rarr;</div>
+        <div class="teaser-title">What This Means for Riley</div>
+        <div class="teaser-desc">The next section presents early-stage concept sketches as starting points for group discussion &mdash; not proposals. These are example directions the findings could point toward; the goal is to brainstorm together.</div>
+        <a href="https://presentation-a31876.gitlab.io/concept-sketches.html" class="teaser-link" target="_blank">View Concept Sketches &#x2192;</a>
+      </div>
+      <div class="teaser-concepts">
+        <div class="tconcept">
+          <div class="tnum">Example direction</div>
+          <div class="tname">Extended Family &amp; Friends Guide</div>
+          <div class="tdesc">A shareable resource helping relatives and friends understand how to support a family navigating a CHD diagnosis &mdash; what helps, and what unintentionally hurts.</div>
+        </div>
+        <div class="tconcept">
+          <div class="tnum">Example direction</div>
+          <div class="tname">Mother Support App or Chatbot</div>
+          <div class="tdesc">A digital tool bridging the gap between initial diagnosis and full care team engagement &mdash; curated information, guided peer connection, and readiness-based navigation.</div>
+        </div>
+        <div class="tconcept">
+          <div class="tnum">Example direction</div>
+          <div class="tname">OB Referral Decision Toolkit</div>
+          <div class="tdesc">A resource for OB offices that helps families understand their care options when a possible cardiac finding is detected &mdash; before they leave the exam room.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <p><strong>CHD Care Coordination Study</strong></p>
+    <p>N&nbsp;=&nbsp;19 &middot; 2,536 coded segments &middot; Indiana fetal cardiology patients &middot; Analysis completed April 2026</p>
+    <p>Prepared for Riley Hospital stakeholder meeting &middot; June 30, 2026</p>
+    <div class="refs">
+      <p>Rychik J, et al. (2013). Maternal psychological stress after prenatal diagnosis of congenital heart disease. <em>J Pediatr.</em> 162(2):302&ndash;7. [N=59; 39% traumatic stress, 31% state anxiety, 22% depression above clinical cut-offs.]</p>
+      <p>Woolf-King SE, et al. (2017). Mental health in parents of children with critical congenital heart disease: a systematic review. <em>J Am Heart Assoc.</em> 6(2):e004862. [30 studies; up to 30% PTSD, 25&ndash;50% depression/anxiety, mothers consistently more symptomatic than fathers.]</p>
+      <p>Patel SS, et al. (2025). Fetal Heart Society international benchmarking survey of fetal cardiac programs. [n=95 programs; 79% nurse coordinator, 38% psychology, 16% psychiatry.]</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

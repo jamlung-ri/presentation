@@ -1,0 +1,1530 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LOINC Change Request Governance and Workflow</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #536271;
+      --paper: #f7f8f5;
+      --panel: #ffffff;
+      --line: #cfd8dc;
+      --teal: #006d77;
+      --teal-soft: #d7f0ee;
+      --gold: #a56b00;
+      --gold-soft: #fff0c7;
+      --red: #b23a48;
+      --red-soft: #f8d7dc;
+      --green: #3d7a3f;
+      --green-soft: #dff0d8;
+      --blue: #2d5f9a;
+      --blue-soft: #dde9fb;
+      --violet: #6d4c8d;
+      --violet-soft: #eadff2;
+      --shadow: 0 24px 70px rgba(23, 32, 42, 0.14);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #1f252b;
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    .deck {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      display: none;
+      background: var(--paper);
+      padding: 5.3vh 6vw 9.5vh;
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .slide.active { display: grid; }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(0, 109, 119, 0.08), transparent 34%),
+        linear-gradient(180deg, rgba(165, 107, 0, 0.08), transparent 28%);
+      pointer-events: none;
+    }
+
+    .slide > * { position: relative; z-index: 1; }
+
+    .slide.center { place-items: center; text-align: center; }
+    .slide.title { grid-template-rows: 1fr; }
+    .slide.content { grid-template-rows: auto 1fr; gap: 3.4vh; }
+    .slide.split { grid-template-columns: 0.9fr 1.1fr; gap: 4vw; align-items: center; }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      font-size: clamp(52px, 7.4vw, 108px);
+      line-height: 0.98;
+      letter-spacing: 0;
+      color: var(--ink);
+      max-width: 13ch;
+    }
+
+    h2 {
+      font-size: clamp(38px, 5vw, 72px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      font-size: clamp(22px, 2.4vw, 34px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    p, li, td, th {
+      font-size: clamp(18px, 1.45vw, 26px);
+      line-height: 1.35;
+    }
+
+    .eyebrow {
+      color: var(--teal);
+      font-size: clamp(16px, 1.2vw, 21px);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 2vh;
+    }
+
+    .lede {
+      color: var(--muted);
+      font-size: clamp(24px, 2.25vw, 38px);
+      line-height: 1.22;
+      max-width: 34ch;
+      margin-top: 2.5vh;
+    }
+
+    .wide { max-width: 42ch; }
+    .compact { max-width: 30ch; }
+
+    .footer {
+      position: absolute;
+      left: 6vw;
+      right: 6vw;
+      bottom: 3vh;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #66727f;
+      font-size: 14px;
+      font-weight: 650;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-top: 1px solid rgba(83, 98, 113, 0.25);
+      padding-top: 2vh;
+    }
+
+    .slide-number {
+      color: var(--teal);
+      flex-shrink: 0;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .callout {
+      background: var(--panel);
+      border: 1px solid rgba(207, 216, 220, 0.95);
+      box-shadow: var(--shadow);
+      border-radius: 8px;
+      padding: clamp(24px, 3vw, 44px);
+    }
+
+    .rule-card {
+      background: #fff;
+      border-left: 10px solid var(--teal);
+      padding: clamp(28px, 3vw, 50px);
+      box-shadow: var(--shadow);
+      border-radius: 8px;
+      max-width: 930px;
+    }
+
+    .rule-card strong {
+      display: block;
+      font-size: clamp(34px, 4.6vw, 68px);
+      line-height: 1.03;
+      margin-bottom: 2.2vh;
+    }
+
+    .rule-card p {
+      color: var(--muted);
+      font-size: clamp(21px, 1.8vw, 30px);
+    }
+
+    .grid-2, .grid-3, .grid-4 {
+      display: grid;
+      gap: clamp(16px, 1.8vw, 28px);
+      align-content: start;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .tile {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(207, 216, 220, 0.95);
+      border-radius: 8px;
+      padding: clamp(18px, 2vw, 30px);
+      min-height: 160px;
+    }
+
+    .tile h3 { margin-bottom: 1.2vh; }
+    .tile p { color: var(--muted); font-size: clamp(16px, 1.25vw, 22px); }
+
+    .name-tile {
+      display: grid;
+      align-content: start;
+    }
+
+    .forum-name-field {
+      display: grid;
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    .forum-name-field span {
+      color: var(--teal);
+      font-size: clamp(12px, 0.85vw, 15px);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .forum-name-input {
+      width: 100%;
+      min-height: 78px;
+      resize: vertical;
+      border: 1px solid rgba(83, 98, 113, 0.35);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 10px 11px;
+      font: 15px/1.3 Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    .forum-name-input:focus {
+      outline: 3px solid rgba(0, 109, 119, 0.18);
+      border-color: var(--teal);
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: clamp(13px, 1vw, 16px);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 7px 10px;
+      border-radius: 999px;
+      margin-bottom: 1.6vh;
+      background: var(--teal-soft);
+      color: var(--teal);
+    }
+
+    .tag.gold { background: var(--gold-soft); color: var(--gold); }
+    .tag.red { background: var(--red-soft); color: var(--red); }
+    .tag.blue { background: var(--blue-soft); color: var(--blue); }
+    .tag.green { background: var(--green-soft); color: var(--green); }
+    .tag.violet { background: var(--violet-soft); color: var(--violet); }
+
+    .contrast-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2vw;
+      height: 100%;
+      align-items: stretch;
+    }
+
+    .contrast {
+      background: #fff;
+      border-radius: 8px;
+      padding: clamp(24px, 2.5vw, 42px);
+      border: 1px solid rgba(207, 216, 220, 0.95);
+    }
+
+    .contrast.good { border-top: 10px solid var(--green); }
+    .contrast.wait { border-top: 10px solid var(--gold); }
+
+    ul.clean {
+      margin: 2vh 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 1.2vh;
+    }
+
+    ul.clean li {
+      padding-left: 1.5em;
+      position: relative;
+      color: var(--muted);
+    }
+
+    ul.clean li::before {
+      content: "";
+      width: 0.55em;
+      height: 0.55em;
+      border-radius: 999px;
+      background: var(--teal);
+      position: absolute;
+      left: 0;
+      top: 0.43em;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-rows: 1fr;
+      gap: clamp(16px, 1.5vw, 24px);
+      align-items: stretch;
+      height: 100%;
+    }
+
+    .flow-card {
+      background: #fff;
+      border: 1px solid rgba(207, 216, 220, 0.95);
+      border-top: 8px solid var(--teal);
+      border-radius: 8px;
+      padding: clamp(18px, 1.7vw, 26px);
+      min-height: 0;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      position: relative;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .flow-card:not(:last-child)::after {
+      display: none;
+    }
+
+    .flow-card .step {
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--teal);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .flow-card strong {
+      font-size: clamp(18px, 1.35vw, 23px);
+      line-height: 1.15;
+      min-width: 0;
+    }
+
+    .flow-card span {
+      color: var(--muted);
+      font-size: clamp(14px, 1vw, 18px);
+      line-height: 1.25;
+      min-width: 0;
+    }
+
+    .decision-map {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(18px, 2vw, 32px);
+      align-items: stretch;
+    }
+
+    .pathway {
+      background: #fff;
+      border: 1px solid rgba(207, 216, 220, 0.95);
+      border-radius: 8px;
+      padding: clamp(22px, 2vw, 34px);
+      display: grid;
+      gap: 16px;
+    }
+
+    .pathway-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 18px;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(207, 216, 220, 0.8);
+    }
+
+    .pathway-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .pathway-row strong {
+      color: var(--teal);
+      font-size: clamp(16px, 1.15vw, 20px);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .pathway-row span {
+      color: var(--muted);
+      font-size: clamp(17px, 1.25vw, 22px);
+      line-height: 1.3;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 18px 45px rgba(23, 32, 42, 0.08);
+    }
+
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 17px 18px;
+      border-bottom: 1px solid rgba(207, 216, 220, 0.9);
+      font-size: clamp(16px, 1.15vw, 22px);
+    }
+
+    th {
+      background: var(--teal);
+      color: #fff;
+      font-size: clamp(15px, 1vw, 18px);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .matrix td:first-child {
+      font-weight: 800;
+      color: var(--ink);
+      width: 27%;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .pill {
+      border: 1px solid rgba(0, 109, 119, 0.25);
+      background: #fff;
+      color: var(--teal);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: clamp(15px, 1.05vw, 19px);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .handoff {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(18px, 2vw, 30px);
+      align-items: stretch;
+    }
+
+    .handoff-card {
+      background: #fff;
+      border: 1px solid rgba(207, 216, 220, 0.95);
+      border-radius: 8px;
+      padding: clamp(22px, 2.2vw, 34px);
+      min-height: 290px;
+      display: grid;
+      align-content: start;
+      gap: 18px;
+    }
+
+    .big-number {
+      font-size: clamp(46px, 5.5vw, 82px);
+      line-height: 0.9;
+      font-weight: 900;
+      color: var(--teal);
+    }
+
+    .sample-thread {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .sample-step {
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid rgba(207, 216, 220, 0.95);
+      padding: 20px;
+      min-height: 250px;
+    }
+
+    .sample-step h3 { font-size: clamp(20px, 1.7vw, 28px); }
+    .sample-step p { color: var(--muted); font-size: clamp(15px, 1.1vw, 19px); margin-top: 12px; }
+
+    .quote {
+      font-size: clamp(36px, 4.8vw, 72px);
+      line-height: 1.05;
+      font-weight: 900;
+      max-width: 18ch;
+    }
+
+    .discussion-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 22px;
+      align-items: end;
+    }
+
+    .discussion-header h2 {
+      max-width: 18ch;
+    }
+
+    .add-discussion {
+      width: auto;
+      height: auto;
+      border-radius: 6px;
+      border: 1px solid var(--teal);
+      background: var(--teal);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 850;
+      padding: 11px 14px;
+      white-space: nowrap;
+    }
+
+    .discussion-board {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      overflow-y: auto;
+      padding-right: 6px;
+      min-height: 0;
+    }
+
+    .discussion-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: start;
+      background: #fff;
+      border: 1px solid rgba(207, 216, 220, 0.95);
+      border-radius: 8px;
+      padding: 14px;
+      min-width: 0;
+    }
+
+    .discussion-field {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .discussion-field span {
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .discussion-input,
+    .discussion-notes {
+      width: 100%;
+      min-height: 74px;
+      resize: vertical;
+      border: 1px solid rgba(83, 98, 113, 0.35);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 10px 11px;
+      font: 15px/1.32 Inter, "Segoe UI", Arial, sans-serif;
+      overflow-wrap: anywhere;
+    }
+
+    .discussion-input:focus,
+    .discussion-notes:focus {
+      outline: 3px solid rgba(0, 109, 119, 0.18);
+      border-color: var(--teal);
+    }
+
+    .remove-discussion {
+      width: auto;
+      height: auto;
+      border-radius: 6px;
+      border: 1px solid rgba(178, 58, 72, 0.32);
+      background: #fff;
+      color: var(--red);
+      font-size: 13px;
+      font-weight: 850;
+      padding: 9px 10px;
+    }
+
+    .notes {
+      display: none;
+    }
+
+    .controls {
+      position: fixed;
+      right: 22px;
+      top: 18px;
+      z-index: 10;
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(23, 32, 42, 0.78);
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .comment-button.has-comments {
+      background: var(--gold);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .comment-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 20;
+      width: min(440px, 100vw);
+      height: 100vh;
+      background: #fff;
+      border-left: 1px solid rgba(207, 216, 220, 0.95);
+      box-shadow: -18px 0 55px rgba(23, 32, 42, 0.22);
+      padding: 24px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 18px;
+      transform: translateX(100%);
+      transition: transform 160ms ease;
+    }
+
+    .comment-panel.open {
+      transform: translateX(0);
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .comment-header h2 {
+      font-size: 28px;
+      line-height: 1.08;
+      max-width: none;
+    }
+
+    .comment-header p,
+    .comment-meta,
+    .comment-status {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .comment-close {
+      flex-shrink: 0;
+    }
+
+    .comment-panel button,
+    .file-action,
+    .comment-close {
+      width: auto;
+      height: auto;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 109, 119, 0.25);
+      background: #fff;
+      color: var(--teal);
+      font-size: 14px;
+      font-weight: 800;
+      padding: 9px 11px;
+    }
+
+    .comment-panel button.primary {
+      background: var(--teal);
+      color: #fff;
+      border-color: var(--teal);
+    }
+
+    .comment-panel button:disabled {
+      cursor: not-allowed;
+      color: #9aa6b2;
+      border-color: #d8dee4;
+      background: #f4f6f7;
+    }
+
+    .comment-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .comment-textarea {
+      width: 100%;
+      min-height: 310px;
+      resize: vertical;
+      border: 1px solid rgba(83, 98, 113, 0.35);
+      border-radius: 8px;
+      padding: 14px;
+      color: var(--ink);
+      font: 16px/1.4 Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    .comment-textarea:focus {
+      outline: 3px solid rgba(0, 109, 119, 0.18);
+      border-color: var(--teal);
+    }
+
+    .comment-footer {
+      display: grid;
+      gap: 10px;
+    }
+
+    .comment-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 19;
+      background: rgba(23, 32, 42, 0.28);
+      display: none;
+    }
+
+    .comment-backdrop.open {
+      display: block;
+    }
+
+    @media (max-width: 980px) {
+      body { overflow: auto; }
+      .deck, .slide { width: 100%; height: auto; min-height: 100vh; }
+      .slide { position: relative; display: grid; padding: 36px 22px 82px; overflow: visible; }
+      .slide:not(.active) { display: none; }
+      .slide.split { grid-template-columns: 1fr; gap: 28px; }
+      .grid-2, .grid-3, .grid-4, .contrast-panel, .decision-map, .handoff, .sample-thread { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr; }
+      .flow-card:not(:last-child)::after { display: none; }
+      .discussion-header,
+      .discussion-item { grid-template-columns: 1fr; }
+      .pathway-row { grid-template-columns: 1fr; gap: 7px; }
+      .footer { left: 22px; right: 22px; bottom: 24px; gap: 14px; flex-wrap: wrap; }
+      .controls { right: 14px; top: 12px; }
+      .comment-panel { padding: 20px; }
+    }
+
+    @media print {
+      @page { size: 16in 9in; margin: 0; }
+      body { background: #fff; overflow: visible; }
+      .deck { width: auto; height: auto; }
+      .slide, .slide.active {
+        display: grid !important;
+        position: relative;
+        width: 16in;
+        height: 9in;
+        page-break-after: always;
+        break-after: page;
+      }
+      .controls,
+      .comment-panel,
+      .comment-backdrop { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-label="LOINC Change Request Governance and Workflow slide deck">
+    <section class="slide title active">
+      <div>
+        <div class="eyebrow">LOINC Change Requests</div>
+        <h1>Governance and workflow</h1>
+        <p class="lede">How a proposed change becomes an approved, traceable decision and moves into implementation.</p>
+      </div>
+      <div class="footer"><span>Decisions repository onboarding</span><span class="slide-number">1 / 15</span></div>
+    </section>
+
+    <section class="slide center">
+      <div class="rule-card">
+        <strong>Nothing enters this repository until it is ready to be canon.</strong>
+        <p>The decisions repo is for durable rules, policies, production changes, historical backfills, and traceable handoffs. Exploratory work belongs elsewhere until there is a specific change to approve.</p>
+      </div>
+      <div class="footer"><span>The operating rule</span><span class="slide-number">2 / 15</span></div>
+    </section>
+
+    <section class="slide content">
+      <div>
+        <div class="eyebrow">What belongs here</div>
+        <h2>A Change Request is a commitment point.</h2>
+      </div>
+      <div class="contrast-panel">
+        <div class="contrast good">
+          <span class="tag green">Use a CR</span>
+          <h3>When the team is ready to approve a durable change</h3>
+          <ul class="clean">
+            <li>A modeling convention, validation rule, policy, or production workflow change</li>
+            <li>A project outcome moving into implementation</li>
+            <li>A prior decision that needs to be made searchable and traceable</li>
+            <li>Downstream documentation, validation, release, or communication work needs a decision anchor</li>
+          </ul>
+        </div>
+        <div class="contrast wait">
+          <span class="tag gold">Use another space</span>
+          <h3>When the work is still being shaped</h3>
+          <ul class="clean">
+            <li>The team is still comparing options</li>
+            <li>The work needs iterative design before there is a clear decision</li>
+            <li>The conversation is mainly task management</li>
+            <li>The issue would capture uncertainty instead of an approvable change</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer"><span>Boundary between discussion and canon</span><span class="slide-number">3 / 15</span></div>
+    </section>
+
+    <section class="slide content">
+      <div>
+        <div class="eyebrow">Forum levels</div>
+        <h2>Review happens at the level affected by the change.</h2>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 2fr; gap: 2vw; align-items: stretch;">
+        <div class="tile name-tile" style="border-top: 8px solid var(--teal); background: var(--teal-soft);">
+          <span class="tag">Internal leadership + advisors</span>
+          <h3>Default — all changes route here</h3>
+          <p>Modeling, policy, and governance decisions. Advisors are included as direct CAB reviewers. Sign-off is group consensus, not a single approver.</p>
+        </div>
+        <div style="display:grid; gap: 1.2vh; align-content: start;">
+          <div style="color: var(--muted); font-size: clamp(12px, 0.9vw, 15px); font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; padding-bottom: 0.6vh; border-bottom: 1px solid var(--line);">Additional input paths — managed by Tech Team off-thread</div>
+          <div style="display:grid; gap: 1vh;">
+            <div class="tile" style="display:grid; grid-template-columns: 160px 1fr; gap: 1.5vw; align-items: center; min-height: 0;">
+              <div><span class="tag blue">LOINC sub-teams</span><h3 style="margin-bottom:0;">Cross-team impact</h3></div>
+              <p style="color:var(--muted); font-size:clamp(15px,1.15vw,20px);">Release processes, tooling, or workflows used by multiple teams. Sub-team routing will be refined as the process matures.</p>
+            </div>
+            <div class="tile" style="display:grid; grid-template-columns: 160px 1fr; gap: 1.5vw; align-items: center; min-height: 0;">
+              <div><span class="tag violet">Committee</span><h3 style="margin-bottom:0;">Domain input</h3></div>
+              <p style="color:var(--muted); font-size:clamp(15px,1.15vw,20px);">Lab, survey, document ontology, or external partner standards. Tech Team collects input off-thread; committees do not review GitHub issues directly.</p>
+            </div>
+            <div class="tile" style="display:grid; grid-template-columns: 160px 1fr; gap: 1.5vw; align-items: center; min-height: 0;">
+              <div><span class="tag gold">Community</span><h3 style="margin-bottom:0;">Post-approval validation</h3></div>
+              <p style="color:var(--muted); font-size:clamp(15px,1.15vw,20px);">Used after internal approval for Large or Unknown scope changes. Tech Team posts to the LOINC Forum; community cannot reject a change.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer"><span>Forums are cumulative when needed</span><span class="slide-number">4 / 15</span></div>
+    </section>
+
+    <section class="slide content">
+      <div>
+        <div class="eyebrow">Triage — future routing</div>
+        <h2>As the process matures, routing will follow the impact of the change.</h2>
+      </div>
+      <div style="display:grid; gap: 1.4vh;">
+        <div style="background: var(--teal-soft); border: 1px solid rgba(0,109,119,0.3); border-left: 6px solid var(--teal); border-radius: 8px; padding: clamp(12px, 1.2vw, 18px) clamp(14px, 1.4vw, 22px);">
+          <strong style="color: var(--teal);">For now:</strong> <span style="color: var(--teal);">All changes route to Internal Leadership + Advisors, regardless of content area. The table below describes where routing is heading once the process is established.</span>
+        </div>
+        <table style="opacity: 0.75;">
+          <thead><tr><th>If the change affects…</th><th>Eventually routes to…</th></tr></thead>
+          <tbody>
+            <tr><td>Term modeling, naming rules, or field assignments</td><td>Internal leadership + advisors</td></tr>
+            <tr><td>A specific clinical domain</td><td>Internal leadership + advisors; Tech Team consults the relevant committee off-thread</td></tr>
+            <tr><td>Software, tooling, or release workflow</td><td>Internal leadership + advisors, with sub-team input as needed</td></tr>
+            <tr><td>An external partner standard</td><td>Internal leadership + advisors; Tech Team consults committee and partner representatives off-thread</td></tr>
+            <tr><td>Large or Unknown scope with uncertain user impact</td><td>Internal leadership + advisors, then optional community review via LOINC Forum</td></tr>
+            <tr><td>Data correction with no new rule or policy</td><td>Tech Team only, then ready-to-implement</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="footer"><span>Start broad, narrow as the process matures</span><span class="slide-number">5 / 15</span></div>
+    </section>
+
+    <section class="slide content">
+      <div>
+        <div class="eyebrow">Scope sizing</div>
+        <h2>Scope describes how broadly the change reaches, not how hard it is.</h2>
+      </div>
+      <table class="matrix">
+        <thead><tr><th>Size</th><th>Criteria</th></tr></thead>
+        <tbody>
+          <tr><td>Targeted</td><td>Affects a bounded, enumerable set of terms or a single workflow step. No new rule or policy established.</td></tr>
+          <tr><td>Moderate</td><td>Affects a named category of terms, a team workflow, or establishes or changes a rule. Impact is predictable but non-trivial.</td></tr>
+          <tr><td>Large</td><td>Affects a major section of LOINC content, cross-team workflows, public guidance, or a heuristic used broadly across many LOINCs.</td></tr>
+          <tr><td>Unknown</td><td>Scope cannot be reliably estimated before triage or implementation. Treat as Large for routing purposes.</td></tr>
+        </tbody>
+      </table>
+      <div class="footer"><span>Scope informs community review routing, not approval requirements</span><span class="slide-number">6 / 15</span></div>
+    </section>
+
+    <section class="slide content">
+      <div>
+        <div class="eyebrow">End-to-end flow</div>
+        <h2>Every CR moves through six practical stages.</h2>
+      </div>
+      <div class="flow">
+        <div class="flow-card"><span class="step">Step 1</span><strong>Open and triage</strong><span>Assign type, scope, urgency, labels, and reviewer path.</span></div>
+        <div class="flow-card"><span class="step">Step 2</span><strong>CAB review</strong><span>Apply cab-pending, post the review comment, and tag reviewers.</span></div>
+        <div class="flow-card"><span class="step">Step 3</span><strong>Decision record</strong><span>Draft YYYY-MM-DEC-NNN.md, review via PR, merge to main, and update the index.</span></div>
+        <div class="flow-card"><span class="step">Step 4</span><strong>Recommendations</strong><span>Finalize downstream recommendations in the CR issue.</span></div>
+        <div class="flow-card"><span class="step">Step 5</span><strong>Implementation</strong><span>Create child issues or record external tracking.</span></div>
+        <div class="flow-card"><span class="step">Step 6</span><strong>Closure</strong><span>Close once all work is resolved or linked.</span></div>
+      </div>
+      <div class="footer"><span>From proposal to traceable implementation</span><span class="slide-number">7 / 15</span></div>
+    </section>
+
+    <section class="slide content">
+      <div>
+        <div class="eyebrow">CAB outcomes</div>
+        <h2>The review window creates one of three outcomes.</h2>
+      </div>
+      <div class="grid-3">
+        <div class="tile">
+          <span class="tag green">Approved</span>
+          <h3>Move toward canon</h3>
+          <p>Apply cab-approved. If community review is not needed, proceed to decision record and downstream planning.</p>
+        </div>
+        <div class="tile">
+          <span class="tag red">Rejected</span>
+          <h3>Close with rationale</h3>
+          <p>Close the CR issue and preserve the reason so future proposals can understand the decision context.</p>
+        </div>
+        <div class="tile">
+          <span class="tag gold">Needs discussion</span>
+          <h3>Return to active review</h3>
+          <p>Apply back-for-discussion, extend or reopen the review window, re-ping reviewers, and escalate to a meeting if consensus still does not form.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Back-for-discussion is active, not deferred</span><span class="slide-number">8 / 15</span></div>
+    </section>
+
+    <section class="slide split">
+      <div>
+        <div class="eyebrow">Community review</div>
+        <h2>Community feedback informs the decision; it does not replace approval.</h2>
+        <p class="lede compact">Use this optional step after internal approval when Large or Unknown scope changes may have uncertain user-facing impact.</p>
+      </div>
+      <div class="callout">
+        <div class="pathway">
+          <div class="pathway-row"><strong>Request</strong><span>Reviewer adds "request community review" to the approval comment.</span></div>
+          <div class="pathway-row"><strong>Post</strong><span>Tech Team applies community-review and posts a plain-language summary to the LOINC Community Forum.</span></div>
+          <div class="pathway-row"><strong>Wait</strong><span>Allow a two-week response window.</span></div>
+          <div class="pathway-row"><strong>Resolve</strong><span>No substantive objections proceed to implementation; concerns return to back-for-discussion.</span></div>
+        </div>
+      </div>
+      <div class="footer"><span>Authority remains with internal leadership</span><span class="slide-number">9 / 15</span></div>
+    </section>
+
+    <section class="slide content">
+      <div>
+        <div class="eyebrow">Decision categories</div>
+        <h2>The category tells reviewers what kind of artifact they are approving.</h2>
+      </div>
+      <div class="grid-3">
+        <div class="tile"><span class="tag">Modeling convention</span><p>Normative rules for how LOINC terms should be modeled.</p></div>
+        <div class="tile"><span class="tag blue">Validation rule</span><p>Machine-checkable rules tied to a modeling convention or rationale.</p></div>
+        <div class="tile"><span class="tag green">Operational rule</span><p>Recurring team practices, ownership rules, or workflow changes.</p></div>
+        <div class="tile"><span class="tag gold">Release policy</span><p>Release numbering, cadence, publication rules, or monthly release process changes.</p></div>
+        <div class="tile"><span class="tag violet">Public guidance</span><p>Changes to Users' Guide, Community Forum, FAQ, release notes, or other user-facing guidance.</p></div>
+        <div class="tile"><span class="tag red">Historical backfill</span><p>Prior decisions reconstructed from transcripts, meeting notes, or Basecamp threads.</p></div>
+      </div>
+      <div class="footer"><span>Project gates enter when outcomes are ready for production</span><span class="slide-number">10 / 15</span></div>
+    </section>
+
+    <section class="slide content">
+      <div>
+        <div class="eyebrow">Downstream work</div>
+        <h2>Approval is not the finish line; it starts the handoff.</h2>
+      </div>
+      <table class="matrix">
+        <thead><tr><th>Decision type</th><th>Common downstream artifacts</th></tr></thead>
+        <tbody>
+          <tr><td>Modeling convention</td><td>modeling-conventions, validation-rules if checkable, Users' Guide, examples, release notes</td></tr>
+          <tr><td>Validation rule</td><td>validation-rules, linked modeling convention, release notes if user-visible</td></tr>
+          <tr><td>Public guidance</td><td>Users' Guide, FAQ, Community Forum, release notes</td></tr>
+          <tr><td>Release policy</td><td>Release runbook, internal schedule or milestone docs, release notes if user-visible</td></tr>
+          <tr><td>Operational rule</td><td>Internal process documentation and team notifications</td></tr>
+          <tr><td>Historical backfill</td><td>Decision record source links, targeted data correction tasks, modeling-conventions if normative</td></tr>
+        </tbody>
+      </table>
+      <div class="footer"><span>Every approved decision needs traceable follow-through</span><span class="slide-number">11 / 15</span></div>
+    </section>
+
+    <section class="slide content">
+      <div>
+        <div class="eyebrow">Roles</div>
+        <h2>Each group has a distinct job in the workflow.</h2>
+      </div>
+      <div class="handoff">
+        <div class="handoff-card">
+          <div class="big-number">1</div>
+          <h3>Requester</h3>
+          <p>Opens a clear CR with enough context to make the proposed change approvable.</p>
+        </div>
+        <div class="handoff-card">
+          <div class="big-number">2</div>
+          <h3>Internal leadership + advisors</h3>
+          <p>Primary CAB reviewers. Approve, reject, request more discussion, or request community review when user impact is uncertain. Almost all changes route here.</p>
+        </div>
+        <div class="handoff-card">
+          <div class="big-number">3</div>
+          <h3>Tech Team</h3>
+          <p>Manages labels, review comments, decision records, task spawning, external tracking, and closure hygiene.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Governance succeeds when handoffs are explicit</span><span class="slide-number">12 / 15</span></div>
+    </section>
+
+    <section class="slide content">
+      <div>
+        <div class="eyebrow">Example path</div>
+        <h2>Survey parent questions and OrdObs tests the full workflow.</h2>
+      </div>
+      <div class="sample-thread">
+        <div class="sample-step"><span class="tag">Triage</span><h3>Modeling convention plus validation rule</h3><p>Route to internal leadership and relevant survey or clinical domain expertise.</p></div>
+        <div class="sample-step"><span class="tag blue">Review</span><h3>CAB resolves the rule</h3><p>Reviewers approve, request more discussion, or ask for community review if impact is uncertain.</p></div>
+        <div class="sample-step"><span class="tag green">Record</span><h3>Create the decision file</h3><p>Commit the canonical decision and update the index so the rule is discoverable.</p></div>
+        <div class="sample-step"><span class="tag gold">Implement</span><h3>Spawn downstream tasks</h3><p>Update modeling conventions, validation rules, Users' Guide text, examples, and release notes if visible.</p></div>
+      </div>
+      <div class="footer"><span>Pilot walkthrough shape</span><span class="slide-number">13 / 15</span></div>
+    </section>
+
+    <section class="slide split">
+      <div>
+        <div class="eyebrow">What users should remember</div>
+        <h2>The repo is a decision system, not a discussion archive.</h2>
+      </div>
+      <div class="callout">
+        <div class="pill-list">
+          <span class="pill">Canon only</span>
+          <span class="pill">Triage by impact</span>
+          <span class="pill">Consensus review</span>
+          <span class="pill">Community review is optional</span>
+          <span class="pill">Back-for-discussion stays active</span>
+          <span class="pill">Decision records anchor downstream work</span>
+          <span class="pill">Close only when work is resolved or linked</span>
+        </div>
+      </div>
+      <div class="footer"><span>Operating memory</span><span class="slide-number">14 / 15</span></div>
+    </section>
+
+    <section class="slide content discussion-slide">
+      <div class="discussion-header">
+        <div>
+        <div class="eyebrow">Discussion</div>
+          <h2>Questions and decisions to settle during the pilot.</h2>
+        </div>
+        <button type="button" class="add-discussion" id="addDiscussionQuestion">Add question</button>
+      </div>
+      <div class="discussion-board" id="discussionBoard" aria-label="Discussion questions and notes"></div>
+      <div class="footer"><span>Open questions</span><span class="slide-number">15 / 15</span></div>
+    </section>
+  </main>
+
+  <div class="controls">
+    <button type="button" id="prev" title="Previous slide">&lsaquo;</button>
+    <button type="button" id="next" title="Next slide">&rsaquo;</button>
+    <button type="button" id="commentsToggle" class="comment-button" title="Slide comments">C</button>
+  </div>
+
+  <div class="comment-backdrop" id="commentBackdrop"></div>
+  <aside class="comment-panel" id="commentPanel" aria-label="Slide comments" aria-hidden="true">
+    <div class="comment-header">
+      <div>
+        <h2>Slide comments</h2>
+        <p id="commentSlideTitle">Slide 1</p>
+      </div>
+      <button type="button" class="comment-close" id="commentsClose">Close</button>
+    </div>
+
+    <div class="comment-tools">
+      <button type="button" id="openCommentsFile">Open file</button>
+      <button type="button" id="saveCommentsFile" class="primary">Save file</button>
+      <button type="button" id="exportComments">Export</button>
+      <button type="button" id="importComments">Import</button>
+      <input type="file" id="commentsFileInput" accept="application/json,.json" hidden />
+    </div>
+
+    <label>
+      <span class="comment-meta" id="commentMeta">Feedback for the current slide</span>
+      <textarea class="comment-textarea" id="commentText" placeholder="Type team feedback for this slide..."></textarea>
+    </label>
+
+    <div class="comment-footer">
+      <div class="comment-status" id="commentStatus">Comments autosave in this browser. Export or save a JSON file to share them.</div>
+      <button type="button" id="clearCurrentComment">Clear current slide comment</button>
+    </div>
+  </aside>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const storageKey = 'loinc-cab-governance-workflow-comments-v1';
+    const forumNameStorageKey = 'loinc-cab-governance-workflow-forum-names-v1';
+    const discussionStorageKey = 'loinc-cab-governance-workflow-discussion-v1';
+    const commentsToggle = document.getElementById('commentsToggle');
+    const commentsClose = document.getElementById('commentsClose');
+    const commentPanel = document.getElementById('commentPanel');
+    const commentBackdrop = document.getElementById('commentBackdrop');
+    const commentText = document.getElementById('commentText');
+    const commentSlideTitle = document.getElementById('commentSlideTitle');
+    const commentMeta = document.getElementById('commentMeta');
+    const commentStatus = document.getElementById('commentStatus');
+    const commentsFileInput = document.getElementById('commentsFileInput');
+    const openCommentsFile = document.getElementById('openCommentsFile');
+    const saveCommentsFile = document.getElementById('saveCommentsFile');
+    const exportComments = document.getElementById('exportComments');
+    const importComments = document.getElementById('importComments');
+    const clearCurrentComment = document.getElementById('clearCurrentComment');
+    const forumNameInputs = Array.from(document.querySelectorAll('[data-forum-name]'));
+    const discussionBoard = document.getElementById('discussionBoard');
+    const addDiscussionQuestion = document.getElementById('addDiscussionQuestion');
+    let commentsFileHandle = null;
+    let comments = loadComments();
+    let forumNames = loadForumNames();
+    let discussionQuestions = loadDiscussionQuestions();
+    let current = 0;
+
+    function show(index) {
+      saveCurrentComment();
+      current = Math.max(0, Math.min(slides.length - 1, index));
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+      const hash = String(current + 1).padStart(2, '0');
+      history.replaceState(null, '', '#' + hash);
+      renderCommentPanel();
+    }
+
+    function fromHash() {
+      const n = Number(location.hash.replace('#', ''));
+      if (Number.isFinite(n) && n >= 1 && n <= slides.length) show(n - 1);
+    }
+
+    function getSlideTitle(index) {
+      const slide = slides[index];
+      const heading = slide.querySelector('h1, h2, .quote');
+      const footer = slide.querySelector('.footer span:first-child');
+      return (heading || footer || slide).textContent.trim();
+    }
+
+    function loadComments() {
+      try {
+        return JSON.parse(localStorage.getItem(storageKey)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function defaultForumNames() {
+      return {
+        'internal-leadership': 'Leadership: Steven, Eza, April, Marjorie\nAdvisors: Rob Standing',
+        'loinc-all-team': 'Steven, Eza, April, Marjorie, Jennifer, Geoffrey, Elizabeth, Felicia, Tim, Joe',
+        'committee': 'Laboratory: Pam Banning\nClinical: Stan Huff, W. Ted Klein\nDocument Ontology: Robert McClure, Anil Patel\nNursing: Jessica Cronin, Randy Woodward\nRadiology: Ken Wang'
+      };
+    }
+
+    function loadForumNames() {
+      try {
+        const saved = localStorage.getItem(forumNameStorageKey);
+        return saved ? JSON.parse(saved) : defaultForumNames();
+      } catch {
+        return defaultForumNames();
+      }
+    }
+
+    function defaultDiscussionQuestions() {
+      return [
+        {
+          id: 'discussion-1',
+          question: 'Which meetings should routinely produce transcript review and Change Request extraction?',
+          notes: ''
+        },
+        {
+          id: 'discussion-2',
+          question: 'Where should non-GitHub downstream tasks be tracked, and how should those links be recorded?',
+          notes: ''
+        },
+        {
+          id: 'discussion-3',
+          question: 'Who confirms that a proposed change is ready to be canon before a CR is opened?',
+          notes: ''
+        },
+        {
+          id: 'discussion-4',
+          question: 'When should a Large or Unknown scope change request community review?',
+          notes: ''
+        }
+      ];
+    }
+
+    function loadDiscussionQuestions() {
+      try {
+        const saved = localStorage.getItem(discussionStorageKey);
+        return saved ? JSON.parse(saved) : defaultDiscussionQuestions();
+      } catch {
+        return defaultDiscussionQuestions();
+      }
+    }
+
+    function createDiscussionQuestion(question, notes) {
+      return {
+        id: 'discussion-' + Date.now() + '-' + Math.round(Math.random() * 100000),
+        question: question || '',
+        notes: notes || ''
+      };
+    }
+
+    function persistDiscussionQuestions() {
+      localStorage.setItem(discussionStorageKey, JSON.stringify(discussionQuestions));
+    }
+
+    function saveDiscussionQuestions() {
+      discussionQuestions = Array.from(discussionBoard.querySelectorAll('.discussion-item')).map((item) => ({
+        id: item.dataset.discussionId,
+        question: item.querySelector('.discussion-input').value || '',
+        notes: item.querySelector('.discussion-notes').value || ''
+      }));
+      persistDiscussionQuestions();
+    }
+
+    function renderDiscussionQuestions() {
+      discussionBoard.replaceChildren();
+      discussionQuestions.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = 'discussion-item';
+        row.dataset.discussionId = item.id || createDiscussionQuestion().id;
+
+        const questionLabel = document.createElement('label');
+        questionLabel.className = 'discussion-field';
+        const questionCaption = document.createElement('span');
+        questionCaption.textContent = 'Question ' + (index + 1);
+        const questionInput = document.createElement('textarea');
+        questionInput.className = 'discussion-input';
+        questionInput.value = item.question || '';
+        questionInput.placeholder = 'Add a discussion question...';
+        questionInput.setAttribute('aria-label', 'Discussion question ' + (index + 1));
+        questionLabel.append(questionCaption, questionInput);
+
+        const notesLabel = document.createElement('label');
+        notesLabel.className = 'discussion-field';
+        const notesCaption = document.createElement('span');
+        notesCaption.textContent = 'Answers / notes';
+        const notesInput = document.createElement('textarea');
+        notesInput.className = 'discussion-notes';
+        notesInput.value = item.notes || '';
+        notesInput.placeholder = 'Add answers, decisions, or follow-up notes...';
+        notesInput.setAttribute('aria-label', 'Answers and notes for discussion question ' + (index + 1));
+        notesLabel.append(notesCaption, notesInput);
+
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'remove-discussion';
+        removeButton.textContent = 'Remove';
+        removeButton.setAttribute('aria-label', 'Remove discussion question ' + (index + 1));
+
+        row.append(questionLabel, notesLabel, removeButton);
+        discussionBoard.append(row);
+      });
+    }
+
+    function buildForumNamesPayload() {
+      const payload = {};
+      forumNameInputs.forEach((input) => {
+        const key = input.dataset.forumName;
+        const value = String(forumNames[key] || '').trim();
+        if (value) payload[key] = value;
+      });
+      return payload;
+    }
+
+    function persistForumNames() {
+      localStorage.setItem(forumNameStorageKey, JSON.stringify(forumNames));
+    }
+
+    function saveForumNames() {
+      forumNameInputs.forEach((input) => {
+        const key = input.dataset.forumName;
+        const value = input.value || '';
+        if (value.trim()) {
+          forumNames[key] = value;
+        } else {
+          delete forumNames[key];
+        }
+      });
+      persistForumNames();
+    }
+
+    function renderForumNames() {
+      forumNameInputs.forEach((input) => {
+        input.value = forumNames[input.dataset.forumName] || '';
+      });
+    }
+
+    function buildCommentsPayload() {
+      saveForumNames();
+      saveDiscussionQuestions();
+      return {
+        deck: 'LOINC Change Request Governance and Workflow',
+        source: 'cab-governance-workflow.html',
+        updatedAt: new Date().toISOString(),
+        forumNames: buildForumNamesPayload(),
+        discussionQuestions: discussionQuestions.filter((item) =>
+          String(item.question || '').trim() || String(item.notes || '').trim()
+        ),
+        comments: slides.map((slide, index) => ({
+          slide: index + 1,
+          title: getSlideTitle(index),
+          text: comments[index + 1] || ''
+        })).filter((item) => item.text.trim().length > 0)
+      };
+    }
+
+    function applyCommentsPayload(payload) {
+      const nextComments = {};
+      if (payload && Array.isArray(payload.comments)) {
+        payload.comments.forEach((item) => {
+          const slideNumber = Number(item.slide);
+          if (Number.isInteger(slideNumber) && slideNumber >= 1 && slideNumber <= slides.length) {
+            nextComments[slideNumber] = String(item.text || '');
+          }
+        });
+      }
+      comments = nextComments;
+      if (payload && payload.forumNames && typeof payload.forumNames === 'object') {
+        forumNames = {};
+        forumNameInputs.forEach((input) => {
+          const key = input.dataset.forumName;
+          if (Object.prototype.hasOwnProperty.call(payload.forumNames, key)) {
+            forumNames[key] = String(payload.forumNames[key] || '');
+          }
+        });
+        persistForumNames();
+        renderForumNames();
+      }
+      if (payload && Array.isArray(payload.discussionQuestions)) {
+        discussionQuestions = payload.discussionQuestions.map((item) => ({
+          id: String(item.id || createDiscussionQuestion().id),
+          question: String(item.question || ''),
+          notes: String(item.notes || '')
+        }));
+        persistDiscussionQuestions();
+        renderDiscussionQuestions();
+      }
+      persistComments('Imported comments.');
+      renderCommentPanel();
+    }
+
+    function persistComments(message) {
+      localStorage.setItem(storageKey, JSON.stringify(comments));
+      updateCommentMarkers();
+      if (message) commentStatus.textContent = message;
+    }
+
+    function saveCurrentComment() {
+      const value = commentText.value || '';
+      if (value.trim()) {
+        comments[current + 1] = value;
+      } else {
+        delete comments[current + 1];
+      }
+      persistComments();
+    }
+
+    function renderCommentPanel() {
+      const slideNumber = current + 1;
+      commentSlideTitle.textContent = 'Slide ' + slideNumber + ': ' + getSlideTitle(current);
+      commentMeta.textContent = 'Feedback for slide ' + slideNumber + ' of ' + slides.length;
+      commentText.value = comments[slideNumber] || '';
+      updateCommentMarkers();
+    }
+
+    function updateCommentMarkers() {
+      const hasAnyComments = Object.values(comments).some((text) => String(text).trim().length > 0);
+      const hasCurrentComment = String(comments[current + 1] || '').trim().length > 0;
+      commentsToggle.classList.toggle('has-comments', hasAnyComments);
+      commentsToggle.title = hasCurrentComment ? 'Slide comments: current slide has feedback' : 'Slide comments';
+    }
+
+    function setPanelOpen(open) {
+      commentPanel.classList.toggle('open', open);
+      commentBackdrop.classList.toggle('open', open);
+      commentPanel.setAttribute('aria-hidden', String(!open));
+      if (open) {
+        renderCommentPanel();
+        commentText.focus();
+      } else {
+        saveCurrentComment();
+      }
+    }
+
+    function downloadComments() {
+      saveCurrentComment();
+      const payload = buildCommentsPayload();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const date = new Date().toISOString().slice(0, 10);
+      link.href = url;
+      link.download = 'cab-governance-workflow-comments-' + date + '.json';
+      link.click();
+      URL.revokeObjectURL(url);
+      commentStatus.textContent = 'Exported comments JSON.';
+    }
+
+    async function saveCommentsToFile() {
+      saveCurrentComment();
+      const payload = buildCommentsPayload();
+      if (!commentsFileHandle && 'showSaveFilePicker' in window) {
+        commentsFileHandle = await window.showSaveFilePicker({
+          suggestedName: 'cab-governance-workflow-comments.json',
+          types: [{
+            description: 'JSON comments file',
+            accept: { 'application/json': ['.json'] }
+          }]
+        });
+      }
+
+      if (!commentsFileHandle) {
+        downloadComments();
+        commentStatus.textContent = 'Direct file save is unavailable here, so comments were exported as JSON.';
+        return;
+      }
+
+      const writable = await commentsFileHandle.createWritable();
+      await writable.write(JSON.stringify(payload, null, 2));
+      await writable.close();
+      commentStatus.textContent = 'Saved comments file.';
+    }
+
+    async function openCommentsFromFile() {
+      if (!('showOpenFilePicker' in window)) {
+        commentsFileInput.click();
+        return;
+      }
+
+      const handles = await window.showOpenFilePicker({
+        multiple: false,
+        types: [{
+          description: 'JSON comments file',
+          accept: { 'application/json': ['.json'] }
+        }]
+      });
+      commentsFileHandle = handles[0];
+      const file = await commentsFileHandle.getFile();
+      applyCommentsPayload(JSON.parse(await file.text()));
+      commentStatus.textContent = 'Opened comments file: ' + file.name;
+    }
+
+    function importSelectedFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          applyCommentsPayload(JSON.parse(String(reader.result || '{}')));
+          commentStatus.textContent = 'Imported comments file: ' + file.name;
+        } catch {
+          commentStatus.textContent = 'Could not import comments file.';
+        }
+        commentsFileInput.value = '';
+      };
+      reader.onerror = () => {
+        commentStatus.textContent = 'Could not read comments file.';
+        commentsFileInput.value = '';
+      };
+      reader.readAsText(file);
+    }
+
+    document.getElementById('prev').addEventListener('click', () => show(current - 1));
+    document.getElementById('next').addEventListener('click', () => show(current + 1));
+    commentsToggle.addEventListener('click', () => setPanelOpen(!commentPanel.classList.contains('open')));
+    commentsClose.addEventListener('click', () => setPanelOpen(false));
+    commentBackdrop.addEventListener('click', () => setPanelOpen(false));
+    commentText.addEventListener('input', () => {
+      saveCurrentComment();
+      commentStatus.textContent = 'Autosaved in this browser.';
+    });
+    clearCurrentComment.addEventListener('click', () => {
+      commentText.value = '';
+      saveCurrentComment();
+      commentStatus.textContent = 'Cleared the current slide comment.';
+    });
+    exportComments.addEventListener('click', downloadComments);
+    importComments.addEventListener('click', () => commentsFileInput.click());
+    commentsFileInput.addEventListener('change', () => importSelectedFile(commentsFileInput.files[0]));
+    forumNameInputs.forEach((input) => {
+      input.addEventListener('input', () => {
+        saveForumNames();
+      });
+    });
+    addDiscussionQuestion.addEventListener('click', () => {
+      saveDiscussionQuestions();
+      discussionQuestions.push(createDiscussionQuestion());
+      persistDiscussionQuestions();
+      renderDiscussionQuestions();
+      const lastQuestion = discussionBoard.querySelector('.discussion-item:last-child .discussion-input');
+      if (lastQuestion) lastQuestion.focus();
+    });
+    discussionBoard.addEventListener('input', () => {
+      saveDiscussionQuestions();
+    });
+    discussionBoard.addEventListener('click', (event) => {
+      if (!event.target.classList.contains('remove-discussion')) return;
+      const row = event.target.closest('.discussion-item');
+      if (!row) return;
+      row.remove();
+      saveDiscussionQuestions();
+      renderDiscussionQuestions();
+    });
+    openCommentsFile.addEventListener('click', async () => {
+      try {
+        await openCommentsFromFile();
+      } catch (error) {
+        commentStatus.textContent = 'Could not open comments file.';
+      }
+    });
+    saveCommentsFile.addEventListener('click', async () => {
+      try {
+        await saveCommentsToFile();
+      } catch (error) {
+        commentStatus.textContent = 'Could not save comments file.';
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && commentPanel.classList.contains('open')) {
+        setPanelOpen(false);
+        return;
+      }
+      if (event.target.matches('input, textarea, select') || event.target.isContentEditable) return;
+      const forward = ['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'];
+      const backward = ['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'];
+      if (forward.includes(event.key)) {
+        event.preventDefault();
+        show(current + 1);
+      }
+      if (backward.includes(event.key)) {
+        event.preventDefault();
+        show(current - 1);
+      }
+    });
+
+    window.addEventListener('hashchange', fromHash);
+    renderDiscussionQuestions();
+    fromHash();
+    renderForumNames();
+    renderCommentPanel();
+  </script>
+</body>
+</html>
+
