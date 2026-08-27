@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOINC Monthly Release Readout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ---------- reset ---------- */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body, h1, h2, h3, h4, p, ul, ol, li, figure, table, th, td { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
+  img, svg { display: block; max-width: 100%; }
+  a { color: inherit; }
+  table { border-collapse: collapse; width: 100%; }
+
+  /* ---------- tokens: light (default) ---------- */
+  :root {
+    --paper: #F1F4F4;
+    --paper-raised: #FFFFFF;
+    --ink: #131A1D;
+    --ink-soft: #4B5A5E;
+    --ink-faint: #7C8A8D;
+    --line: #D7DEDE;
+    --accent: #146B6E;
+    --accent-soft: #DDEEEE;
+    --accent-ink: #0D4E50;
+    --amber: #9C5B14;
+    --amber-soft: #F5E7D3;
+    --amber-ink: #6E3F0C;
+    --code-bg: #E7EDED;
+    --shadow: rgba(20,40,42,0.10);
+    --stripe: #F7F9F9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0F1518;
+      --paper-raised: #171F23;
+      --ink: #E7EEEE;
+      --ink-soft: #A9B7B9;
+      --ink-faint: #77878A;
+      --line: #29343A;
+      --accent: #62CBCA;
+      --accent-soft: #16302F;
+      --accent-ink: #8EDEDD;
+      --amber: #E3A25A;
+      --amber-soft: #33230F;
+      --amber-ink: #F0BB80;
+      --code-bg: #1A2226;
+      --shadow: rgba(0,0,0,0.45);
+      --stripe: #141B1E;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0F1518;
+    --paper-raised: #171F23;
+    --ink: #E7EEEE;
+    --ink-soft: #A9B7B9;
+    --ink-faint: #77878A;
+    --line: #29343A;
+    --accent: #62CBCA;
+    --accent-soft: #16302F;
+    --accent-ink: #8EDEDD;
+    --amber: #E3A25A;
+    --amber-soft: #33230F;
+    --amber-ink: #F0BB80;
+    --code-bg: #1A2226;
+    --shadow: rgba(0,0,0,0.45);
+    --stripe: #141B1E;
+  }
+
+  /* ---------- base ---------- */
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    text-wrap: balance;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  code, .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  ::selection { background: var(--accent-soft); color: var(--accent-ink); }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ---------- layout shell ---------- */
+  .shell {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  nav.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 40px 18px 40px 28px;
+    border-right: 1px solid var(--line);
+  }
+  .toc-eyebrow {
+    font-family: "IBM Plex Mono";
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 18px;
+  }
+  .toc a {
+    display: block;
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 7px 0;
+    border-left: 2px solid transparent;
+    padding-left: 12px;
+    margin-left: -13px;
+  }
+  .toc a:hover { color: var(--ink); }
+  .toc a.active { color: var(--accent-ink); border-left-color: var(--accent); font-weight: 500; }
+  .toc-status {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+  .toc-status strong { color: var(--ink-soft); font-weight: 600; }
+  .live-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #C4462C;
+    margin-right: 6px;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  main { padding: 48px 44px 120px; min-width: 0; }
+
+  /* ---------- masthead ---------- */
+  header.masthead { margin-bottom: 44px; }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "IBM Plex Mono";
+    font-size: 11.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+    padding: 5px 10px;
+    border-radius: 3px;
+    margin-bottom: 18px;
+  }
+  h1.title {
+    font-size: clamp(28px, 3.6vw, 38px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    max-width: 22ch;
+  }
+  .dek {
+    margin-top: 12px;
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 72ch;
+    line-height: 1.5;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+  .meta-row .k { color: var(--ink-soft); font-weight: 600; }
+
+  /* ---------- sections ---------- */
+  section { margin-bottom: 52px; }
+  section > .section-head { margin-bottom: 16px; display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .section-head-text { flex: 1 1 auto; min-width: 260px; }
+  .kicker {
+    font-family: "IBM Plex Mono";
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  h2 { font-size: 22px; letter-spacing: -0.01em; }
+  .section-dek { margin-top: 4px; color: var(--ink-faint); font-size: 13.5px; max-width: 70ch; }
+  p { color: var(--ink-soft); }
+
+  /* ---------- status chip ---------- */
+  .status-chip {
+    display: inline-block;
+    font-family: "IBM Plex Mono";
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .status-chip.decided { background: var(--accent-soft); color: var(--accent-ink); }
+  .status-chip.progress { background: var(--amber-soft); color: var(--amber-ink); }
+  .status-chip.pending { background: var(--code-bg); color: var(--ink-faint); }
+
+  /* ---------- tables ---------- */
+  .rtable-wrap {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+  .rtable-wrap + .rtable-wrap, .rtable-wrap + .table-caption { margin-top: 22px; }
+  .table-caption {
+    font-family: "IBM Plex Mono";
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 22px 0 8px;
+  }
+  .table-caption:first-child { margin-top: 0; }
+
+  table.rtable th {
+    text-align: left;
+    font-family: "IBM Plex Mono";
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--code-bg);
+    white-space: nowrap;
+  }
+  table.rtable td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    vertical-align: top;
+    font-size: 14px;
+  }
+  table.rtable tr:last-child td { border-bottom: none; }
+  table.rtable tr:nth-child(even) td { background: var(--stripe); }
+  table.rtable td.col-what { min-width: 220px; }
+  table.rtable td .tsub { display: block; color: var(--ink-faint); font-size: 12.5px; margin-top: 4px; line-height: 1.45; }
+  table.rtable td.col-owner, table.rtable td.col-due { font-family: "IBM Plex Mono"; font-size: 13px; white-space: nowrap; color: var(--ink-soft); }
+  table.rtable td.col-status { white-space: nowrap; }
+  table.rtable td.col-term { font-weight: 600; font-family: "IBM Plex Mono"; font-size: 13px; min-width: 160px; white-space: nowrap; color: var(--accent-ink); }
+  table.rtable td.col-week { font-weight: 600; white-space: nowrap; min-width: 90px; }
+  table.rtable td.center { text-align: center; font-family: "IBM Plex Mono"; font-size: 13.5px; }
+
+  .confirm-line {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+  .confirm-line strong { font-style: normal; color: var(--ink-soft); }
+
+  /* ---------- pipeline diagram ---------- */
+  .pipeline-states {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 700px) { .pipeline-states { grid-template-columns: 1fr; } }
+  .pstate {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+  .pstate h4 { font-size: 15px; font-family: "IBM Plex Sans"; font-weight: 600; margin-bottom: 4px; }
+  .pstate .plimit { font-family: "IBM Plex Mono"; font-size: 11px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft); display: inline-block; padding: 2px 7px; border-radius: 3px; margin-bottom: 8px; }
+  .pstate.parallel .plimit { color: var(--amber-ink); background: var(--amber-soft); }
+  .pstate p { font-size: 13.5px; }
+
+  /* ---------- responsive tables: card-flip on narrow screens ---------- */
+  @media (max-width: 720px) {
+    table.rtable, table.rtable thead, table.rtable tbody, table.rtable th, table.rtable td, table.rtable tr { display: block; }
+    table.rtable thead tr { position: absolute; top: -9999px; left: -9999px; }
+    table.rtable tr { border-bottom: 2px solid var(--line); padding: 10px 0; }
+    table.rtable tr:nth-child(even) td { background: transparent; }
+    table.rtable td { border-bottom: none; padding: 4px 16px; }
+    table.rtable td::before {
+      content: attr(data-label);
+      display: block;
+      font-family: "IBM Plex Mono";
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 2px;
+    }
+  }
+
+  /* ---------- sources ---------- */
+  footer.page-foot {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+  footer.page-foot p + p { margin-top: 8px; }
+
+  /* ---------- mobile ---------- */
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    nav.toc {
+      position: static;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      padding: 24px;
+    }
+    main { padding: 36px 20px 100px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc" aria-label="Section navigation">
+    <div class="toc-eyebrow">Contents</div>
+    <a href="#model">Core model</a>
+    <a href="#terms">Terminology</a>
+    <a href="#cadence">Validation cadence</a>
+    <a href="#decisions">Decisions</a>
+    <a href="#open">Open / unresolved</a>
+    <a href="#sources">Sources</a>
+    <div class="toc-status">
+      <span class="live-dot"></span><strong>Status:</strong> Meeting in progress<br>
+      <strong>Updated:</strong> 2026-08-27, 2:00pm<br>
+      <strong>Session:</strong> HDS Team F2F, Day 1
+    </div>
+  </nav>
+
+  <main>
+    <header class="masthead">
+      <div class="eyebrow">HDS Team F2F &middot; monthly release process readout</div>
+      <h1 class="title">Moving LOINC to monthly releases</h1>
+      <p class="dek">Live readout of the process design for monthly cadence &mdash; the pipeline model, the working vocabulary, and what's actually decided vs. still open.</p>
+      <div class="meta-row">
+        <div><span class="k">Meeting</span> Thu Aug 27, 2026, afternoon</div>
+        <div><span class="k">Lead</span> Steven Wagers</div>
+        <div><span class="k">Follows</span> the 2.83 release post-mortem</div>
+      </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <section id="model">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Core model</div>
+          <h2>Three release states, running at once</h2>
+          <p class="section-dek">Every month, multiple releases exist simultaneously, each in a different state. Only Authoring can span more than one release at a time.</p>
+        </div>
+      </div>
+
+      <div class="pipeline-states">
+        <div class="pstate">
+          <span class="plimit">Exactly one</span>
+          <h4>Release</h4>
+          <p>Being published &mdash; the technical work of assembly and going out the door (FHIR build, ETL, handoff to West Coast Informatics).</p>
+        </div>
+        <div class="pstate">
+          <span class="plimit">Exactly one</span>
+          <h4>Validation</h4>
+          <p>Artifacts being checked. Whole-release level, one release per month &mdash; not term-level QA.</p>
+        </div>
+        <div class="pstate parallel">
+          <span class="plimit">Multiple, in parallel</span>
+          <h4>Authoring</h4>
+          <p>Active editorial work. Can span several future releases at once &mdash; not serial. This is what absorbs long-lead-time content (CMS, Gravity, large surveys).</p>
+        </div>
+      </div>
+
+      <div class="table-caption">Worked example</div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Month</th><th>Releasing</th><th>Validating</th><th>Authoring</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Month" class="col-what">This month</td><td data-label="Releasing" class="center">2.84</td><td data-label="Validating" class="center">2.85</td><td data-label="Authoring" class="col-what">2.86, 2.87, 2.88</td></tr>
+            <tr><td data-label="Month" class="col-what">Next month</td><td data-label="Releasing" class="center">2.85</td><td data-label="Validating" class="center">2.86</td><td data-label="Authoring" class="col-what">2.87, 2.88, 2.89 <span class="tsub" style="margin-top:0;">(new)</span></td></tr>
+            <tr><td data-label="Month" class="col-what">Month after</td><td data-label="Releasing" class="center">2.86</td><td data-label="Validating" class="center">2.87</td><td data-label="Authoring" class="col-what">2.88, 2.89, 2.90</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px; font-size: 13.5px;">When a release's content-freeze date arrives: if the targeted content is done, it moves to validation. If not, it gets pushed to a later release rather than holding everything up in place.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="terms">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Terminology &middot; locked in live</div>
+          <h2>The working vocabulary</h2>
+          <p class="section-dek">Steven: &ldquo;These are the words we're going to use today.&rdquo; Replaces looser prior usage (e.g. "QA" / "post-QA review").</p>
+        </div>
+      </div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Term" class="col-term">Release</td><td data-label="Definition">The continuous offering-through-QA lifecycle for a set of terms. Several releases can be open at once.</td></tr>
+            <tr><td data-label="Term" class="col-term">Authoring</td><td data-label="Definition">Batch editorial work targeted at one specific release. Can span multiple months in parallel.</td></tr>
+            <tr><td data-label="Term" class="col-term">Content freeze</td><td data-label="Definition">A <strong>date</strong>, not a window &mdash; when authoring stops for a given release and it moves to validation.</td></tr>
+            <tr><td data-label="Term" class="col-term">Validation</td><td data-label="Definition">Checking of release artifacts, whole-release level (one release, one month) &mdash; not term-level QA.</td></tr>
+            <tr><td data-label="Term" class="col-term">Release month</td><td data-label="Definition">The month the technical assembly/publishing work happens.</td></tr>
+            <tr><td data-label="Term" class="col-term">Task</td><td data-label="Definition">A unit of editorial work assigned to a person, targeted at a release.</td></tr>
+            <tr><td data-label="Term" class="col-term">Workspace</td><td data-label="Definition">A sandbox attached to a task &mdash; edits land here first.</td></tr>
+            <tr><td data-label="Term" class="col-term">Cutover</td><td data-label="Definition">Moving work from workspace into QA to close the release &mdash; an end-of-month action.</td></tr>
+            <tr><td data-label="Term" class="col-term">QA review</td><td data-label="Definition">Replaces the old term "QA."</td></tr>
+            <tr><td data-label="Term" class="col-term">Secondary QA review</td><td data-label="Definition">Replaces "post-QA review." Optional, not strictly hierarchical.<span class="tsub">Criteria for when it's required vs. optional &mdash; deferred, not yet defined.</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="cadence">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Validation month</div>
+          <h2>Week by week</h2>
+          <p class="section-dek">Validation spans a full month (vs. today's ~2 weeks) because authoring and publication for other releases run in parallel the whole time.</p>
+        </div>
+      </div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Week</th><th>Focus</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Week" class="col-week">Week 1</td><td data-label="Focus">Buffer to absorb any overrun from the prior release. Validation opens, assignments given out. Deliberately kept light.</td></tr>
+            <tr><td data-label="Week" class="col-week">Week 2</td><td data-label="Focus">Core validation work &mdash; environment, artifacts, etc.</td></tr>
+            <tr><td data-label="Week" class="col-week">Week 3</td><td data-label="Focus">Continued validation workflow &mdash; issues logged and addressed, closing out and signing off by end of week.</td></tr>
+            <tr><td data-label="Week" class="col-week">Week 4</td><td data-label="Focus">Freeze, publish, out the door. Handoff to West Coast Informatics (FHIR build), ETL to servers.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px; font-size: 13.5px;"><strong>Urgent/critical late items:</strong> no dedicated lane in the model, but intended to have enough slack to absorb genuinely critical content unless a release is truly at the door. <strong>Decision:</strong> keep the existing "special use" tag mechanism specifically so urgent items don't have to break cadence.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="decisions">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Decisions</div>
+          <h2>What's actually settled</h2>
+        </div>
+      </div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Decision / action</th><th>Owner</th><th>Due</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr>
+              <td data-label="Decision" class="col-what">Keep the "special use" tag for urgent/critical items so they don't break monthly cadence.</td>
+              <td data-label="Owner" class="col-owner">&mdash;</td>
+              <td data-label="Due" class="col-due">Effective now</td>
+              <td data-label="Status" class="col-status"><span class="status-chip decided">Decided</span></td>
+            </tr>
+            <tr>
+              <td data-label="Decision" class="col-what">Critically scrub the wiki guidance and validation processes &mdash; what works, what doesn't, what needs updating.<span class="tsub">Joe has an AI-condensed SOP-repo draft as a starting point, distinguishing the "human side" (SOPs) from the "system side" (automated validation rules).</span></td>
+              <td data-label="Owner" class="col-owner">Joe (+ Steven)</td>
+              <td data-label="Due" class="col-due">Not firm &mdash; first pass before next release</td>
+              <td data-label="Status" class="col-status"><span class="status-chip progress">In progress</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="open">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Flag for the team</div>
+          <h2>Open / unresolved</h2>
+        </div>
+      </div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Item</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Item">Criteria for when secondary QA review is required vs. optional &mdash; explicitly deferred.</td></tr>
+            <tr><td data-label="Item">Whether a rotating validation-focus cycle (e.g. "this month, extra scrutiny on panels") is feasible instead of full review every release &mdash; raised, not resolved; may not meet quality bar.</td></tr>
+            <tr><td data-label="Item">Trial/dry-run monthly release cycles before real cutover &mdash; floated (loosely around a "February" reference point), timing and logistics not finalized.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="sources">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Provenance</div>
+          <h2>Sources</h2>
+        </div>
+      </div>
+      <p>Live transcript of the HDS Team F2F, Aug 27, 2026, captured via Zoom, continuing directly from the 2.83 release post-mortem. Full discussion detail is kept in <code>loinc-processes/ReleaseTasks/loinc-monthly-release-planning/monthly-release-notes.md</code>.</p>
+      <footer class="page-foot">
+        <p>This page updates live as the meeting runs. It is a working readout for team confirmation, not a ratified record &mdash; if something here doesn't match what you agreed to, flag it.</p>
+        <p>The meeting was captured on a single-account Zoom transcript, so per-speaker attribution is not reliable in places; content and sequence are.</p>
+      </footer>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // lightweight scroll-spy for the section nav
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+    var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+    function onScroll() {
+      var y = window.scrollY + 120;
+      var activeIndex = 0;
+      sections.forEach(function (s, i) { if (s && s.offsetTop <= y) activeIndex = i; });
+      links.forEach(function (a, i) { a.classList.toggle('active', i === activeIndex); });
+    }
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>
