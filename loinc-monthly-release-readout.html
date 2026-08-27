@@ -350,12 +350,14 @@
     <a href="#model">Core model</a>
     <a href="#terms">Terminology</a>
     <a href="#cadence">Validation cadence</a>
+    <a href="#calendar">Release calendar</a>
     <a href="#decisions">Decisions</a>
+    <a href="#risks">Risks</a>
     <a href="#open">Open / unresolved</a>
     <a href="#sources">Sources</a>
     <div class="toc-status">
       <span class="live-dot"></span><strong>Status:</strong> Meeting in progress<br>
-      <strong>Updated:</strong> 2026-08-27, 2:00pm<br>
+      <strong>Updated:</strong> 2026-08-27, 2:25pm<br>
       <strong>Session:</strong> HDS Team F2F, Day 1
     </div>
   </nav>
@@ -466,6 +468,29 @@
     </section>
 
     <!-- ============================================================ -->
+    <section id="calendar">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Release calendar &middot; decided live</div>
+          <h2>The 15th of every month</h2>
+          <p class="section-dek">Chosen as a fixed calendar date (like RxNorm), not an "Nth weekday" rule &mdash; the room valued predictability over dodging occasional weekend-adjacency.</p>
+        </div>
+        <span class="status-chip decided">Decided</span>
+      </div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Month</th><th>Treatment</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Month" class="col-term">December</td><td data-label="Treatment">Fully skipped.</td></tr>
+            <tr><td data-label="Month" class="col-term">July</td><td data-label="Treatment">Deliberately reduced scope around the 4th &mdash; not a full skip.</td></tr>
+            <tr><td data-label="Month" class="col-term">October / November</td><td data-label="Treatment">Earlier leaning was "shrink, don't skip" (conference in October; Thanksgiving in November; avoid two consecutive full skips) &mdash; not re-confirmed after the 15th-day decision. See Open items.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px; font-size: 13.5px;"><strong>Right-sizing habit (new):</strong> when planning a month's authoring work, explicitly check which release month it lands in and size accordingly (e.g. "we're authoring 2.87 now, its release falls in October &mdash; that affects what goes in it").</p>
+    </section>
+
+    <!-- ============================================================ -->
     <section id="decisions">
       <div class="section-head">
         <div class="section-head-text">
@@ -489,6 +514,42 @@
               <td data-label="Due" class="col-due">Not firm &mdash; first pass before next release</td>
               <td data-label="Status" class="col-status"><span class="status-chip progress">In progress</span></td>
             </tr>
+            <tr>
+              <td data-label="Decision" class="col-what">Drop full community announcements per release &mdash; just technical release notes + a plain notification. Save bigger announcements for genuinely significant changes (pre/post-coordination, new domain model, file-format changes).</td>
+              <td data-label="Owner" class="col-owner">&mdash;</td>
+              <td data-label="Due" class="col-due">Effective now</td>
+              <td data-label="Status" class="col-status"><span class="status-chip decided">Decided</span></td>
+            </tr>
+            <tr>
+              <td data-label="Decision" class="col-what">Keep 3 community touchpoints/year: 2 virtual webinars + 1 in-person, timed to the October conference and recorded.</td>
+              <td data-label="Owner" class="col-owner">&mdash;</td>
+              <td data-label="Due" class="col-due">Effective now</td>
+              <td data-label="Status" class="col-status"><span class="status-chip decided">Decided</span></td>
+            </tr>
+            <tr>
+              <td data-label="Decision" class="col-what">Open validation (file/package-level checks, not term QA) to non-terminologist volunteers &mdash; no terminology background required, just clear instructions.</td>
+              <td data-label="Owner" class="col-owner">Blake + volunteers</td>
+              <td data-label="Due" class="col-due">Ongoing</td>
+              <td data-label="Status" class="col-status"><span class="status-chip decided">Decided</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="risks">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Flag for the team</div>
+          <h2>Risks</h2>
+        </div>
+      </div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Risk</th><th>Detail</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Risk" class="col-cause">West Coast Informatics (WCI) integration time</td><td data-label="Detail">WCI's FHIR pipeline needs a full fresh export/re-ingest every single release, not incremental. Their first real run (turned on the day of this meeting) reportedly took several days. Expected to improve with maturity, but currently a genuine multi-day dependency inside a tight monthly window &mdash; not yet proven at scale.</td></tr>
           </tbody>
         </table>
       </div>
@@ -509,6 +570,9 @@
             <tr><td data-label="Item">Criteria for when secondary QA review is required vs. optional &mdash; explicitly deferred.</td></tr>
             <tr><td data-label="Item">Whether a rotating validation-focus cycle (e.g. "this month, extra scrutiny on panels") is feasible instead of full review every release &mdash; raised, not resolved; may not meet quality bar.</td></tr>
             <tr><td data-label="Item">Trial/dry-run monthly release cycles before real cutover &mdash; floated (loosely around a "February" reference point), timing and logistics not finalized.</td></tr>
+            <tr><td data-label="Item">October/November skip-vs-shrink treatment &mdash; not re-confirmed after the release-day decision landed on the 15th.</td></tr>
+            <tr><td data-label="Item">How to publicly frame WCI's role/authority in community communications &mdash; marketing wants "agent" framing, Steven is holding off in favor of a low-key technical notification.</td></tr>
+            <tr><td data-label="Item">Server/staging budget and decoupling the ServiceLink API to the cloud &mdash; wanted, no owner or date yet.</td></tr>
           </tbody>
         </table>
       </div>
