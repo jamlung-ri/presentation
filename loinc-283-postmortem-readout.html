@@ -221,6 +221,7 @@
   .status-chip.decided { background: var(--accent-soft); color: var(--accent-ink); }
   .status-chip.progress { background: var(--amber-soft); color: var(--amber-ink); }
   .status-chip.pending { background: var(--code-bg); color: var(--ink-faint); }
+  .status-chip.skipped { background: rgba(196,70,44,0.13); color: #C4462C; }
 
   /* ---------- overview summary table ---------- */
   .summary-table-wrap, .rtable-wrap {
@@ -336,8 +337,8 @@
     <a href="#openissues">Open items to confirm</a>
     <a href="#sources">Sources</a>
     <div class="toc-status">
-      <span class="live-dot"></span><strong>Status:</strong> Meeting in progress<br>
-      <strong>Updated:</strong> 2026-08-27, 1:00pm<br>
+      <span class="live-dot"></span><strong>Status:</strong> Findings wrapped, moving to Open Floor<br>
+      <strong>Updated:</strong> 2026-08-27, 1:30pm<br>
       <strong>Session:</strong> HDS Team F2F, Day 1
     </div>
   </nav>
@@ -370,7 +371,9 @@
             <tr><td data-label="#" class="mono">01</td><td data-label="Finding" class="col-what"><a href="#f1">External commitments are not tracked</a></td><td data-label="Status" class="col-status"><span class="status-chip decided">Decided</span></td></tr>
             <tr><td data-label="#" class="mono">02</td><td data-label="Finding" class="col-what"><a href="#f2">Submitter communication lapse (Roche)</a></td><td data-label="Status" class="col-status"><span class="status-chip progress">In progress</span></td></tr>
             <tr><td data-label="#" class="mono">03</td><td data-label="Finding" class="col-what"><a href="#f3">Late external scope</a></td><td data-label="Status" class="col-status"><span class="status-chip decided">Decided</span></td></tr>
-            <tr><td data-label="#" class="mono">04&ndash;06</td><td data-label="Finding" class="col-what">Not yet reached</td><td data-label="Status" class="col-status"><span class="status-chip pending">Pending</span></td></tr>
+            <tr><td data-label="#" class="mono">04</td><td data-label="Finding" class="col-what"><a href="#f4-6">Dates moved without consequence</a></td><td data-label="Status" class="col-status"><span class="status-chip skipped">Not resolved</span></td></tr>
+            <tr><td data-label="#" class="mono">05</td><td data-label="Finding" class="col-what"><a href="#f4-6">Quality debt (QA)</a></td><td data-label="Status" class="col-status"><span class="status-chip skipped">Deferred</span></td></tr>
+            <tr><td data-label="#" class="mono">06</td><td data-label="Finding" class="col-what"><a href="#f4-6">Instructions did not land</a></td><td data-label="Status" class="col-status"><span class="status-chip pending">Never reached</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -530,21 +533,37 @@
     <section id="f4-6">
       <div class="section-head">
         <div class="section-head-text">
-          <div class="kicker">Findings 4&ndash;6</div>
-          <h2>Not yet reached</h2>
-          <p class="section-dek">Will fill in as the meeting continues. Live numbering has already diverged from the deck twice &mdash; see Open Items below.</p>
+          <div class="kicker">Findings 4&ndash;6 &middot; retro ran out of time</div>
+          <h2>Dates, QA, and instructions</h2>
+          <p class="section-dek">The findings portion of the retro wrapped here (~1:30pm) and moved to Open Floor. Findings 4 and 5 got brief acknowledgment but no resolution; Finding 6 was never reached.</p>
         </div>
       </div>
       <div class="rtable-wrap">
         <table class="rtable">
-          <thead><tr><th>#</th><th>Finding</th><th>Status</th></tr></thead>
+          <thead><tr><th>#</th><th>Finding</th><th>What happened</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td data-label="#" class="mono">04</td><td data-label="Finding" class="col-what">&mdash;</td><td data-label="Status" class="col-status"><span class="status-chip pending">Pending</span></td></tr>
-            <tr><td data-label="#" class="mono">05</td><td data-label="Finding" class="col-what">&mdash;</td><td data-label="Status" class="col-status"><span class="status-chip pending">Pending</span></td></tr>
-            <tr><td data-label="#" class="mono">06</td><td data-label="Finding" class="col-what">&mdash;</td><td data-label="Status" class="col-status"><span class="status-chip pending">Pending</span></td></tr>
+            <tr>
+              <td data-label="#" class="mono">04</td>
+              <td data-label="Finding" class="col-cause">Dates moved without consequence</td>
+              <td data-label="What happened">Restated the known facts &mdash; deadline moved multiple times in ~9 days, no consequence, absorbed into validation. Steven: &ldquo;I'm kind of running out of steam with the retro, we're way behind in time.&rdquo; Group moved on with <strong>no fix, owner, or date</strong> &mdash; an explicit exception to the meeting's own ground rule.</td>
+              <td data-label="Status" class="col-status"><span class="status-chip skipped">Not resolved</span></td>
+            </tr>
+            <tr>
+              <td data-label="#" class="mono">05</td>
+              <td data-label="Finding" class="col-cause">Quality debt (QA)</td>
+              <td data-label="What happened">Explicitly punted: &ldquo;The other one was about QA, and we can talk about that at a later time.&rdquo; One flag raised in passing: QA needs a holistic rework conversation, not just the refinements already made, possibly with some automated/programmatic checks &mdash; not decided or scheduled.</td>
+              <td data-label="Status" class="col-status"><span class="status-chip skipped">Deferred</span></td>
+            </tr>
+            <tr>
+              <td data-label="#" class="mono">06</td>
+              <td data-label="Finding" class="col-cause">Instructions did not land</td>
+              <td data-label="What happened">Never reached &mdash; the group moved to &ldquo;What Worked&rdquo; and Open Floor before this topic came up.</td>
+              <td data-label="Status" class="col-status"><span class="status-chip pending">Never reached</span></td>
+            </tr>
           </tbody>
         </table>
       </div>
+      <div class="confirm-line"><strong>Confirm:</strong> does Finding 4 need a follow-up close-out to satisfy the meeting's own owner/date rule? Does Finding 5's QA conversation need to get scheduled explicitly, or will it stay informal?</div>
     </section>
 
     <!-- ============================================================ -->
