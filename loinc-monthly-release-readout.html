@@ -544,15 +544,17 @@
           <div class="kicker">Flag for the team</div>
           <h2>Risks</h2>
         </div>
+        <span class="status-chip decided">Mostly resolved</span>
       </div>
       <div class="rtable-wrap">
         <table class="rtable">
           <thead><tr><th>Risk</th><th>Detail</th></tr></thead>
           <tbody>
-            <tr><td data-label="Risk" class="col-cause">West Coast Informatics (WCI) integration time</td><td data-label="Detail">WCI's FHIR pipeline needs a full fresh export/re-ingest every single release, not incremental. Their first real run (turned on the day of this meeting) reportedly took several days. Expected to improve with maturity, but currently a genuine multi-day dependency inside a tight monthly window &mdash; not yet proven at scale.</td></tr>
+            <tr><td data-label="Risk" class="col-cause">West Coast Informatics (WCI) integration time</td><td data-label="Detail">WCI's FHIR pipeline needs a full fresh export/re-ingest every single release, not incremental. Their first real run (turned on the day of this meeting) reportedly took several days. <strong>Clarified live: this build work happens after release lock, not before</strong> &mdash; WCI gets the full following month (15th to 15th) to build from a locked release, not a tight post-release window. Substantially de-risks the timing concern; still worth watching as WCI matures the process.</td></tr>
           </tbody>
         </table>
       </div>
+      <p style="margin-top:14px; font-size: 13.5px;"><strong>Bonus insight from this discussion:</strong> monthly cadence generally lowers the cost of late-breaking items &mdash; instead of an in-place fix/revalidation scramble, a late item just waits for next month's release (&ldquo;you got 28 days, you can wait&rdquo;).</p>
     </section>
 
     <!-- ============================================================ -->
