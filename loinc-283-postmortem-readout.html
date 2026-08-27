@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOINC 2.83 Post-Mortem Readout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ---------- reset ---------- */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body, h1, h2, h3, h4, p, ul, ol, li, figure, table, th, td { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
+  img, svg { display: block; max-width: 100%; }
+  a { color: inherit; }
+
+  /* ---------- tokens: light (default) ---------- */
+  :root {
+    --paper: #F1F4F4;
+    --paper-raised: #FFFFFF;
+    --ink: #131A1D;
+    --ink-soft: #4B5A5E;
+    --ink-faint: #7C8A8D;
+    --line: #D7DEDE;
+    --accent: #146B6E;
+    --accent-soft: #DDEEEE;
+    --accent-ink: #0D4E50;
+    --amber: #9C5B14;
+    --amber-soft: #F5E7D3;
+    --amber-ink: #6E3F0C;
+    --code-bg: #E7EDED;
+    --shadow: rgba(20,40,42,0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0F1518;
+      --paper-raised: #171F23;
+      --ink: #E7EEEE;
+      --ink-soft: #A9B7B9;
+      --ink-faint: #77878A;
+      --line: #29343A;
+      --accent: #62CBCA;
+      --accent-soft: #16302F;
+      --accent-ink: #8EDEDD;
+      --amber: #E3A25A;
+      --amber-soft: #33230F;
+      --amber-ink: #F0BB80;
+      --code-bg: #1A2226;
+      --shadow: rgba(0,0,0,0.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0F1518;
+    --paper-raised: #171F23;
+    --ink: #E7EEEE;
+    --ink-soft: #A9B7B9;
+    --ink-faint: #77878A;
+    --line: #29343A;
+    --accent: #62CBCA;
+    --accent-soft: #16302F;
+    --accent-ink: #8EDEDD;
+    --amber: #E3A25A;
+    --amber-soft: #33230F;
+    --amber-ink: #F0BB80;
+    --code-bg: #1A2226;
+    --shadow: rgba(0,0,0,0.45);
+  }
+
+  /* ---------- base ---------- */
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    text-wrap: balance;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  code, .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  ::selection { background: var(--accent-soft); color: var(--accent-ink); }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ---------- layout shell ---------- */
+  .shell {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  nav.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 40px 20px 40px 32px;
+    border-right: 1px solid var(--line);
+  }
+  .toc-eyebrow {
+    font-family: "IBM Plex Mono";
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 18px;
+  }
+  .toc a {
+    display: block;
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 7px 0;
+    border-left: 2px solid transparent;
+    padding-left: 12px;
+    margin-left: -13px;
+  }
+  .toc a:hover { color: var(--ink); }
+  .toc a.active { color: var(--accent-ink); border-left-color: var(--accent); font-weight: 500; }
+  .toc-status {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+  .toc-status strong { color: var(--ink-soft); font-weight: 600; }
+  .live-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #C4462C;
+    margin-right: 6px;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  main { padding: 56px 48px 120px; min-width: 0; }
+
+  /* ---------- masthead ---------- */
+  header.masthead { margin-bottom: 56px; }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "IBM Plex Mono";
+    font-size: 11.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+    padding: 5px 10px;
+    border-radius: 3px;
+    margin-bottom: 20px;
+  }
+  h1.title {
+    font-size: clamp(30px, 4vw, 42px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    max-width: 17ch;
+  }
+  .dek {
+    margin-top: 16px;
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 66ch;
+    line-height: 1.55;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 13.5px;
+    color: var(--ink-faint);
+  }
+  .meta-row .k { color: var(--ink-soft); font-weight: 600; }
+
+  /* ---------- sections ---------- */
+  section { margin-bottom: 68px; }
+  section > .section-head { margin-bottom: 26px; }
+  .kicker {
+    font-family: "IBM Plex Mono";
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  h2 { font-size: 26px; letter-spacing: -0.01em; }
+  h2 + .section-dek { margin-top: 10px; color: var(--ink-soft); font-size: 15.5px; max-width: 68ch; }
+  p { color: var(--ink-soft); }
+  p + p { margin-top: 12px; }
+
+  /* ---------- progress strip ---------- */
+  .progress-strip { display: flex; flex-direction: column; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-top: 8px; }
+  .progress-row {
+    background: var(--paper-raised);
+    padding: 12px 18px;
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+  }
+  .progress-row .pnum { font-family: "IBM Plex Mono"; color: var(--ink-faint); font-size: 13px; }
+  .progress-row .ptitle { color: var(--ink); }
+  .progress-row .ptitle a { text-decoration: none; color: inherit; }
+  .progress-row .ptitle a:hover { color: var(--accent-ink); }
+
+  /* ---------- decision groups ---------- */
+  .decision-group {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 26px 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+  .decision-group-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 6px;
+  }
+  .decision-group-head h3 { font-size: 19px; }
+  .decision-group-sub { font-size: 13.5px; color: var(--ink-faint); margin-bottom: 16px; }
+  .status-chip {
+    flex: 0 0 auto;
+    font-family: "IBM Plex Mono";
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .status-chip.decided { background: var(--accent-soft); color: var(--accent-ink); }
+  .status-chip.progress { background: var(--amber-soft); color: var(--amber-ink); }
+  .status-chip.pending { background: var(--code-bg); color: var(--ink-faint); }
+  .decision-group ul { display: flex; flex-direction: column; gap: 12px; }
+  .decision-group li {
+    font-size: 15px;
+    color: var(--ink);
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.55;
+  }
+  .decision-group li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .decision-group li .sub { color: var(--ink-soft); font-size: 14px; display: block; margin-top: 3px; }
+  .assign {
+    display: inline-flex;
+    gap: 6px;
+    margin-top: 8px;
+    font-family: "IBM Plex Mono";
+    font-size: 12px;
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+    padding: 3px 9px;
+    border-radius: 3px;
+  }
+  .assign.tbd { color: var(--ink-faint); background: var(--code-bg); }
+  .confirm-line {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  /* ---------- open issues / parking lot ---------- */
+  .issue-list { display: flex; flex-direction: column; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .issue {
+    background: var(--paper-raised);
+    padding: 18px 22px;
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 700px) { .issue { grid-template-columns: 1fr; gap: 6px; } }
+  .issue-tag {
+    font-family: "IBM Plex Mono";
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--amber-ink);
+    align-self: start;
+    padding-top: 2px;
+  }
+  .issue-body h4 { font-size: 15px; margin-bottom: 5px; font-family: "IBM Plex Sans"; font-weight: 600; }
+  .issue-body p { font-size: 14px; }
+
+  /* ---------- sources ---------- */
+  footer.page-foot {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+  footer.page-foot p + p { margin-top: 8px; }
+
+  /* ---------- mobile ---------- */
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    nav.toc {
+      position: static;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      padding: 24px;
+    }
+    main { padding: 40px 24px 100px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc" aria-label="Section navigation">
+    <div class="toc-eyebrow">Contents</div>
+    <a href="#overview">Where things stand</a>
+    <a href="#f1">Finding 1</a>
+    <a href="#f2">Finding 2</a>
+    <a href="#f3-6">Findings 3&ndash;6</a>
+    <a href="#openissues">Open items to confirm</a>
+    <a href="#sources">Sources</a>
+    <div class="toc-status">
+      <span class="live-dot"></span><strong>Status:</strong> Meeting in progress<br>
+      <strong>Updated:</strong> 2026-08-27, 11:46am<br>
+      <strong>Session:</strong> HDS Team F2F, Day 1
+    </div>
+  </nav>
+
+  <main>
+    <header class="masthead">
+      <div class="eyebrow">HDS Team F2F &middot; release post-mortem readout</div>
+      <h1 class="title">LOINC 2.83 post-mortem: what we decided</h1>
+      <p class="dek">A live, per-finding readout of the 2.83 release post-mortem &mdash; updated as the meeting runs. For each finding: what we agreed the fix is, who owns it, and by when. Meant to be checked against as we go: <em>yes, for this topic, this is what we agreed.</em></p>
+      <div class="meta-row">
+        <div><span class="k">Meeting</span> Thu Aug 27, 2026, 9:15am&ndash;</div>
+        <div><span class="k">Lead</span> Steven Wagers</div>
+        <div><span class="k">Findings</span> 6 total (changed live from 7)</div>
+      </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <section id="overview">
+      <div class="section-head">
+        <div class="kicker">Overview</div>
+        <h2>Where things stand</h2>
+        <p class="section-dek">Live numbering follows the order findings actually came up in the room, not the pre-meeting slide deck &mdash; the deck's own numbering went stale mid-meeting. Ground rule for today: every finding leaves with an owner and a date.</p>
+      </div>
+      <div class="progress-strip">
+        <div class="progress-row"><span class="pnum">01</span><span class="ptitle"><a href="#f1">External commitments are not tracked</a></span><span class="status-chip decided">Decided</span></div>
+        <div class="progress-row"><span class="pnum">02</span><span class="ptitle"><a href="#f2">Submitter communication lapse (Roche)</a></span><span class="status-chip progress">In progress</span></div>
+        <div class="progress-row"><span class="pnum">03&ndash;06</span><span class="ptitle"><a href="#f3-6">Not yet reached</a></span><span class="status-chip pending">Pending</span></div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="f1">
+      <div class="section-head">
+        <div class="kicker">Finding 1</div>
+        <h2>External commitments are not tracked</h2>
+        <p class="section-dek">Two real cases (submissions 8097 and 8144) sat untracked for months because commitments were made by email or verbally, with no register anywhere answering &ldquo;what did we promise, to whom, by when.&rdquo;</p>
+      </div>
+
+      <div class="decision-group">
+        <div class="decision-group-head">
+          <h3>Root cause and fix</h3>
+          <span class="status-chip decided">Decided</span>
+        </div>
+        <div class="decision-group-sub">The team did <strong>not</strong> build new tooling. The existing signals were judged sufficient &mdash; the actual gap was that priority levels have no shared, written meaning, and sometimes went unassigned entirely.</div>
+        <ul>
+          <li>Priority Level + Target Release field in LMS are the two signals we use &mdash; no new tag or field needed on top of them.
+            <span class="sub">A per-release commitment dashboard/board (new this cycle, e.g. tagging a submission to "2.83-1") already worked well and stays in use.</span>
+          </li>
+          <li>Write down shared definitions for each priority level, so &ldquo;critical&rdquo; / &ldquo;high&rdquo; / &ldquo;medium&rdquo; mean the same thing to everyone.
+            <span class="assign">Owner: Eza &middot; Due: Sep 3, 2026</span>
+          </li>
+          <li>Build out the priority/commitment list itself (the per-release dashboard).
+            <span class="assign">Owner: April &middot; Due: Sep 3, 2026</span>
+          </li>
+          <li>Standing practice, effective immediately: whoever makes or receives a commitment &mdash; by any channel, email, Help Scout, or verbal &mdash; logs it into LMS notes with channel and date. LMS is the source of truth, not email or meeting recall.</li>
+        </ul>
+        <div class="confirm-line">Confirm: draft priority-level definitions shared before Sep 3, agreed at the all-team meeting that day.</div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="f2">
+      <div class="section-head">
+        <div class="kicker">Finding 2 &middot; not in the original deck</div>
+        <h2>Submitter communication lapse &mdash; Roche / submission 7720</h2>
+        <p class="section-dek">An HPV submission from Roche went ~10 weeks and 5 follow-ups with zero internal signal anything was wrong, until it escalated outside LOINC to a Roche executive contacting Regenstrief leadership directly.</p>
+      </div>
+
+      <div class="decision-group">
+        <div class="decision-group-head">
+          <h3>Immediate action</h3>
+          <span class="status-chip decided">Decided</span>
+        </div>
+        <ul>
+          <li>Create the terms for submission 7720 via the pre-release process, so Roche has something in hand before the scheduled call.
+            <span class="assign">Owner: Jeffrey (assigned by Eza) &middot; Due: Tue Sep 1, 2026</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="decision-group">
+        <div class="decision-group-head">
+          <h3>Root causes identified</h3>
+          <span class="status-chip decided">Agreed</span>
+        </div>
+        <ul>
+          <li>No support thread was actually linked to the submission &mdash; LMS held the work, Help Scout held the conversation (across 4 separate threads), nothing joined them.</li>
+          <li>Closing a Help Scout ticket was treated as an administrative action, not confirmation a real response went out.</li>
+          <li>A QA question needing submitter input was recorded internally but never sent to the submitter.</li>
+          <li>&ldquo;On hold&rdquo; status is visible to the submitter but undefined &mdash; no review date, unclear if it's terminal.</li>
+          <li>Same root cause as Finding 1: priority/escalation level was never assigned, so it fell under the radar.</li>
+        </ul>
+      </div>
+
+      <div class="decision-group">
+        <div class="decision-group-head">
+          <h3>Root fix: retire Help Scout for submissions</h3>
+          <span class="status-chip progress">In progress</span>
+        </div>
+        <div class="decision-group-sub">Decided direction, not yet built. Jira was explicitly considered and rejected (cost, cloud-only, vendor practices, painful API, too complex for the need).</div>
+        <ul>
+          <li>Submissions get decoupled from Help Scout entirely. A custom front end, with LMS as the back end, threaded by submission ID.
+            <span class="sub">Requires organizational (not individual) accounts, so departing staff don't leave submitters emailing dead addresses.</span>
+          </li>
+          <li>Submitters go through the portal directly, not email &mdash; an email reply to a notification bounces back with a redirect to the portal.</li>
+          <li>Content-edit requests that arrive by email outside the normal process (e.g. a stakeholder repeatedly emailing 20&ndash;30 edits directly) get converted into tracked submissions/tasks rather than handled as one-off email threads.</li>
+          <li>Next concrete step is a <strong>core requirements list</strong>, not a full build &mdash; scope (lightweight comms thread vs. fuller case management) isn't agreed yet.
+            <span class="assign">Owner: Joe &middot; Due: not yet set</span>
+          </li>
+        </ul>
+        <div class="confirm-line">Confirm: is Joe's requirements list still the right next step, and does it need a target date?</div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="f3-6">
+      <div class="section-head">
+        <div class="kicker">Findings 3&ndash;6</div>
+        <h2>Not yet reached</h2>
+        <p class="section-dek">Will fill in as the meeting continues. The pre-meeting deck's own Findings 3&ndash;5 (dates moved without consequence, quality debt, instructions not landing) may or may not resurface under these numbers &mdash; live numbering has already diverged from the deck once (see below).</p>
+      </div>
+      <div class="progress-strip">
+        <div class="progress-row"><span class="pnum">03</span><span class="ptitle">Pending</span><span class="status-chip pending">Pending</span></div>
+        <div class="progress-row"><span class="pnum">04</span><span class="ptitle">Pending</span><span class="status-chip pending">Pending</span></div>
+        <div class="progress-row"><span class="pnum">05</span><span class="ptitle">Pending</span><span class="status-chip pending">Pending</span></div>
+        <div class="progress-row"><span class="pnum">06</span><span class="ptitle">Pending</span><span class="status-chip pending">Pending</span></div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="openissues">
+      <div class="section-head">
+        <div class="kicker">Flag for the team</div>
+        <h2>Open items to confirm</h2>
+        <p class="section-dek">Things raised live that didn't land on an owner/date, or that don't map cleanly to a finding number &mdash; worth a direct yes/no from the room rather than being assumed closed.</p>
+      </div>
+      <div class="issue-list">
+        <div class="issue">
+          <div class="issue-tag">Deck gap</div>
+          <div class="issue-body">
+            <h4>&ldquo;Late external scope&rdquo; never got its own live discussion</h4>
+            <p>The pre-meeting deck's Finding 2 (a published external cutoff, single intake point) surfaced only as a tangent inside Finding 1. No separate owner or date was assigned. Confirm whether the team still wants this as a standalone action.</p>
+          </div>
+        </div>
+        <div class="issue">
+          <div class="issue-tag">Ownership gap</div>
+          <div class="issue-body">
+            <h4>Help Scout requirements list has no target date</h4>
+            <p>Joe owns starting the core requirements list for the submission front end, but no date was set in the room.</p>
+          </div>
+        </div>
+        <div class="issue">
+          <div class="issue-tag">Deferred</div>
+          <div class="issue-body">
+            <h4>Separate &ldquo;gravity&rdquo; pre-release question</h4>
+            <p>A similar pre-release mechanism question was raised for a "gravity" item alongside the Roche/7720 discussion &mdash; explicitly flagged as not yet discussed.</p>
+          </div>
+        </div>
+        <div class="issue">
+          <div class="issue-tag">Deferred</div>
+          <div class="issue-body">
+            <h4>&ldquo;Where should my focus be today&rdquo;</h4>
+            <p>Raised as a bigger, separate problem: work is still spread across Help Scout, Basecamp, LMS, and personal inboxes. The team's read is the tool footprint is already about as consolidated as it can get, and the Help Scout swap helps but doesn't solve this. A longer-term idea &mdash; LMS surfacing "your action right now" signals &mdash; was parked, not committed.</p>
+          </div>
+        </div>
+        <div class="issue">
+          <div class="issue-tag">Modeling, not process</div>
+          <div class="issue-body">
+            <h4>HPV term numbering isn't reliably searchable</h4>
+            <p>Came up as a rabbit hole during the Roche case: HPV term numbers don't correspond to a consistent, searchable order, so staff can't easily tell if a combination already exists. Flagged as a modeling/tooling question for a different meeting, not this post-mortem.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="sources">
+      <div class="section-head">
+        <div class="kicker">Provenance</div>
+        <h2>Sources</h2>
+      </div>
+      <p>Live transcript of the HDS Team F2F, Aug 27, 2026, captured via Zoom. Full discussion detail (not just decisions) is kept in the working notes at <code>loinc-processes/ReleaseTasks/loinc-2.83-post-mortem/postmortem-notes.md</code>.</p>
+      <footer class="page-foot">
+        <p>This page updates live during the meeting and shortly after as decisions are finalized. It is a working readout for team confirmation, not a ratified record &mdash; if something here doesn't match what you agreed to, flag it.</p>
+        <p>The meeting was captured on a single-account Zoom transcript, so per-speaker attribution is not reliable in places; content and sequence are.</p>
+      </footer>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // lightweight scroll-spy for the section nav
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+    var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+    function onScroll() {
+      var y = window.scrollY + 120;
+      var activeIndex = 0;
+      sections.forEach(function (s, i) { if (s && s.offsetTop <= y) activeIndex = i; });
+      links.forEach(function (a, i) { a.classList.toggle('active', i === activeIndex); });
+    }
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>
