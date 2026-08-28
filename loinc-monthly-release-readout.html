@@ -351,6 +351,7 @@
     <a href="#terms">Terminology</a>
     <a href="#cadence">Validation cadence</a>
     <a href="#calendar">Release calendar</a>
+    <a href="#operating">Operating cadence</a>
     <a href="#decisions">Decisions</a>
     <a href="#risks">Risks</a>
     <a href="#open">Open / unresolved</a>
@@ -488,6 +489,71 @@
         </table>
       </div>
       <p style="margin-top:14px; font-size: 13.5px;"><strong>Right-sizing habit (new):</strong> when planning a month's authoring work, explicitly check which release month it lands in and size accordingly (e.g. "we're authoring 2.87 now, its release falls in October &mdash; that affects what goes in it").</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="operating">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Proposed &middot; from Steven's deck, not yet confirmed live</div>
+          <h2>Release operating cadence</h2>
+          <p class="section-dek">A three-tier meeting structure so status isn't found by asking people one at a time. Each tier does exactly one job.</p>
+        </div>
+        <span class="status-chip pending">Proposal</span>
+      </div>
+
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Tier</th><th>When</th><th>Length</th><th>Who</th><th>Output</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Tier" class="col-term">Release planning</td><td data-label="When">Once/cycle, at scoping</td><td data-label="Length">60&ndash;90 min</td><td data-label="Who">Contributors + stakeholders</td><td data-label="Output">Committed work plan, named owners, dates</td></tr>
+            <tr><td data-label="Tier" class="col-term">Standup</td><td data-label="When">Tue / Wed / Thu</td><td data-label="Length">20 min</td><td data-label="Who">Full team</td><td data-label="Output">Blockers routed with an owner</td></tr>
+            <tr><td data-label="Tier" class="col-term">Working session</td><td data-label="When">Same/next day, as needed</td><td data-label="Length">30&ndash;45 min</td><td data-label="Who">Only those involved</td><td data-label="Output">A decision, an owner, a date</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px; font-size: 13.5px;"><strong>Core principle:</strong> the standup detects and routes blockers &mdash; it does not solve them. Problem-solving happens in the working session. And: the standup can only report against what planning committed; without planning, standup degrades into a status call.</p>
+
+      <div class="table-caption">What planning commits (the standup tracks against this)</div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Commitment</th><th>What that means</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Commitment" class="col-cause">Scope</td><td data-label="Meaning">Itemized per release, not described in aggregate</td></tr>
+            <tr><td data-label="Commitment" class="col-cause">Owners</td><td data-label="Meaning">A named person per item &mdash; never a team</td></tr>
+            <tr><td data-label="Commitment" class="col-cause">Dates</td><td data-label="Meaning">A target date per item, not just the release cutoff</td></tr>
+            <tr><td data-label="Commitment" class="col-cause">Dependencies</td><td data-label="Meaning">Identified and sequenced between items</td></tr>
+            <tr><td data-label="Commitment" class="col-cause">Risks</td><td data-label="Meaning">Known risks, each with an owning person</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-caption">The 20-minute standup script, same order every time</div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Segment</th><th>~Time</th><th>Covers</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Segment" class="col-term">Per release</td><td data-label="Time" class="center">~4 min</td><td data-label="Covers">Terms passed/failed validation since last standup + top failure reason; at-risk-against-cutoff yes/no; blockers (what, who, needs which people)</td></tr>
+            <tr><td data-label="Segment" class="col-term">Intake</td><td data-label="Time" class="center">~4 min</td><td data-label="Covers">Arrived since last standup; oldest open item age; count past target</td></tr>
+            <tr><td data-label="Segment" class="col-term">Routing</td><td data-label="Time" class="center">~4 min</td><td data-label="Covers">Anything escalating &mdash; every blocker leaves with an owner and a working-session slot</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px; font-size: 13.5px;">Rule of thumb: if an answer would take longer than one sentence, it goes to the parking lot instead of eating standup time.</p>
+
+      <div class="table-caption">What each meeting replaces</div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Today</th><th>Under this cadence</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Today">Status found by asking individuals</td><td data-label="Under cadence">Reported in a standing 20-minute slot</td></tr>
+            <tr><td data-label="Today">Scope committed informally, ownership implicit</td><td data-label="Under cadence">Committed at planning, named owner per item</td></tr>
+            <tr><td data-label="Today">Intake worked when someone notices it</td><td data-label="Under cadence">Reviewed three times a week</td></tr>
+            <tr><td data-label="Today">Blockers raised in 1:1s or not at all</td><td data-label="Under cadence">Routed to a working session with a date</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px; font-size: 13.5px;"><strong>Explicitly out of scope for this framework:</strong> governance, metrics, and the QA-gate conversation. <strong>Status:</strong> presented in Steven's deck; not yet confirmed as adopted in live discussion as of this update.</p>
     </section>
 
     <!-- ============================================================ -->
