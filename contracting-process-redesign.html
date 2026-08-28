@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Regenstrief Contracting Process Redesign</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --paper: #F2F4F0;
+    --surface: #FFFFFF;
+    --surface-sunken: #EAEDE7;
+    --ink: #1D241F;
+    --ink-muted: #59635B;
+    --ink-faint: #838C82;
+    --line: #D7DCD1;
+    --primary: #2B4257;
+    --primary-soft: #E4EAEF;
+    --current: #A6472B;
+    --current-soft: #F5E6DF;
+    --future: #2E7A64;
+    --future-soft: #E1EFE9;
+    --accent: #A8791F;
+    --accent-soft: #F1E8D3;
+    --shadow: 0 1px 2px rgba(29,36,31,0.06), 0 8px 24px -12px rgba(29,36,31,0.18);
+    --font-display: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', serif;
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, 'Liberation Mono', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #12161A; --surface: #191F24; --surface-sunken: #10151A;
+      --ink: #E7ECE6; --ink-muted: #9DA89F; --ink-faint: #6C766D; --line: #2A3330;
+      --primary: #8FB0CC; --primary-soft: #223140;
+      --current: #E38A67; --current-soft: #33241E;
+      --future: #66C3A6; --future-soft: #1B322C;
+      --accent: #D9AE5E; --accent-soft: #33291A;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--paper); color: var(--ink);
+    font-family: var(--font-body);
+    overflow: hidden;
+  }
+
+  .deck { position: relative; height: 100vh; width: 100vw; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: none;
+    flex-direction: column;
+    padding: 50px 68px 96px;
+    overflow-y: auto;
+  }
+  .slide.active { display: flex; }
+
+  .kicker {
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em;
+    color: var(--accent); font-weight: 700; margin: 0 0 10px;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: normal;
+    font-size: 2.6rem; line-height: 1.15; margin: 0 0 10px; color: var(--ink);
+  }
+  h2 {
+    font-family: var(--font-display); font-weight: normal;
+    font-size: 1.8rem; line-height: 1.2; margin: 0 0 6px; color: var(--ink);
+  }
+  .subtitle {
+    font-size: 1rem; color: var(--ink-muted); margin: 0 0 18px; max-width: 82ch;
+  }
+  .badge {
+    position: fixed; top: 22px; right: 28px;
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--ink-faint); border: 1px solid var(--line);
+    padding: 4px 10px; border-radius: 999px; background: var(--surface);
+    z-index: 5;
+  }
+
+  /* ---- Title slide ---- */
+  .slide.title { justify-content: center; }
+  .slide.title h1 { font-size: 3.2rem; max-width: 18ch; }
+  .slide.title .subtitle { font-size: 1.2rem; }
+  .byline { font-size: 0.95rem; color: var(--ink-faint); margin-top: 24px; }
+
+  /* ---- Bullet list slides ---- */
+  ul.points { list-style: none; margin: 0; padding: 0; max-width: 82ch; }
+  ul.points li {
+    position: relative; padding: 10px 0 10px 28px; font-size: 1.08rem;
+    line-height: 1.5; color: var(--ink); border-bottom: 1px solid var(--line);
+  }
+  ul.points li:last-child { border-bottom: none; }
+  ul.points li::before {
+    content: "→"; position: absolute; left: 0; color: var(--accent); font-weight: 700;
+  }
+
+  /* ---- Lifecycle table (new overview slide) ---- */
+  .lifecycle-table { display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; }
+  .lifecycle-header {
+    display: grid; grid-template-columns: 30px 200px 1fr 170px; gap: 12px; padding: 0 15px;
+    font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-faint); font-weight: 700;
+  }
+  .lifecycle-row {
+    display: grid; grid-template-columns: 30px 200px 1fr 170px; gap: 12px; align-items: center;
+    background: var(--surface); border-radius: 8px; padding: 8px 15px; box-shadow: var(--shadow);
+    border-left: 3px solid var(--primary);
+  }
+  .lifecycle-row.parallel { border-left-style: dashed; background: var(--surface-sunken); }
+  .lifecycle-row.future-state { border-left-color: var(--future); }
+  .lifecycle-row.future-state.parallel { border-left-color: var(--future); border-left-style: dashed; }
+  .lifecycle-num { font-family: var(--font-display); font-size: 0.95rem; color: var(--ink-faint); text-align: center; }
+  .lifecycle-phase-name { font-weight: 700; font-size: 0.79rem; color: var(--ink); line-height: 1.25; }
+  .lifecycle-owner { font-size: 0.67rem; color: var(--primary); margin-top: 2px; }
+  .lifecycle-tasks { font-size: 0.77rem; color: var(--ink-muted); line-height: 1.34; }
+  .lifecycle-consulted { font-size: 0.71rem; color: var(--ink-faint); line-height: 1.3; }
+  .lifecycle-legend { margin-top: 12px; font-size: 0.74rem; color: var(--ink-faint); }
+
+  /* ---- Task breakdown (future-state phase deep dives) ---- */
+  .task-phase { margin-bottom: 22px; }
+  .task-phase:last-child { margin-bottom: 0; }
+  .task-phase-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+  .task-phase-num { font-family: var(--font-display); font-size: 1.15rem; color: var(--future); }
+  .task-phase-name { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+  .task-phase-desc { font-size: 0.85rem; color: var(--ink-muted); margin: 0 0 10px; }
+  .task-list { display: flex; flex-direction: column; gap: 6px; }
+  .task-item {
+    display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center;
+    background: var(--surface); border-radius: 8px; padding: 8px 12px; box-shadow: var(--shadow);
+    border-left: 3px solid var(--future);
+  }
+  .task-item-text { font-size: 0.82rem; line-height: 1.4; color: var(--ink-muted); }
+  .task-item-text b { color: var(--ink); }
+  .task-tag {
+    font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    padding: 3px 8px; border-radius: 999px; white-space: nowrap;
+  }
+  .task-tag.same { background: var(--surface-sunken); color: var(--ink-faint); }
+  .task-tag.changed { background: var(--accent-soft); color: var(--accent); }
+  .task-tag.new { background: var(--future-soft); color: var(--future); }
+
+  /* ---- Flow comparison grid ---- */
+  .flow-wrap { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .flow-grid {
+    display: grid;
+    grid-template-columns: 64px repeat(6, 1fr);
+    gap: 10px 14px;
+    align-items: stretch;
+  }
+  .row-label {
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    text-align: center; font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.08em; font-weight: 700; align-self: stretch;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+  }
+  .row-label.today { color: var(--current); background: var(--current-soft); }
+  .row-label.change { color: var(--accent); background: var(--accent-soft); }
+  .row-label.future { color: var(--future); background: var(--future-soft); }
+  .stage-head {
+    position: relative;
+    font-size: 0.8rem; font-weight: 700; color: var(--ink);
+    padding: 6px 4px 10px; text-align: center; align-self: end;
+  }
+  .stage-head:not(:last-child)::after {
+    content: "→"; position: absolute; right: -13px; top: 50%;
+    transform: translateY(-40%); color: var(--ink-faint); font-size: 0.85rem;
+  }
+  .flow-arrow-row { display: contents; }
+  .flow-arrow {
+    text-align: center; color: var(--ink-faint); font-size: 0.95rem; padding: 2px 0;
+  }
+  .stage-card {
+    border-radius: 10px; padding: 11px 12px; font-size: 0.78rem; line-height: 1.4;
+    border-left: 3px solid transparent; box-shadow: var(--shadow);
+  }
+  .stage-card.today { background: var(--current-soft); border-left-color: var(--current); color: var(--ink); }
+  .stage-card.change { background: var(--accent-soft); border-left-color: var(--accent); color: var(--ink); }
+  .stage-card.future { background: var(--future-soft); border-left-color: var(--future); color: var(--ink); }
+  .stage-card ul { margin: 0; padding-left: 14px; }
+  .stage-card li { margin-bottom: 3px; }
+  .stage-card li:last-child { margin-bottom: 0; }
+  .flow-footnote { margin-top: 14px; font-size: 0.85rem; color: var(--ink-faint); }
+
+  /* ---- Detail-card list ---- */
+  .detail-list { display: flex; flex-direction: column; gap: 11px; max-width: 98ch; }
+  .detail-card {
+    background: var(--surface); border-radius: 10px; padding: 13px 17px;
+    box-shadow: var(--shadow); border-left: 3px solid var(--primary);
+    font-size: 0.92rem; line-height: 1.52; color: var(--ink);
+  }
+  .detail-card b { color: var(--ink); }
+
+  /* ---- Quote grid ---- */
+  .quote-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .quote-card {
+    background: var(--surface-sunken); border-radius: 10px; padding: 16px 18px;
+    box-shadow: var(--shadow); border-top: 3px solid var(--accent);
+  }
+  .quote-text { font-family: var(--font-display); font-style: italic; font-size: 1.02rem; line-height: 1.48; color: var(--ink); }
+  .quote-text::before { content: "\201C"; }
+  .quote-text::after { content: "\201D"; }
+  .quote-attr { margin-top: 10px; font-size: 0.72rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+
+  /* ---- Stat row + theme table ---- */
+  .stat-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 22px; }
+  .stat { background: var(--surface); border-radius: 10px; padding: 12px 8px; text-align: center; box-shadow: var(--shadow); }
+  .stat-num { font-family: var(--font-display); font-size: 2rem; line-height: 1; }
+  .stat-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-faint); margin-top: 5px; }
+  .stat.addressed .stat-num { color: var(--future); }
+  .stat.partial .stat-num { color: var(--accent); }
+  .stat.notaddressed .stat-num { color: var(--current); }
+  .stat.planned .stat-num { color: var(--primary); }
+  .stat.outofscope .stat-num { color: var(--ink-faint); }
+
+  .theme-table { display: flex; flex-direction: column; gap: 7px; }
+  .theme-row { display: grid; grid-template-columns: 210px 1fr 128px; gap: 14px; align-items: center; background: var(--surface); border-radius: 8px; padding: 9px 15px; box-shadow: var(--shadow); }
+  .theme-name { font-weight: 700; font-size: 0.82rem; color: var(--ink); }
+  .theme-example { font-size: 0.8rem; color: var(--ink-muted); line-height: 1.38; }
+  .theme-pill { font-size: 0.66rem; font-weight: 700; text-align: center; padding: 4px 8px; border-radius: 999px; white-space: nowrap; }
+  .theme-pill.addressed { background: var(--future-soft); color: var(--future); }
+  .theme-pill.partial { background: var(--accent-soft); color: var(--accent); }
+  .theme-pill.notaddressed { background: var(--current-soft); color: var(--current); }
+  .theme-pill.planned { background: var(--primary-soft); color: var(--primary); }
+
+  .status-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 5px 12px; border-radius: 999px; margin-bottom: 16px; }
+  .status-badge.addressed { background: var(--future-soft); color: var(--future); }
+  .status-badge.partial { background: var(--accent-soft); color: var(--accent); }
+  .status-badge.notaddressed { background: var(--current-soft); color: var(--current); }
+  .status-badge.planned { background: var(--primary-soft); color: var(--primary); }
+  .status-badge.outofscope { background: var(--surface-sunken); color: var(--ink-faint); }
+
+  /* ---- Initiatives ---- */
+  .init-group { margin-bottom: 20px; }
+  .init-group:last-child { margin-bottom: 0; }
+  .init-group-head {
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--primary); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid var(--primary-soft);
+  }
+  .init-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .init-card {
+    background: var(--surface); border-radius: 10px; padding: 13px 15px;
+    box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 6px;
+  }
+  .init-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .init-title { font-weight: 700; font-size: 0.9rem; color: var(--ink); }
+  .size-pill {
+    font-size: 0.66rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    background: var(--primary-soft); color: var(--primary); white-space: nowrap;
+  }
+  .type-tag { font-size: 0.66rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+  .init-desc { font-size: 0.79rem; color: var(--ink-muted); line-height: 1.42; }
+
+  /* ---- Sequencing ---- */
+  .timeline { display: flex; gap: 14px; flex: 1; align-items: stretch; }
+  .phase {
+    flex: 1; background: var(--surface); border-radius: 10px; padding: 16px 14px;
+    box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px;
+    border-top: 3px solid var(--primary); position: relative;
+  }
+  .phase.done { border-top-color: var(--future); }
+  .phase-num { font-size: 0.7rem; color: var(--ink-faint); font-weight: 700; }
+  .phase-name { font-family: var(--font-display); font-size: 1.05rem; }
+  .phase-status { font-size: 0.75rem; font-weight: 700; }
+  .phase.done .phase-status { color: var(--future); }
+  .phase:not(.done) .phase-status { color: var(--accent); }
+  .phase-date { font-size: 0.78rem; color: var(--ink-faint); margin-top: auto; }
+
+  /* ---- Nav ---- */
+  .nav {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 64px;
+    background: var(--surface); border-top: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    z-index: 10;
+  }
+  .nav button {
+    font-family: var(--font-body); font-size: 0.85rem; font-weight: 600;
+    background: var(--surface-sunken); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 6px; padding: 8px 16px; cursor: pointer;
+  }
+  .nav button:hover { background: var(--primary-soft); }
+  .counter { font-size: 0.8rem; color: var(--ink-faint); font-family: var(--font-mono); min-width: 52px; text-align: center; }
+  .dots { display: flex; gap: 6px; flex-wrap: wrap; max-width: 340px; justify-content: center; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--line); border: none; cursor: pointer; padding: 0; }
+  .dot.active { background: var(--primary); }
+
+  .closing { font-size: 1.05rem; color: var(--ink-muted); margin-top: 22px; font-style: italic; }
+
+  @media print {
+    .badge, .nav, .comments-panel, .comments-overlay { display: none; }
+    body { overflow: visible; }
+    .deck { height: auto; }
+    .slide { display: flex !important; position: static; page-break-after: always; height: 100vh; }
+  }
+
+  /* ---- Nav layout (3-column, to give Comments its own slot) ---- */
+  .nav {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 64px;
+    background: var(--surface); border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    padding: 0 20px; gap: 12px; z-index: 10;
+  }
+  .nav-center { display: flex; align-items: center; justify-content: center; gap: 16px; }
+  .nav-side { display: flex; align-items: center; }
+  .nav-side.right { justify-content: flex-end; }
+  .nav button, .comments-toggle {
+    font-family: var(--font-body); font-size: 0.85rem; font-weight: 600;
+    background: var(--surface-sunken); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 6px; padding: 8px 16px; cursor: pointer;
+  }
+  .nav button:hover, .comments-toggle:hover { background: var(--primary-soft); }
+  .comments-toggle.active { background: var(--primary); color: var(--surface); border-color: var(--primary); }
+
+  /* ---- Comments panel (giscus, GitHub Discussions-backed) ---- */
+  .comments-overlay {
+    position: fixed; inset: 0; background: rgba(20,24,20,0.32);
+    opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 25;
+  }
+  .comments-overlay.open { opacity: 1; pointer-events: auto; }
+  .comments-panel {
+    position: fixed; top: 0; right: 0; height: 100vh; width: min(460px, 92vw);
+    background: var(--surface); border-left: 1px solid var(--line);
+    box-shadow: -10px 0 28px -14px rgba(0,0,0,0.3);
+    transform: translateX(100%); transition: transform 0.25s ease;
+    z-index: 30; display: flex; flex-direction: column;
+  }
+  .comments-panel.open { transform: translateX(0); }
+  .comments-panel-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 18px; border-bottom: 1px solid var(--line); flex-shrink: 0;
+  }
+  .comments-panel-title { font-family: var(--font-display); font-size: 1.05rem; color: var(--ink); }
+  .comments-panel-sub { font-size: 0.72rem; color: var(--ink-faint); margin-top: 2px; }
+  .comments-panel-close {
+    background: none; border: none; font-size: 1.15rem; line-height: 1; color: var(--ink-faint);
+    cursor: pointer; padding: 4px 8px;
+  }
+  .comments-panel-close:hover { color: var(--ink); }
+  .giscus-container { flex: 1; overflow-y: auto; padding: 4px 14px 20px; }
+  .giscus-container iframe.giscus-frame { width: 100%; border: none; }
+</style>
+</head>
+<body>
+
+<div class="badge">Draft — for discussion</div>
+
+<div class="deck">
+
+  <section class="slide title">
+    <div class="kicker">Contracting Process Redesign</div>
+    <h1>Regenstrief Contracting Process Redesign</h1>
+    <p class="subtitle">What's actually happening today, where it's headed, and what needs to change.</p>
+    <div class="byline">Prepared for the contracting redesign team · August 2026</div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 2</div>
+    <h2>How to Read This</h2>
+    <p class="subtitle">Same spirit as everything else this project has produced.</p>
+    <ul class="points">
+      <li>This is a strawman, like every other document in this project. It is meant to be picked apart and corrected, not approved as written.</li>
+      <li>Two threads run through it: what is changing in the process itself, and what is changing in the tools and governance behind it.</li>
+      <li>A lot of what follows comes from live working sessions with the pre-award and post-award team leads, plus five customer interviews. Some of it will be new even to people who have lived this process for years, because it is the first time it has all been written down in one place.</li>
+      <li>Nothing here commits budget or headcount. The goal is to align on direction before we scope initiatives in more detail.</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 3</div>
+    <h2>The Grant &amp; Contract Lifecycle</h2>
+    <p class="subtitle">The full path a grant or contract travels, phase by phase, with who owns each one today. This is the process this project is redesigning.</p>
+    <div class="lifecycle-table">
+      <div class="lifecycle-header">
+        <div></div><div>Phase</div><div>Core Tasks</div><div>Consulted / Informed</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">1</div>
+        <div><div class="lifecycle-phase-name">Opportunity Identification &amp; Eligibility</div><div class="lifecycle-owner">Owner: Pre-Award</div></div>
+        <div class="lifecycle-tasks">Identify and share funding opportunities; confirm eligibility to submit under a given opportunity's criteria.</div>
+        <div class="lifecycle-consulted">Science, Contracting</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">2</div>
+        <div><div class="lifecycle-phase-name">Proposal Development &amp; Budget</div><div class="lifecycle-owner">Owner: Pre-Award &amp; Science</div></div>
+        <div class="lifecycle-tasks">Science drafts the narrative and specific aims; Pre-Award builds the budget, obtains vendor quotes, and coordinates faculty effort agreements.</div>
+        <div class="lifecycle-consulted">Post-Award, on complex proposals</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">3</div>
+        <div><div class="lifecycle-phase-name">Submission &amp; Sponsor Review</div><div class="lifecycle-owner">Owner: Pre-Award</div></div>
+        <div class="lifecycle-tasks">Assemble and submit the package; watch for sponsor status changes; respond to sponsor requests for updated information after review but before a funding decision.</div>
+        <div class="lifecycle-consulted">Post-Award</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">4</div>
+        <div><div class="lifecycle-phase-name">Award Document Execution</div><div class="lifecycle-owner">Owner: Pre-Award (simple) or Contracting (complex / industry)</div></div>
+        <div class="lifecycle-tasks">Review and execute the revenue document; run debarment and suspension screening.</div>
+        <div class="lifecycle-consulted">Pre-Award, Post-Award</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">5</div>
+        <div><div class="lifecycle-phase-name">Award Setup &amp; Handoff</div><div class="lifecycle-owner">Owner: Pre-Award → Post-Award</div></div>
+        <div class="lifecycle-tasks">Hold the award kickoff/handoff meeting; set up the extramural project in Financial Edge.</div>
+        <div class="lifecycle-consulted">General Ledger (GL) team</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">6</div>
+        <div><div class="lifecycle-phase-name">Active Award Administration</div><div class="lifecycle-owner">Owner: Post-Award</div></div>
+        <div class="lifecycle-tasks">Approve monthly effort and expenses; coordinate procurement; notify the sponsor of key personnel or scope changes; maintain Financial Edge records.</div>
+        <div class="lifecycle-consulted">Science, GL</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">7</div>
+        <div><div class="lifecycle-phase-name">Invoicing &amp; Financial Compliance</div><div class="lifecycle-owner">Owner: GL team</div></div>
+        <div class="lifecycle-tasks">Generate invoices; post journal entries; apply Facilities &amp; Administrative (indirect cost) and fringe rates; pursue aged receivables.</div>
+        <div class="lifecycle-consulted">Post-Award approves each invoice</div>
+      </div>
+      <div class="lifecycle-row parallel">
+        <div class="lifecycle-num">8</div>
+        <div><div class="lifecycle-phase-name">Scientific &amp; Programmatic Activity <em>(runs in parallel, ongoing)</em></div><div class="lifecycle-owner">Owner: Science</div></div>
+        <div class="lifecycle-tasks">Attend project meetings; complete scientific reporting requirements; review subrecipient technical and progress reports.</div>
+        <div class="lifecycle-consulted">Post-Award</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">9</div>
+        <div><div class="lifecycle-phase-name">Continuation, Amendments &amp; Supplemental Funding</div><div class="lifecycle-owner">Owner: Post-Award (simple) or Contracting (complex / industry)</div></div>
+        <div class="lifecycle-tasks">Process amendments, no-cost extensions, and supplemental-funding requests.</div>
+        <div class="lifecycle-consulted">Pre-Award, GL, Science</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">10</div>
+        <div><div class="lifecycle-phase-name">Closeout &amp; Audit</div><div class="lifecycle-owner">Owner: Post-Award &amp; GL</div></div>
+        <div class="lifecycle-tasks">Flag the project for closure; reconcile the balance; complete closeout forms and sign-offs; respond to any required audit.</div>
+        <div class="lifecycle-consulted">Contracting, Science</div>
+      </div>
+    </div>
+    <p class="lifecycle-legend">GL = General Ledger team. Financial Edge is Regenstrief's fund-accounting system. Phases 1 through 4 sit with Pre-Award; phases 5 through 10 sit with Post-Award and GL, with Science running alongside throughout.</p>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 4</div>
+    <h2>Where the Pain Points Live</h2>
+    <p class="subtitle">The same ten phases from the lifecycle map, this time showing what's actually broken in each one. 46 pain points were coded from customer interviews and checked against current practice.</p>
+    <div class="stat-row">
+      <div class="stat addressed"><div class="stat-num">3</div><div class="stat-label">Addressed Today</div></div>
+      <div class="stat partial"><div class="stat-num">18</div><div class="stat-label">Partially Addressed</div></div>
+      <div class="stat notaddressed"><div class="stat-num">15</div><div class="stat-label">Not Addressed</div></div>
+      <div class="stat planned"><div class="stat-num">5</div><div class="stat-label">Planned, Not Built</div></div>
+      <div class="stat outofscope"><div class="stat-num">4</div><div class="stat-label">Out of Scope</div></div>
+    </div>
+    <div class="lifecycle-table">
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">1</div>
+        <div class="lifecycle-phase-name">Opportunity ID &amp; Eligibility</div>
+        <div class="lifecycle-tasks">Ambiguous entry point: multiple ways to start, no single front door, especially for industry-partner work. Workload is balanced through an unofficial, personally-built scoring tool, not a documented standard.</div>
+        <div class="theme-pill partial">Partial</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">2</div>
+        <div class="lifecycle-phase-name">Proposal Development &amp; Budget</div>
+        <div class="lifecycle-tasks">No low-stakes way to rough out numbers before the official budget process starts. A separate budget-related form duplicates work already captured in the main intake form.</div>
+        <div class="theme-pill notaddressed">Not Addressed</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">3</div>
+        <div class="lifecycle-phase-name">Submission &amp; Sponsor Review</div>
+        <div class="lifecycle-tasks">No requester-facing tracking once a proposal is submitted; staff and requesters both build their own shadow trackers. A sponsor request can resurface a proposal presumed dead over a year later, with no shared record of the original rationale.</div>
+        <div class="theme-pill notaddressed">Not Addressed</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">4</div>
+        <div class="lifecycle-phase-name">Award Document Execution</div>
+        <div class="lifecycle-tasks">A single reviewer handles essentially all contract review, a real bottleneck right now, not a hypothetical one. No unified way to check whether an agreement with a given partner already exists.</div>
+        <div class="theme-pill partial">Partial</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">5</div>
+        <div class="lifecycle-phase-name">Award Setup &amp; Handoff</div>
+        <div class="lifecycle-tasks">No formal handoff meeting exists in practice; a standing biweekly meeting covers it informally. Budgets don't reliably travel with the award into post-award's hands.</div>
+        <div class="theme-pill partial">Partial</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">6</div>
+        <div class="lifecycle-phase-name">Active Award Administration</div>
+        <div class="lifecycle-tasks">Administrative and coordination tasks, scheduling, follow-ups, documentation, have no default owner across Pre-Award, Post-Award, and Contracting, so they fall to whichever Science team member is willing to chase them. No dashboard or shared visibility into an active award's status either.</div>
+        <div class="theme-pill planned">Planned</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">7</div>
+        <div class="lifecycle-phase-name">Invoicing &amp; Financial Compliance</div>
+        <div class="lifecycle-tasks">The monthly invoicing update is often delayed and not always clearly announced. Indirect-rate calculation errors are frequent enough that staff describe being afraid to touch the spreadsheet.</div>
+        <div class="theme-pill notaddressed">Not Addressed</div>
+      </div>
+      <div class="lifecycle-row parallel">
+        <div class="lifecycle-num">8</div>
+        <div class="lifecycle-phase-name">Scientific &amp; Programmatic Activity</div>
+        <div class="lifecycle-tasks">Investigators report needing to act as scientist, project manager, and contracting expert all at once, more roles than one person should carry, sharpest in industry-partner work.</div>
+        <div class="theme-pill planned">Planned</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">9</div>
+        <div class="lifecycle-phase-name">Continuation, Amendments &amp; Supplemental Funding</div>
+        <div class="lifecycle-tasks">A recent reassignment of simple continuing-award contracting was decided above both teams, not agreed between them, and is still a live source of friction. Proposed contract changes are often exchanged by email, outside the tracking system.</div>
+        <div class="theme-pill notaddressed">Not Addressed</div>
+      </div>
+      <div class="lifecycle-row">
+        <div class="lifecycle-num">10</div>
+        <div class="lifecycle-phase-name">Closeout &amp; Audit</div>
+        <div class="lifecycle-tasks">Renewal dates and other obligations are tracked by hand: someone opens the signed PDF, finds the date, and does the math themselves. Nothing links related agreements together for reporting.</div>
+        <div class="theme-pill notaddressed">Not Addressed</div>
+      </div>
+    </div>
+    <p class="lifecycle-legend">A few issues showed up in several phases at once rather than just one; the next slide names those first, then the following ten slides go one phase deeper at a time.</p>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 5</div>
+    <h2>Issues That Cut Across Every Phase</h2>
+    <p class="subtitle">These aren't confined to one part of the lifecycle. Keep them in mind heading into the phase-by-phase review that follows, they account for a lot of what gets marked Not Addressed or Partial there.</p>
+    <div class="detail-list">
+      <div class="detail-card"><b>No default owner for administrative work.</b> Scheduling, documentation, and following up on outstanding items aren't the science itself, that stays with Science, but nothing assigns this work to Pre-Award, Post-Award, or Contracting either, so it defaults to whichever Science team member is willing to chase it. Sharpest during active award administration (Phase 6), but also shows up at handoff (Phase 5) and in scientific and programmatic activity (Phase 8). <i>Proposed fix: Administrative Task Ownership &amp; Tracking, Slide 26.</i></div>
+      <div class="detail-card"><b>No shared status visibility.</b> Nobody outside the person handling a request can see where it stands. Pre-award and post-award have each independently built their own personal tracking spreadsheets to cope, and requesters do the same. Touches nearly every phase, sharpest at submission (Phase 3) and during active award administration (Phase 6). <i>Proposed fix: Shared Status Dashboard, Slide 26.</i></div>
+      <div class="detail-card"><b>No defined turnaround-time expectations.</b> Nothing tells a requester or stakeholder what a normal wait looks like, so silence reads as a problem and last-minute questions pile up right before a deadline instead of surfacing early. Shows up at submission (Phase 3), during active award administration (Phase 6), and in invoicing (Phase 7). <i>Proposed fix: Turnaround-Time Expectations, Slide 26.</i></div>
+      <div class="detail-card"><b>No single source of truth for documents and data.</b> Contracts, budgets, and obligations live wherever the person handling them happened to save them, a shared drive, an individual desktop, a personal inbox. Shows up in award document execution (Phase 4), at handoff (Phase 5), and in closeout and audit (Phase 10). <i>Proposed fix: Storage &amp; Source of Truth, Slide 26.</i></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 6</div>
+    <div class="status-badge partial">Partial</div>
+    <h2>Phase 1: Opportunity Identification &amp; Eligibility</h2>
+    <p class="subtitle">Where a request enters the process, and who owns getting proposals staffed.</p>
+    <div class="detail-list">
+      <div class="detail-card"><b>No single front door.</b> Investigators and program teams have used a personal inbox, a shared inbox, or the industry-partnership team, depending on who they happened to ask, with a different experience down each path.</div>
+      <div class="detail-card"><b>Workload is balanced through a personal tool, not a documented standard.</b> A staff-built scoring system rates each proposal's complexity (sub-only vs. prime-plus-sub vs. multiple subs) and feeds a workload total per person. It works, but it would not transfer to a new hire.</div>
+      <div class="detail-card"><b>Coordination with the industry-partnership team is a confirmed gap,</b> acknowledged on both sides, not yet resolved.</div>
+      <div class="detail-card"><b>Whether a PI has multiple submissions out at once isn't tracked anywhere in pre-award.</b> It's treated as a downstream, post-award concern instead.</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 7</div>
+    <div class="status-badge notaddressed">Not Addressed</div>
+    <h2>Phase 2: Proposal Development &amp; Budget</h2>
+    <p class="subtitle">Where the narrative and budget actually get built.</p>
+    <div class="detail-list">
+      <div class="detail-card"><b>No low-stakes way to rough out numbers before the official budget process starts.</b> Program staff have been told not to informally play with percentages at all, even just to sanity-check a figure.</div>
+      <div class="detail-card"><b>Budget calculation errors happen, and there's no documented quality check.</b> One historical near-miss: unconsulted market-rate salary increases nearly bankrupted grants years ago. The fix, budgeting at a mid-level rate, is informal practice, not a documented step.</div>
+      <div class="detail-card"><b>A separate budget-related form duplicates work already captured in the main request,</b> so the same numbers get provided twice, to two different teams.</div>
+      <div class="detail-card"><b>Fair-market-value budgeting for industry-funded work follows a completely different process</b> from standard grant budgeting, and it isn't represented in the documented process at all.</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 8</div>
+    <div class="status-badge notaddressed">Not Addressed</div>
+    <h2>Phase 3: Submission &amp; Sponsor Review</h2>
+    <p class="subtitle">Once a proposal is out the door, until an award decision comes back.</p>
+    <div class="detail-list">
+      <div class="detail-card"><b>A sponsor request for updated information can resurface a proposal presumed dead over a year after submission,</b> with no shared record of why it was written the way it was. Two live examples exist right now.</div>
+      <div class="detail-card"><b>Status monitoring is opportunistic, not active.</b> Sponsor communication about a proposal usually reaches the investigator first, so pre-award often learns of changes only by asking.</div>
+    </div>
+    <p class="flow-footnote">This phase is also where two cross-cutting issues hit hardest: no shared status visibility, and no defined turnaround-time expectations, see Slide 5.</p>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 9</div>
+    <div class="status-badge partial">Partial</div>
+    <h2>Phase 4: Award Document Execution</h2>
+    <p class="subtitle">Reviewing and executing the actual award document.</p>
+    <div class="detail-list">
+      <div class="detail-card"><b>A single reviewer handles essentially all contract review.</b> That is a real, current bottleneck, not a hypothetical one, and coverage has already been tested by one extended absence.</div>
+      <div class="detail-card"><b>No unified way exists to check whether an agreement with a given partner already exists.</b> Staff have assumed one was already in place with a partner organization, checked, and found there wasn't one.</div>
+      <div class="detail-card"><b>Debarment and suspension screening, and the independent-contractor check, both currently happen after this step,</b> once the award has already landed. That timing is being questioned: shouldn't RI confirm a named vendor is workable before including them in a proposal, rather than after?</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 10</div>
+    <div class="status-badge partial">Partial</div>
+    <h2>Phase 5: Award Setup &amp; Handoff</h2>
+    <p class="subtitle">Getting a newly awarded project properly set up and handed to the team that runs it day to day.</p>
+    <div class="detail-list">
+      <div class="detail-card"><b>No formal handoff meeting exists in practice.</b> A standing biweekly meeting between the two teams covers it informally instead.</div>
+      <div class="detail-card"><b>Budgets don't reliably travel with the award.</b> Sometimes the file isn't in the expected shared-drive location; sometimes it's sitting on an individual's desktop.</div>
+      <div class="detail-card"><b>Vendor documentation can be missing at handoff.</b> Projects routed through an internal service unit have reached the next team with only a verbal budget number, no draft agreement, quote, or the vendor's correct legal name.</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 11</div>
+    <div class="status-badge planned">Planned</div>
+    <h2>Phase 6: Active Award Administration</h2>
+    <p class="subtitle">The ongoing, monthly work of running an award once it's active. Most of this phase's pain is systemic rather than unique to it, see Slide 5.</p>
+    <div class="detail-list">
+      <div class="detail-card"><b>Ad hoc, cross-team requests that fall outside the well-defined recurring tasks</b> (an unusual data pull, for example) land on whoever happens to be available, not a defined owner.</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 12</div>
+    <div class="status-badge notaddressed">Not Addressed</div>
+    <h2>Phase 7: Invoicing &amp; Financial Compliance</h2>
+    <p class="subtitle">Generating and reconciling invoices against each award's terms.</p>
+    <div class="detail-list">
+      <div class="detail-card"><b>The monthly invoicing update is often delayed,</b> especially when a contract isn't fully set up yet, and it isn't always clear when an update has happened.</div>
+      <div class="detail-card"><b>Indirect-rate calculation errors come up often enough that staff describe being afraid to touch the spreadsheet,</b> worried they'll break something they don't fully understand.</div>
+      <div class="detail-card"><b>No explicit quality check exists anywhere in the invoicing or budget-scenario chain</b> to catch these errors before they reach a sponsor.</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 13</div>
+    <div class="status-badge planned">Planned</div>
+    <h2>Phase 8: Scientific &amp; Programmatic Activity</h2>
+    <p class="subtitle">The research and reporting work that runs alongside every other phase, not after them.</p>
+    <div class="detail-list">
+      <div class="detail-card"><b>Investigators describe needing to act as scientist, project manager, and contracting expert all at once,</b> more roles than one person should have to carry.</div>
+      <div class="detail-card"><b>This is sharpest in industry-partner work,</b> which is newer territory for most teams and far less supported today than standard federal-grant work.</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 14</div>
+    <div class="status-badge notaddressed">Not Addressed</div>
+    <h2>Phase 9: Continuation, Amendments &amp; Supplemental Funding</h2>
+    <p class="subtitle">Extending, amending, or adding funding to an award already in progress.</p>
+    <div class="detail-list">
+      <div class="detail-card"><b>A recent reassignment of simple continuing-award work to a different team was decided above both teams,</b> not agreed between them, and pre-award has pushed back on it more than once.</div>
+      <div class="detail-card"><b>Whether the underlying responsibility matrix is a final decision or still a working draft has never been resolved,</b> despite being raised three separate times.</div>
+      <div class="detail-card"><b>Proposed contract changes are often exchanged by email outside the tracking system,</b> with no shared way to see which version is current.</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 15</div>
+    <div class="status-badge notaddressed">Not Addressed</div>
+    <h2>Phase 10: Closeout &amp; Audit</h2>
+    <p class="subtitle">Wrapping up a completed award, and keeping track of what it still obligates RI to do.</p>
+    <div class="detail-list">
+      <div class="detail-card"><b>Renewal dates and other obligations are tracked by hand:</b> someone opens the signed PDF, finds the date, and manually calculates a deadline. It's easy to misread a date or simply forget.</div>
+      <div class="detail-card"><b>Nothing links related agreements together for reporting.</b> Executing an award doesn't automatically flag a related vendor agreement or lease named in the same proposal.</div>
+      <div class="detail-card"><b>Portfolio-level reporting, such as what's up for renewal next quarter,</b> is only as reliable as whatever's been typed into a spreadsheet by hand.</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 16</div>
+    <h2>The Grant &amp; Contract Lifecycle: Future State</h2>
+    <p class="subtitle">Same ten phases as Slide 3, same owners in almost every case. What changes is the tooling and process support underneath each one.</p>
+    <div class="lifecycle-table">
+      <div class="lifecycle-header">
+        <div></div><div>Phase</div><div>What's Different</div><div>Consulted / Informed</div>
+      </div>
+      <div class="lifecycle-row future-state">
+        <div class="lifecycle-num">1</div>
+        <div><div class="lifecycle-phase-name">Opportunity Identification &amp; Eligibility</div><div class="lifecycle-owner">Owner: Pre-Award</div></div>
+        <div class="lifecycle-tasks">Industry-partner opportunities flow through a defined joint process with the industry-partnership team instead of an informal one. Workload balanced through a shared institutional tool instead of a personal spreadsheet.</div>
+        <div class="lifecycle-consulted">Science, Contracting, industry-partnership team</div>
+      </div>
+      <div class="lifecycle-row future-state">
+        <div class="lifecycle-num">2</div>
+        <div><div class="lifecycle-phase-name">Proposal Development &amp; Budget</div><div class="lifecycle-owner">Owner: Pre-Award &amp; Science</div></div>
+        <div class="lifecycle-tasks">An explicit quality check catches calculation errors before a budget moves forward. The duplicate budget-related form is reconciled with the main request instead of requiring the same numbers twice.</div>
+        <div class="lifecycle-consulted">Post-Award, on complex proposals</div>
+      </div>
+      <div class="lifecycle-row future-state">
+        <div class="lifecycle-num">3</div>
+        <div><div class="lifecycle-phase-name">Submission &amp; Sponsor Review</div><div class="lifecycle-owner">Owner: Pre-Award</div></div>
+        <div class="lifecycle-tasks">A shared status dashboard replaces shadow spreadsheets, visible to requesters and Post-Award both. Published turnaround-time expectations replace ad hoc silence.</div>
+        <div class="lifecycle-consulted">Post-Award</div>
+      </div>
+      <div class="lifecycle-row future-state">
+        <div class="lifecycle-num">4</div>
+        <div><div class="lifecycle-phase-name">Award Document Execution</div><div class="lifecycle-owner">Owner: Pre-Award (simple) or Contracting (complex / industry), plus a second trained reviewer</div></div>
+        <div class="lifecycle-tasks">Checked against a published agreement lookup list before assuming a new one is needed. Debarment and suspension screening moves earlier, to before submission, pending the group's decision on timing.</div>
+        <div class="lifecycle-consulted">Pre-Award, Post-Award</div>
+      </div>
+      <div class="lifecycle-row future-state">
+        <div class="lifecycle-num">5</div>
+        <div><div class="lifecycle-phase-name">Award Setup &amp; Handoff</div><div class="lifecycle-owner">Owner: Pre-Award → Post-Award</div></div>
+        <div class="lifecycle-tasks">Follows a published responsibility document instead of informal practice. Vendor documentation has a default owner, so it doesn't arrive at handoff incomplete.</div>
+        <div class="lifecycle-consulted">GL</div>
+      </div>
+      <div class="lifecycle-row future-state">
+        <div class="lifecycle-num">6</div>
+        <div><div class="lifecycle-phase-name">Active Award Administration</div><div class="lifecycle-owner">Owner: Post-Award</div></div>
+        <div class="lifecycle-tasks">A default owner exists for ad hoc cross-team requests instead of "whoever's available." Shared status visibility replaces personal tracking.</div>
+        <div class="lifecycle-consulted">Science, GL</div>
+      </div>
+      <div class="lifecycle-row future-state">
+        <div class="lifecycle-num">7</div>
+        <div><div class="lifecycle-phase-name">Invoicing &amp; Financial Compliance</div><div class="lifecycle-owner">Owner: GL team</div></div>
+        <div class="lifecycle-tasks">An explicit quality check catches indirect-rate errors before they reach a sponsor. Published turnaround expectations replace unannounced delays.</div>
+        <div class="lifecycle-consulted">Post-Award approves each invoice</div>
+      </div>
+      <div class="lifecycle-row future-state parallel">
+        <div class="lifecycle-num">8</div>
+        <div><div class="lifecycle-phase-name">Scientific &amp; Programmatic Activity <em>(runs in parallel, ongoing)</em></div><div class="lifecycle-owner">Owner: Science</div></div>
+        <div class="lifecycle-tasks">Investigator education reduces how often Science ends up filling a contracting-expert role it wasn't meant to carry. Administrative tasks default to Pre-Award, Post-Award, or Contracting instead of landing here by omission.</div>
+        <div class="lifecycle-consulted">Post-Award</div>
+      </div>
+      <div class="lifecycle-row future-state">
+        <div class="lifecycle-num">9</div>
+        <div><div class="lifecycle-phase-name">Continuation, Amendments &amp; Supplemental Funding</div><div class="lifecycle-owner">Owner: Post-Award (simple) or Contracting (complex / industry), pending the matrix being finalized</div></div>
+        <div class="lifecycle-tasks">Proposed contract changes are tracked inside Issuetrak instead of email, so version history isn't lost.</div>
+        <div class="lifecycle-consulted">Pre-Award, GL, Science</div>
+      </div>
+      <div class="lifecycle-row future-state">
+        <div class="lifecycle-num">10</div>
+        <div><div class="lifecycle-phase-name">Closeout &amp; Audit</div><div class="lifecycle-owner">Owner: Post-Award &amp; GL</div></div>
+        <div class="lifecycle-tasks">Renewal dates and obligations track automatically instead of by hand. Related agreements are linked so a lease or vendor deal named in the same proposal doesn't get missed.</div>
+        <div class="lifecycle-consulted">Contracting, Science</div>
+      </div>
+    </div>
+    <p class="lifecycle-legend">Green marks the future state throughout this deck. Almost nothing here changes who owns a phase, what changes is the tooling and process support underneath it, largely the initiatives on Slide 26. Phases 4 and 9 assume open decisions get resolved, see Slide 27. The next seven slides break each phase down task by task.</p>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 17</div>
+    <h2>Phases 1-2: Getting a Proposal Ready</h2>
+    <p class="subtitle">Task by task, what each phase involves going forward. Same, Changed, or New marks what's different from today.</p>
+    <div class="task-phase">
+      <div class="task-phase-head"><span class="task-phase-num">1</span><span class="task-phase-name">Opportunity Identification &amp; Eligibility</span></div>
+      <p class="task-phase-desc">Pre-Award finds and vets funding opportunities before a proposal exists.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-item-text"><b>Identify &amp; share funding opportunities.</b> Pre-Award sources and shares opportunities with faculty.</div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Coordinate with the industry-partnership team on broad-based opportunities.</b> A defined joint process instead of an ad hoc relationship.</div><span class="task-tag changed">Changed</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Confirm eligibility to submit.</b> An eligibility/qualification check, not a mission-fit review.</div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Balance PRA workload across staff.</b> Runs on a shared institutional tool instead of one person's personal spreadsheet.</div><span class="task-tag changed">Changed</span></div>
+      </div>
+    </div>
+    <div class="task-phase">
+      <div class="task-phase-head"><span class="task-phase-num">2</span><span class="task-phase-name">Proposal Development &amp; Budget</span></div>
+      <p class="task-phase-desc">Science and Pre-Award build the narrative, budget, and supporting pieces of the package.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-item-text"><b>Draft narrative &amp; specific aims.</b> Science-owned, Pre-Award consulted.</div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Obtain vendor quotes &amp; draft non-binding SOWs.</b> Pre-Award, with Science feedback.</div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Draft the budget.</b> Same ownership, now with an explicit quality check catching calculation errors before it moves forward.</div><span class="task-tag changed">Changed</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Coordinate faculty effort agreements with IU ORA.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Reconcile with the separate budget-related (RDS) form.</b> No longer requires entering the same numbers twice.</div><span class="task-tag new">New</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Document investigator sign-off on residual/margin split.</b> Industry and fixed-dollar awards only.</div><span class="task-tag same">Same</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 18</div>
+    <h2>Phases 3-4: Getting to a Signed Award</h2>
+    <p class="subtitle">Task by task, what each phase involves going forward. Same, Changed, or New marks what's different from today.</p>
+    <div class="task-phase">
+      <div class="task-phase-head"><span class="task-phase-num">3</span><span class="task-phase-name">Submission &amp; Sponsor Review</span></div>
+      <p class="task-phase-desc">The package is out the door; Pre-Award waits on, and chases, a funding decision.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-item-text"><b>Assemble &amp; submit the sponsor package.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Monitor for sponsor status changes.</b> A shared status dashboard replaces shadow spreadsheets and opportunistic check-ins.</div><span class="task-tag changed">Changed</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Respond to sponsor requests for updated information.</b> Still Pre-Award-led; better documentation practices reduce how often the original rationale is lost.</div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Publish expected turnaround times.</b> Requesters know what a normal wait looks like instead of reading silence as a problem.</div><span class="task-tag new">New</span></div>
+      </div>
+    </div>
+    <div class="task-phase">
+      <div class="task-phase-head"><span class="task-phase-num">4</span><span class="task-phase-name">Award Document Execution</span></div>
+      <p class="task-phase-desc">The award document itself gets reviewed, checked, and executed.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-item-text"><b>Review &amp; execute the revenue document.</b> Backed by a second trained reviewer, not a single point of failure.</div><span class="task-tag changed">Changed</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Check whether an agreement with this partner already exists.</b> A published lookup list answers this before assuming a new document is needed.</div><span class="task-tag new">New</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Run debarment &amp; suspension screening.</b> Proposed to move earlier, to before submission, pending the group's decision on timing.</div><span class="task-tag changed">Changed</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 19</div>
+    <h2>Phase 5: Award Setup &amp; Handoff</h2>
+    <p class="subtitle">The pivot point of the whole process: where Pre-Award's work ends and Post-Award's begins.</p>
+    <div class="task-phase">
+      <div class="task-phase-head"><span class="task-phase-num">5</span><span class="task-phase-name">Award Setup &amp; Handoff</span></div>
+      <p class="task-phase-desc">Getting a newly awarded project properly set up and handed to the team that runs it day to day.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-item-text"><b>Hold the award kickoff/handoff meeting.</b> Follows a published responsibility document instead of informal practice.</div><span class="task-tag changed">Changed</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Set up the extramural project in Financial Edge.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Gather vendor documentation before handoff.</b> Has a default owner, so it doesn't arrive incomplete.</div><span class="task-tag new">New</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 20</div>
+    <h2>Phase 6: Active Award Administration</h2>
+    <p class="subtitle">The ongoing, monthly work of running an award once it's active, where the cross-cutting issues concentrated most.</p>
+    <div class="task-phase">
+      <div class="task-phase-head"><span class="task-phase-num">6</span><span class="task-phase-name">Active Award Administration</span></div>
+      <div class="task-list">
+        <div class="task-item"><div class="task-item-text"><b>Approve monthly effort allocation.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Approve project expenses for posting.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Coordinate procurement for items not named in the award.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Notify the sponsor of key personnel or scope changes.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Maintain Financial Edge active-project records.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Handle ad hoc, cross-team requests.</b> Has a default owner instead of landing on whoever's available.</div><span class="task-tag changed">Changed</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Track status transparently.</b> A shared dashboard replaces personal tracking.</div><span class="task-tag new">New</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 21</div>
+    <h2>Phase 7: Invoicing &amp; Financial Compliance</h2>
+    <p class="subtitle">Generating and reconciling invoices against each award's terms, mostly GL-owned work.</p>
+    <div class="task-phase">
+      <div class="task-phase-head"><span class="task-phase-num">7</span><span class="task-phase-name">Invoicing &amp; Financial Compliance</span></div>
+      <div class="task-list">
+        <div class="task-item"><div class="task-item-text"><b>Generate &amp; send invoices.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Approve each invoice.</b> Post-Award, against award terms and balance.</div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Post journal entries &amp; cost-transfer corrections.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Apply F&amp;A and fringe rates.</b> An explicit quality check catches indirect-rate errors before they reach a sponsor.</div><span class="task-tag changed">Changed</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Draw Payment Management System funds; pursue aged receivables.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Publish an expected update cadence.</b> Requesters aren't left guessing when the monthly update lands.</div><span class="task-tag new">New</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 22</div>
+    <h2>Phase 8: Scientific &amp; Programmatic Activity</h2>
+    <p class="subtitle">The research and reporting work that runs alongside every other phase, not after them.</p>
+    <div class="task-phase">
+      <div class="task-phase-head"><span class="task-phase-num">8</span><span class="task-phase-name">Scientific &amp; Programmatic Activity</span></div>
+      <div class="task-list">
+        <div class="task-item"><div class="task-item-text"><b>Attend project meetings.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Complete scientific reporting requirements.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Review subrecipient technical/progress reports.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Ensure sponsor acknowledgment in publications.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Absorb administrative coordination work by default.</b> Ends: this work now defaults to Pre-Award, Post-Award, or Contracting instead of landing here by omission.</div><span class="task-tag changed">Changed</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Carry contracting-adjacent judgment alone.</b> Investigator education reduces how often Science fills a role it wasn't meant to carry.</div><span class="task-tag changed">Changed</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 23</div>
+    <h2>Phases 9-10: Amending, Extending, and Closing Out</h2>
+    <p class="subtitle">Task by task, what each phase involves going forward. Same, Changed, or New marks what's different from today.</p>
+    <div class="task-phase">
+      <div class="task-phase-head"><span class="task-phase-num">9</span><span class="task-phase-name">Continuation, Amendments &amp; Supplemental Funding</span></div>
+      <div class="task-list">
+        <div class="task-item"><div class="task-item-text"><b>Process simple, non-industry continuing awards.</b> Same ownership, pending the responsibility matrix being finalized.</div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Process complex/industry continuing awards.</b> Contracting-led.</div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Exchange proposed contract changes with the other party.</b> Tracked inside Issuetrak instead of email, so version history isn't lost.</div><span class="task-tag changed">Changed</span></div>
+      </div>
+    </div>
+    <div class="task-phase">
+      <div class="task-phase-head"><span class="task-phase-num">10</span><span class="task-phase-name">Closeout &amp; Audit</span></div>
+      <div class="task-list">
+        <div class="task-item"><div class="task-item-text"><b>Flag the project for closure.</b></div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Reconcile the balance; prepare closeout entries.</b> GL-led.</div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Complete closeout forms &amp; obtain sign-offs.</b> Post-Award-led.</div><span class="task-tag same">Same</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Track renewal dates &amp; obligations.</b> Tracks automatically instead of by hand-reading PDFs and doing date math.</div><span class="task-tag changed">Changed</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Link related agreements for reporting.</b> A lease or vendor deal named in the same proposal is linked instead of siloed.</div><span class="task-tag new">New</span></div>
+        <div class="task-item"><div class="task-item-text"><b>Respond to single/desk audits, if required.</b> GL-led.</div><span class="task-tag same">Same</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 24</div>
+    <h2>The Shift We're Making</h2>
+    <p class="subtitle">Zooming into a single contracting request as it actually moves, today versus tomorrow, once a need for one exists. This cuts across several phases from the map above, most often Phases 1, 4, 6, and 9.</p>
+    <div class="flow-wrap">
+      <div class="flow-grid">
+        <div></div>
+        <div class="stage-head">Entry Point</div>
+        <div class="stage-head">Triage &amp; Routing</div>
+        <div class="stage-head">Drafting &amp; Internal Review</div>
+        <div class="stage-head">External Negotiation</div>
+        <div class="stage-head">Approval &amp; Execution</div>
+        <div class="stage-head">Post-Execution Tracking</div>
+
+        <div class="row-label today">Today</div>
+        <div class="stage-card today">Three uncoordinated inboxes.</div>
+        <div class="stage-card today">Triaged by feel, no documented tiering.</div>
+        <div class="stage-card today">Pre/post-award responsibilities still being worked out.</div>
+        <div class="stage-card today">Proposed changes exchanged by email, no version tracking.</div>
+        <div class="stage-card today">RI doesn't own Adobe Sign; no return notification.</div>
+        <div class="stage-card today">No shared list; obligations tracked by hand.</div>
+
+        <div class="row-label change">What Changes</div>
+        <div class="stage-card change"><ul>
+          <li>Retire the personal inbox.</li>
+          <li>Split into two shared inboxes, pre-award and post-award, each with a backup owner.</li>
+        </ul></div>
+        <div class="stage-card change"><ul>
+          <li>Adopt a routing rule based on funding source and flow-down status.</li>
+          <li>Add a weekly cross-team meeting to set top priorities.</li>
+        </ul></div>
+        <div class="stage-card change"><ul>
+          <li>Publish the responsibility document.</li>
+          <li>Move to parallel approvals, for example Finance and Legal together, instead of one after another.</li>
+        </ul></div>
+        <div class="stage-card change"><ul>
+          <li>Move proposed contract changes into Issuetrak instead of email.</li>
+          <li>Track versions so nothing gets lost between them.</li>
+        </ul></div>
+        <div class="stage-card change"><ul>
+          <li>Broaden signer access.</li>
+          <li>Fix the notification gap when a signed copy returns.</li>
+        </ul></div>
+        <div class="stage-card change"><ul>
+          <li>Centralize storage and build dashboards.</li>
+          <li>Link contracts so obligations track automatically.</li>
+        </ul></div>
+
+        <div class="row-label future">Future</div>
+        <div class="stage-card future">Two shared inboxes, no personal inbox.</div>
+        <div class="stage-card future">Rule-based routing, weekly priority-setting.</div>
+        <div class="stage-card future">Documented responsibilities, parallel approvals.</div>
+        <div class="stage-card future">Tracked workflow, no lost versions.</div>
+        <div class="stage-card future">Broader access, reliable notification.</div>
+        <div class="stage-card future">Centralized, automatic tracking.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 25</div>
+    <h2>The Tooling Decision Is Already Made, Mostly</h2>
+    <p class="subtitle">Leadership chose Issuetrak in mid-August. The known gaps were deferred, not resolved, and one objection behind that choice turned out to be wrong.</p>
+    <div class="detail-list">
+      <div class="detail-card"><b>Issuetrak was chosen over two AI-native contract lifecycle systems (Ironclad and LinkSquares) in mid-August 2026.</b> Rationale: the team already knows it. Get the process itself defined and working there first, then see what gaps remain, rather than pick a system before the process is settled.</div>
+      <div class="detail-card"><b>Real, acknowledged gap, deferred rather than fixed:</b> Issuetrak has no native contract data model, no e-signature, and no AI review. It's a ticket log with a reporting widget attached, not a contract lifecycle management system.</div>
+      <div class="detail-card"><b>Ironclad and LinkSquares both scored 18 to 20 of 20 core contract-lifecycle capabilities</b> in the same comparison, including native status dashboards and obligation and renewal tracking, the exact gap this whole project exists to close.</div>
+      <div class="detail-card"><b>The access concern that originally weighed against them was a misunderstanding.</b> The real requirement is IU single sign-on login, not network-level VPN-gating. Both vendors support standard single sign-on, the same protocol IU's identity system already runs on. That objection no longer holds as stated.</div>
+      <div class="detail-card"><b>Two more tech-stack facts worth knowing:</b> RI doesn't own its own Adobe Sign account, IU does. And Financial Edge is staying exactly as-is on purpose, to avoid stacking another system change on top of the incoming HR system and a recent HR-platform rollout.</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 26</div>
+    <h2>Proposed Initiatives (Strawman)</h2>
+    <p class="subtitle">Grouped by what they change: process, technology, or governance, the same three threads from Slide 2. Sizes are a starting guess, not a commitment.</p>
+
+    <div class="init-group">
+      <div class="init-group-head">Process</div>
+      <div class="init-grid">
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Consolidate Intake</span><span class="size-pill">S</span></div>
+          <div class="init-desc">Formalize the two shared inboxes and assign a backup person to each. Retire the personal inbox for good.</div>
+        </div>
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Screening Timing Fix</span><span class="size-pill">S</span></div>
+          <div class="init-desc">Move debarment/suspension screening and the independent-contractor check to pre-award, before submission. Proposed by the post-award team, not yet tested against pre-award's own view.</div>
+        </div>
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Pre / Post-Award Handoff Docs</span><span class="size-pill">S</span></div>
+          <div class="init-desc">Finalize and publish the responsibility document already in draft. Consider a monthly audit to catch budgets that go missing in the handoff.</div>
+        </div>
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Write a Post-Award SOP</span><span class="size-pill">M</span></div>
+          <div class="init-desc">Give post-award the same real, documented backbone pre-award already has. The first attempt failed because nobody who owns the work was consulted.</div>
+        </div>
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Investigator Education</span><span class="size-pill">M</span></div>
+          <div class="init-desc">Train investigators, especially in GHI, on contracting basics. Pair training with real accountability.</div>
+        </div>
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Budget &amp; Invoicing QA Step</span><span class="size-pill">S</span></div>
+          <div class="init-desc">Add an explicit quality check to catch indirect-rate and budget calculation errors before they reach post-award or a sponsor. Doesn't fix the separate problem of budget work being split across disconnected forms, see the Decisions slide.</div>
+        </div>
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Administrative Task Ownership &amp; Tracking</span><span class="size-pill">M</span></div>
+          <div class="init-desc">Not the science itself, that stays with Science. This is the scheduling, documentation, and follow-up work that comes up throughout a project and doesn't have a default owner today, so it falls to whichever Science team member is willing to chase it. Give it a default home across Pre-Award, Post-Award, and Contracting, and track it to completion. Already named as a gap in the future-state design work: assigning tasks and deadlines, not just status, is closer to what a real project-management tool does than what a ticket system is built for.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="init-group">
+      <div class="init-group-head">Technology</div>
+      <div class="init-grid">
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Shared Status Dashboard</span><span class="size-pill">M</span></div>
+          <div class="init-desc">Give requesters and program staff a live view of where a request stands. The single most-requested fix across the interviews, and already named as a future-state goal, but never scoped as its own initiative until now. Needs a paired owner who keeps it current, or it becomes another stale artifact like today's invoicing workbook.</div>
+        </div>
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">NDA &amp; Agreement Lookup List</span><span class="size-pill">S</span></div>
+          <div class="init-desc">A scoped idea already on the table: a published list of organization, document type, and expiration date. Answers "do we already have one" without opening document access org-wide.</div>
+        </div>
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Adobe Sign Fixes</span><span class="size-pill">S</span></div>
+          <div class="init-desc">Broaden who can run signature requests and close the notification gap when a signed copy returns.</div>
+        </div>
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Storage &amp; Source of Truth</span><span class="size-pill">M</span></div>
+          <div class="init-desc">Centralize contract storage, link Financial Edge master agreements to their statements of work by funder, and define who can see what.</div>
+        </div>
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Negotiation Workflow</span><span class="size-pill">M</span></div>
+          <div class="init-desc">Define how proposed contract changes move in and out of Issuetrak, with version tracking, instead of living only in email.</div>
+        </div>
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Obligation &amp; Compliance Tracking</span><span class="size-pill">L</span></div>
+          <div class="init-desc">Replace manual date math with structured tracking of renewals, auto-renewal windows, and data-privacy terms.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="init-group">
+      <div class="init-group-head">Governance</div>
+      <div class="init-grid">
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Risk-Based Routing &amp; Prioritization</span><span class="size-pill">M</span></div>
+          <div class="init-desc">Adopt the funding-source routing rule and stand up a recurring weekly meeting to set top priorities across the org.</div>
+        </div>
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Reduce the Single-Reviewer Bottleneck</span><span class="size-pill">M</span></div>
+          <div class="init-desc">One person reviewing essentially all contracts is a live risk right now, not a hypothetical one. Decide whether a second trained reviewer is temporary coverage or a structural need.</div>
+        </div>
+        <div class="init-card">
+          <div class="init-top"><span class="init-title">Turnaround-Time Expectations</span><span class="size-pill">S</span></div>
+          <div class="init-desc">Post-award has no defined response-time commitments at all, unlike pre-award's incomplete SLA table. Publish expected turnaround by request type, so silence doesn't read as a problem and questions surface early instead of right before a deadline.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 27</div>
+    <h2>Decisions This Group Actually Needs to Make</h2>
+    <ul class="points">
+      <li>Is the underlying responsibility matrix a final decision or still a working draft? This has come up three separate times independently, in a working session with the post-award team, in pre-award's internal pushback, and in the post-award team lead raising it directly with leadership, without ever being settled.</li>
+      <li>Should debarment/suspension screening and the independent-contractor check move to pre-award, before submission? The post-award team believes so. Not yet tested against pre-award's own view.</li>
+      <li>Do we revisit the AI-native contract lifecycle options now that the access objection turns out to be a misunderstanding, or stay committed to building the process out in Issuetrak first?</li>
+      <li>Who resolves Adobe Sign account ownership with IU, and on what timeline?</li>
+      <li>Do Operational contracts (vendor agreements, software licensing, not tied to an award) sit with the current contracting team, or somewhere else? Today staff are only assigned to federal work.</li>
+      <li>What's the real distinction between private-funder and industry contracts? It isn't clear to the group itself yet.</li>
+      <li>Is a monthly workflow audit worth requiring, to catch pre-award to post-award handoff gaps before they become a problem?</li>
+      <li>When an administrative task doesn't clearly belong to Pre-Award, Post-Award, or Contracting, who holds default ownership, so it stops defaulting to whichever Science team member is willing to chase it?</li>
+      <li>Who owns budget ownership across the intake form, the separate RDS form, and the fair-market-value process for industry work? Right now they're disconnected enough that requesters sometimes act as the go-between reconciling numbers across teams themselves.</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 28</div>
+    <h2>Rough Sequencing</h2>
+    <p class="subtitle">Pulled from the phased project plan already shared with the group. Dates are targets, not commitments.</p>
+    <div class="timeline">
+      <div class="phase done">
+        <div class="phase-num">Phase 1</div>
+        <div class="phase-name">Discovery &amp; Review</div>
+        <div class="phase-status">Complete</div>
+        <div class="phase-date">Target: 2026-07-31</div>
+      </div>
+      <div class="phase">
+        <div class="phase-num">Phase 2</div>
+        <div class="phase-name">Process Redesign</div>
+        <div class="phase-status">In progress</div>
+        <div class="phase-date">Target: ~2026-08-28</div>
+      </div>
+      <div class="phase">
+        <div class="phase-num">Phase 3</div>
+        <div class="phase-name">Systems &amp; Technology</div>
+        <div class="phase-status">Next</div>
+        <div class="phase-date">Target: ~2026-09-30</div>
+      </div>
+      <div class="phase">
+        <div class="phase-num">Phase 4</div>
+        <div class="phase-name">Training &amp; Rollout</div>
+        <div class="phase-status">Upcoming</div>
+        <div class="phase-date">Target: ~2026-10-31</div>
+      </div>
+      <div class="phase">
+        <div class="phase-num">Phase 5</div>
+        <div class="phase-name">Post-Implementation</div>
+        <div class="phase-status">Ongoing</div>
+        <div class="phase-date">Monthly / annual review cycle</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Slide 29</div>
+    <h2>Next Steps</h2>
+    <ul class="points">
+      <li>Confirm this framing with the pre-award and post-award team leads and their managers before it goes wider.</li>
+      <li>Size the initiatives in more detail once the group agrees on the pain-point priorities.</li>
+      <li>Fold in the full responsibility matrix once the post-award team's review pass is done.</li>
+      <li>Bring a finalized version back as the leadership deck, once the content is solid.</li>
+    </ul>
+    <p class="closing">Questions and corrections welcome, in whatever form is easiest for you.</p>
+  </section>
+
+</div>
+
+<div class="nav">
+  <div class="nav-side"></div>
+  <div class="nav-center">
+    <button id="prev">‹ Prev</button>
+    <div class="dots" id="dots"></div>
+    <span class="counter" id="counter">1 / 29</span>
+    <button id="next">Next ›</button>
+  </div>
+  <div class="nav-side right">
+    <button id="commentsToggle" class="comments-toggle" aria-expanded="false">💬 Comments</button>
+  </div>
+</div>
+
+<div class="comments-overlay" id="commentsOverlay"></div>
+<div class="comments-panel" id="commentsPanel" aria-hidden="true">
+  <div class="comments-panel-head">
+    <div>
+      <div class="comments-panel-title" id="commentsPanelTitle">Comments</div>
+      <div class="comments-panel-sub">Backed by GitHub Discussions on this repo &middot; each slide has its own thread</div>
+    </div>
+    <button class="comments-panel-close" id="commentsClose" aria-label="Close comments">✕</button>
+  </div>
+  <div class="giscus-container" id="giscusContainer"></div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  const counterEl = document.getElementById('counter');
+  let idx = 0;
+
+  slides.forEach((s, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot';
+    d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    d.addEventListener('click', () => jump(i));
+    dotsEl.appendChild(d);
+  });
+  const dotEls = document.querySelectorAll('.dot');
+
+  function render() {
+    slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+    dotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
+    counterEl.textContent = (idx + 1) + ' / ' + slides.length;
+    try { history.replaceState(null, null, '#' + (idx + 1)); } catch (e) {}
+    if (commentsOpen) loadOrUpdateGiscus();
+  }
+  function go(n) { idx = Math.max(0, Math.min(slides.length - 1, idx + n)); render(); }
+  function jump(i) { idx = i; render(); }
+
+  document.getElementById('prev').addEventListener('click', () => go(-1));
+  document.getElementById('next').addEventListener('click', () => go(1));
+
+  // ---- Comments panel (giscus, backed by GitHub Discussions on this repo) ----
+  const GISCUS_REPO = 'jamlung-ri/presentation';
+  const GISCUS_REPO_ID = 'R_kgDOUFLvew';
+  const GISCUS_CATEGORY = 'General';
+  const GISCUS_CATEGORY_ID = 'DIC_kwDOUFLve84DEYYF';
+
+  const commentsPanel = document.getElementById('commentsPanel');
+  const commentsOverlay = document.getElementById('commentsOverlay');
+  const commentsToggleBtn = document.getElementById('commentsToggle');
+  const commentsCloseBtn = document.getElementById('commentsClose');
+  const commentsPanelTitle = document.getElementById('commentsPanelTitle');
+  const giscusContainer = document.getElementById('giscusContainer');
+  let commentsOpen = false;
+
+  function slideTerm(i) {
+    const heading = slides[i].querySelector('h1, h2');
+    const title = heading ? heading.textContent.trim() : ('Slide ' + (i + 1));
+    return 'RI Contracting Deck — Slide ' + (i + 1) + ': ' + title;
+  }
+
+  function sendGiscusMessage(message) {
+    const iframe = giscusContainer.querySelector('iframe.giscus-frame');
+    if (!iframe) return;
+    iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+  }
+
+  function loadOrUpdateGiscus() {
+    const term = slideTerm(idx);
+    commentsPanelTitle.textContent = 'Comments · Slide ' + (idx + 1);
+    if (giscusContainer.querySelector('iframe.giscus-frame')) {
+      sendGiscusMessage({ setConfig: { term: term } });
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.setAttribute('data-repo', GISCUS_REPO);
+    script.setAttribute('data-repo-id', GISCUS_REPO_ID);
+    script.setAttribute('data-category', GISCUS_CATEGORY);
+    script.setAttribute('data-category-id', GISCUS_CATEGORY_ID);
+    script.setAttribute('data-mapping', 'specific');
+    script.setAttribute('data-term', term);
+    script.setAttribute('data-strict', '0');
+    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'top');
+    script.setAttribute('data-theme', 'preferred_color_scheme');
+    script.setAttribute('data-lang', 'en');
+    script.setAttribute('crossorigin', 'anonymous');
+    script.async = true;
+    giscusContainer.appendChild(script);
+  }
+
+  function openComments() {
+    commentsOpen = true;
+    commentsPanel.classList.add('open');
+    commentsPanel.setAttribute('aria-hidden', 'false');
+    commentsOverlay.classList.add('open');
+    commentsToggleBtn.classList.add('active');
+    commentsToggleBtn.setAttribute('aria-expanded', 'true');
+    loadOrUpdateGiscus();
+  }
+  function closeComments() {
+    commentsOpen = false;
+    commentsPanel.classList.remove('open');
+    commentsPanel.setAttribute('aria-hidden', 'true');
+    commentsOverlay.classList.remove('open');
+    commentsToggleBtn.classList.remove('active');
+    commentsToggleBtn.setAttribute('aria-expanded', 'false');
+  }
+  commentsToggleBtn.addEventListener('click', () => { commentsOpen ? closeComments() : openComments(); });
+  commentsCloseBtn.addEventListener('click', closeComments);
+  commentsOverlay.addEventListener('click', closeComments);
+
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { go(1); e.preventDefault(); }
+    if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { go(-1); e.preventDefault(); }
+    if (e.key === 'Home') { jump(0); }
+    if (e.key === 'End') { jump(slides.length - 1); }
+  });
+
+  const h = parseInt((location.hash || '').replace('#', ''), 10);
+  if (!isNaN(h) && h >= 1 && h <= slides.length) idx = h - 1;
+  render();
+</script>
+
+</body>
+</html>
