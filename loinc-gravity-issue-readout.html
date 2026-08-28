@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOINC Gravity/USDA Answer-List Issue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ---------- reset ---------- */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body, h1, h2, h3, h4, p, ul, ol, li, figure, table, th, td { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
+  img, svg { display: block; max-width: 100%; }
+  a { color: inherit; }
+  table { border-collapse: collapse; width: 100%; }
+
+  /* ---------- tokens: light (default) ---------- */
+  :root {
+    --paper: #F1F4F4;
+    --paper-raised: #FFFFFF;
+    --ink: #131A1D;
+    --ink-soft: #4B5A5E;
+    --ink-faint: #7C8A8D;
+    --line: #D7DEDE;
+    --accent: #146B6E;
+    --accent-soft: #DDEEEE;
+    --accent-ink: #0D4E50;
+    --amber: #9C5B14;
+    --amber-soft: #F5E7D3;
+    --amber-ink: #6E3F0C;
+    --red: #B33A2E;
+    --red-soft: #F6DEDA;
+    --red-ink: #8A2C22;
+    --code-bg: #E7EDED;
+    --shadow: rgba(20,40,42,0.10);
+    --stripe: #F7F9F9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0F1518;
+      --paper-raised: #171F23;
+      --ink: #E7EEEE;
+      --ink-soft: #A9B7B9;
+      --ink-faint: #77878A;
+      --line: #29343A;
+      --accent: #62CBCA;
+      --accent-soft: #16302F;
+      --accent-ink: #8EDEDD;
+      --amber: #E3A25A;
+      --amber-soft: #33230F;
+      --amber-ink: #F0BB80;
+      --red: #E38070;
+      --red-soft: #331714;
+      --red-ink: #F0A499;
+      --code-bg: #1A2226;
+      --shadow: rgba(0,0,0,0.45);
+      --stripe: #141B1E;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0F1518;
+    --paper-raised: #171F23;
+    --ink: #E7EEEE;
+    --ink-soft: #A9B7B9;
+    --ink-faint: #77878A;
+    --line: #29343A;
+    --accent: #62CBCA;
+    --accent-soft: #16302F;
+    --accent-ink: #8EDEDD;
+    --amber: #E3A25A;
+    --amber-soft: #33230F;
+    --amber-ink: #F0BB80;
+    --red: #E38070;
+    --red-soft: #331714;
+    --red-ink: #F0A499;
+    --code-bg: #1A2226;
+    --shadow: rgba(0,0,0,0.45);
+    --stripe: #141B1E;
+  }
+
+  /* ---------- base ---------- */
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    text-wrap: balance;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  code, .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  ::selection { background: var(--accent-soft); color: var(--accent-ink); }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ---------- layout shell ---------- */
+  .shell {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  nav.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 40px 18px 40px 28px;
+    border-right: 1px solid var(--line);
+  }
+  .toc-eyebrow {
+    font-family: "IBM Plex Mono";
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 18px;
+  }
+  .toc a {
+    display: block;
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 7px 0;
+    border-left: 2px solid transparent;
+    padding-left: 12px;
+    margin-left: -13px;
+  }
+  .toc a:hover { color: var(--ink); }
+  .toc a.active { color: var(--accent-ink); border-left-color: var(--accent); font-weight: 500; }
+  .toc-status {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+  .toc-status strong { color: var(--ink-soft); font-weight: 600; }
+  .live-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #C4462C;
+    margin-right: 6px;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  main { padding: 48px 44px 120px; min-width: 0; }
+
+  /* ---------- masthead ---------- */
+  header.masthead { margin-bottom: 44px; }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "IBM Plex Mono";
+    font-size: 11.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+    padding: 5px 10px;
+    border-radius: 3px;
+    margin-bottom: 18px;
+  }
+  h1.title {
+    font-size: clamp(28px, 3.6vw, 38px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    max-width: 24ch;
+  }
+  .dek {
+    margin-top: 12px;
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 72ch;
+    line-height: 1.5;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+  .meta-row .k { color: var(--ink-soft); font-weight: 600; }
+
+  /* ---------- sections ---------- */
+  section { margin-bottom: 52px; }
+  section > .section-head { margin-bottom: 16px; display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .section-head-text { flex: 1 1 auto; min-width: 260px; }
+  .kicker {
+    font-family: "IBM Plex Mono";
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  h2 { font-size: 22px; letter-spacing: -0.01em; }
+  .section-dek { margin-top: 4px; color: var(--ink-faint); font-size: 13.5px; max-width: 70ch; }
+  p { color: var(--ink-soft); }
+
+  /* ---------- status chip ---------- */
+  .status-chip {
+    display: inline-block;
+    font-family: "IBM Plex Mono";
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .status-chip.decided { background: var(--accent-soft); color: var(--accent-ink); }
+  .status-chip.progress { background: var(--amber-soft); color: var(--amber-ink); }
+  .status-chip.pending { background: var(--code-bg); color: var(--ink-faint); }
+  .status-chip.skipped { background: var(--red-soft); color: var(--red-ink); }
+
+  /* ---------- tables ---------- */
+  .rtable-wrap {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+  .rtable-wrap + .rtable-wrap, .rtable-wrap + .table-caption { margin-top: 22px; }
+  .table-caption {
+    font-family: "IBM Plex Mono";
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 22px 0 8px;
+  }
+  .table-caption:first-child { margin-top: 0; }
+
+  table.rtable th {
+    text-align: left;
+    font-family: "IBM Plex Mono";
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--code-bg);
+    white-space: nowrap;
+  }
+  table.rtable td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    vertical-align: top;
+    font-size: 14px;
+  }
+  table.rtable tr:last-child td { border-bottom: none; }
+  table.rtable tr:nth-child(even) td { background: var(--stripe); }
+  table.rtable td.col-what { min-width: 220px; }
+  table.rtable td .tsub { display: block; color: var(--ink-faint); font-size: 12.5px; margin-top: 4px; line-height: 1.45; }
+  table.rtable td.col-owner, table.rtable td.col-due { font-family: "IBM Plex Mono"; font-size: 13px; white-space: nowrap; color: var(--ink-soft); }
+  table.rtable td.col-status { white-space: nowrap; }
+  table.rtable td.col-term { font-weight: 600; font-family: "IBM Plex Mono"; font-size: 13px; min-width: 160px; white-space: nowrap; color: var(--accent-ink); }
+  table.rtable td.center { text-align: center; font-family: "IBM Plex Mono"; font-size: 13.5px; }
+
+  .confirm-line {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+  .confirm-line strong { font-style: normal; color: var(--ink-soft); }
+
+  /* ---------- responsive tables: card-flip on narrow screens ---------- */
+  @media (max-width: 720px) {
+    table.rtable, table.rtable thead, table.rtable tbody, table.rtable th, table.rtable td, table.rtable tr { display: block; }
+    table.rtable thead tr { position: absolute; top: -9999px; left: -9999px; }
+    table.rtable tr { border-bottom: 2px solid var(--line); padding: 10px 0; }
+    table.rtable tr:nth-child(even) td { background: transparent; }
+    table.rtable td { border-bottom: none; padding: 4px 16px; }
+    table.rtable td::before {
+      content: attr(data-label);
+      display: block;
+      font-family: "IBM Plex Mono";
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 2px;
+    }
+  }
+
+  /* ---------- sources ---------- */
+  footer.page-foot {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+  footer.page-foot p + p { margin-top: 8px; }
+
+  /* ---------- mobile ---------- */
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    nav.toc {
+      position: static;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      padding: 24px;
+    }
+    main { padding: 36px 20px 100px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc" aria-label="Section navigation">
+    <div class="toc-eyebrow">Contents</div>
+    <a href="#background">Background</a>
+    <a href="#discussion">Today's discussion</a>
+    <a href="#open">Open / unresolved</a>
+    <a href="#sources">Sources</a>
+    <div class="toc-status">
+      <span class="live-dot"></span><strong>Status:</strong> Meeting in progress<br>
+      <strong>Updated:</strong> 2026-08-28<br>
+      <strong>Session:</strong> HDS Team F2F, Day 2
+    </div>
+  </nav>
+
+  <main>
+    <header class="masthead">
+      <div class="eyebrow">HDS Team F2F &middot; emerging issue readout</div>
+      <h1 class="title">Gravity / USDA food-security answer-list issue</h1>
+      <p class="dek">An emerging post-2.83 issue tracked separately from the release-workflow design discussion happening the same day.</p>
+      <div class="meta-row">
+        <div><span class="k">Meeting</span> Fri Aug 28, 2026</div>
+        <div><span class="k">Source</span> Basecamp: LOINC 2.83 Release &middot; Post Release Reported Issues</div>
+      </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <section id="background">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Background &middot; pre-meeting</div>
+          <h2>What happened</h2>
+          <p class="section-dek">Reported via Slack by the USDA/Gravity team ahead of a Monday meeting with USDA experts; resolved over that same weekend.</p>
+        </div>
+      </div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Item</th><th>Detail</th></tr></thead>
+          <tbody>
+            <tr>
+              <td data-label="Item" class="col-what">Issue</td>
+              <td data-label="Detail">A new answer list requested for the USDA 6-item food security instrument was applied to all three related instruments (6/10/18-item), because the team reused the existing answer-list code <strong>LL5588-0</strong> and changed its content rather than creating a new list for the 6-item. This also renamed answer LA30983-3 from "High food security" to "High or marginal food security," affecting instruments already implemented downstream.</td>
+            </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Fix delivered</td>
+              <td data-label="Detail"><strong>LL5588-0</strong> reverted to its LOINC 2.82 content, re-bound under the 10-item and 18-item panels. A <strong>new</strong> answer list <strong>LL7622-5</strong> was created specifically for the 6-item, carrying the condensed wording USDA had asked for. Scoring was deliberately left off both (it varies by instrument), pending incoming USDA/CHW scoring guidance expected to land with a future release.</td>
+            </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Reception</td>
+              <td data-label="Detail">USDA/Gravity team confirmed the revert addressed the critical need, and called the new condensed 6-item answer list an unexpected bonus.</td>
+            </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Status as of Aug 24</td>
+              <td data-label="Detail">Fix applied in working data; whether it's visible in an official LOINC release yet was still to be confirmed &mdash; 2.83 had already shipped when this was found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="discussion">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Today's discussion</div>
+          <h2>What's actually settled</h2>
+          <p class="section-dek">Nothing logged yet &mdash; this fills in as the meeting runs.</p>
+        </div>
+      </div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Decision / action</th><th>Owner</th><th>Due</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Decision" class="col-what">&mdash;</td><td data-label="Owner" class="col-owner">&mdash;</td><td data-label="Due" class="col-due">&mdash;</td><td data-label="Status" class="col-status"><span class="status-chip pending">Pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="open">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Flag for the team</div>
+          <h2>Open / unresolved</h2>
+        </div>
+      </div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Item</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Item">Whether the fix has landed in an official release yet, or is still pending the next one.</td></tr>
+            <tr><td data-label="Item">How an urgent post-release fix like this interacts with the new monthly-cadence model's "special use" tag mechanism.</td></tr>
+            <tr><td data-label="Item">Whether the USDA/CHW scoring guidance gets folded into LL7622-5 (and the 10/18-item panels) for the next release.</td></tr>
+            <tr><td data-label="Item">Whether reusing an existing answer-list code for an instrument-specific change &mdash; letting it silently propagate to sibling panels &mdash; is a validation gap worth addressing.</td></tr>
+            <tr><td data-label="Item">Whether there's a broader Gravity-related backlog beyond this one instrument family.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="sources">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Provenance</div>
+          <h2>Sources</h2>
+        </div>
+      </div>
+      <p>Background from a Basecamp todo in the LOINC 2.83 Release project, capturing a Slack thread with the USDA/Gravity team. Live discussion captured from the HDS Team F2F transcript, Aug 28, 2026. Full detail is kept in <code>loinc-processes/ReleaseTasks/loinc-gravity-usda-issue/gravity-issue-notes.md</code>.</p>
+      <footer class="page-foot">
+        <p>This page updates live as the meeting runs. It is a working readout for team confirmation, not a ratified record &mdash; if something here doesn't match what you agreed to, flag it.</p>
+      </footer>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // lightweight scroll-spy for the section nav
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+    var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+    function onScroll() {
+      var y = window.scrollY + 120;
+      var activeIndex = 0;
+      sections.forEach(function (s, i) { if (s && s.offsetTop <= y) activeIndex = i; });
+      links.forEach(function (a, i) { a.classList.toggle('active', i === activeIndex); });
+    }
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>
