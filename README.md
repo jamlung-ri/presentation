@@ -26,6 +26,7 @@ Previously published via GitLab Pages; fully migrated to GitHub Pages.
 
 | Presentation | Link | Last Updated |
 |---|---|---|
+| Contracting Process Redesign | [contracting-process-redesign.html](https://jamlung-ri.github.io/presentation/contracting-process-redesign.html) | 2026-08-27 |
 | Sustainable Learning Platforms | [learning-platform-models.html](https://jamlung-ri.github.io/presentation/learning-platform-models.html) | 2026-05-19 |
 | Learning Platform Options (brief) | [learning-platform-brief.html](https://jamlung-ri.github.io/presentation/learning-platform-brief.html) | 2026-05-19 |
 | Training Feature Cards (prototype) | [learning-platform-feature-cards.html](https://jamlung-ri.github.io/presentation/learning-platform-feature-cards.html) | 2026-05-19 |
