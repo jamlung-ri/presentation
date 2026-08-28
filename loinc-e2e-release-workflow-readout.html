@@ -343,11 +343,12 @@
     <a href="#mockmonth">Mock month calendar</a>
     <a href="#governance">Target-release governance</a>
     <a href="#callscope">Planning-call scope</a>
+    <a href="#dbrebuild">Database rebuild</a>
     <a href="#open">Open / unresolved</a>
     <a href="#sources">Sources</a>
     <div class="toc-status">
       <span class="live-dot"></span><strong>Status:</strong> Meeting in progress<br>
-      <strong>Updated:</strong> 2026-08-28, 11:24am<br>
+      <strong>Updated:</strong> 2026-08-28, 11:39am<br>
       <strong>Session:</strong> HDS Team F2F, Day 2
     </div>
   </nav>
@@ -592,6 +593,41 @@
     </section>
 
     <!-- ============================================================ -->
+    <section id="dbrebuild">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Live discussion &middot; in progress</div>
+          <h2>Two overhaul initiatives: database rebuild vs. request model</h2>
+          <p class="section-dek">Directly follows from the domain-model discussion above &mdash; the foundational work that would be needed to support it.</p>
+        </div>
+      </div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Item</th><th>Detail</th></tr></thead>
+          <tbody>
+            <tr>
+              <td data-label="Item" class="col-what">Database rebuild ("down to the studs")</td>
+              <td data-label="Detail">Rob's proposal: a full rebuild/decoupling of the database itself, not the application code or tooling layer.</td>
+            </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Submission &rarr; request model</td>
+              <td data-label="Detail">Rework "submission" terminology/model into "requests" &mdash; a request better reflects something actually sent in by someone; also wants a clean split between genuinely new content and revised content, rather than folding new content in as "revised."</td>
+            </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Sequencing</td>
+              <td data-label="Detail">Debated, not resolved: doing the request/submission overhaul first risks revisiting it once the database rework lands. Alternative: decouple the two efforts so they run in parallel instead of one blocking the other.</td>
+            </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Why the database work is hard</td>
+              <td data-label="Detail">Substantial business logic lives directly in the database today &mdash; stored procedures, not application code &mdash; tightly coupled to specific tables and fields (Radiology and Document Ontology given as concrete examples). This coupling is a major obstacle to cleanly building out workspaces and decoupled architecture, directly relevant to today's workspace/conflict-detection demo.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px; font-size: 13.5px;">Discussion was mid-explanation when this chunk ended &mdash; more detail to follow.</p>
+    </section>
+
+    <!-- ============================================================ -->
     <section id="open">
       <div class="section-head">
         <div class="section-head-text">
@@ -607,6 +643,8 @@
             <tr><td data-label="Item">How the group-decision governance applies to ad hoc/urgent items.</td></tr>
             <tr><td data-label="Item">Whether/how to fold cross-team priority alignment into the monthly planning call.</td></tr>
             <tr><td data-label="Item">What supporting other domain models actually requires &mdash; background from a Rob/Sam discussion earlier in the week, may need its own follow-up.</td></tr>
+            <tr><td data-label="Item">Sequencing of the database rebuild vs. the request/submission model overhaul &mdash; parallel or serial, not resolved.</td></tr>
+            <tr><td data-label="Item">Where notes on the database-rebuild initiative should live going forward &mdash; raised live, not answered.</td></tr>
             <tr><td data-label="Item">"Slot in the first 12 months" reference from the mock-month walkthrough &mdash; unclear.</td></tr>
             <tr><td data-label="Item">Whether the mock-month calendar work is waiting on Felicia's return, and for what.</td></tr>
           </tbody>
