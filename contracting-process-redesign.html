@@ -339,6 +339,33 @@
   .comments-panel-close:hover { color: var(--ink); }
   .giscus-container { flex: 1; overflow-y: auto; padding: 4px 14px 20px; }
   .giscus-container iframe.giscus-frame { width: 100%; border: none; }
+
+  .comments-tabs { display: flex; gap: 6px; padding: 12px 18px 0; flex-shrink: 0; }
+  .comments-tab {
+    flex: 1; font-family: var(--font-body); font-size: 0.76rem; font-weight: 700;
+    background: var(--surface-sunken); color: var(--ink-muted); border: 1px solid var(--line);
+    border-radius: 6px; padding: 7px 10px; cursor: pointer; text-align: center;
+  }
+  .comments-tab.active { background: var(--primary); color: var(--surface); border-color: var(--primary); }
+  .comments-tab-panel { flex: 1; overflow-y: auto; display: flex; flex-direction: column; min-height: 0; }
+  .comments-tab-panel[hidden] { display: none; }
+  .email-tab-note { font-size: 0.78rem; color: var(--ink-muted); line-height: 1.45; margin: 0; padding: 14px 18px 6px; }
+  .email-field-label {
+    font-size: 0.68rem; font-weight: 700; color: var(--ink-faint); text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 10px 18px 5px; display: block;
+  }
+  .email-field {
+    margin: 0 18px; padding: 8px 10px; font-family: var(--font-body); font-size: 0.85rem;
+    border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink);
+    width: calc(100% - 36px); box-sizing: border-box;
+  }
+  .email-field:focus { outline: 2px solid var(--primary-soft); border-color: var(--primary); }
+  .email-textarea { resize: vertical; font-family: var(--font-body); }
+  .email-send-btn {
+    margin: 16px 18px; padding: 10px 14px; font-family: var(--font-body); font-size: 0.85rem; font-weight: 700;
+    background: var(--primary); color: var(--surface); border: none; border-radius: 6px; cursor: pointer;
+  }
+  .email-send-btn:hover { opacity: 0.9; }
 </style>
 </head>
 <body>
@@ -1112,7 +1139,21 @@
     </div>
     <button class="comments-panel-close" id="commentsClose" aria-label="Close comments">✕</button>
   </div>
-  <div class="giscus-container" id="giscusContainer"></div>
+  <div class="comments-tabs">
+    <button class="comments-tab active" id="tabGithub">GitHub</button>
+    <button class="comments-tab" id="tabEmail">Email (no login)</button>
+  </div>
+  <div class="comments-tab-panel" id="githubTabPanel">
+    <div class="giscus-container" id="giscusContainer"></div>
+  </div>
+  <div class="comments-tab-panel" id="emailTabPanel" hidden>
+    <p class="email-tab-note">No GitHub account needed. This fills out an email in your own mail app, addressed directly to Joe, with the slide already noted.</p>
+    <label class="email-field-label" for="emailName">Name (optional)</label>
+    <input type="text" id="emailName" class="email-field" placeholder="Your name">
+    <label class="email-field-label" for="emailComment">Comment</label>
+    <textarea id="emailComment" class="email-field email-textarea" rows="6" placeholder="Your feedback on this slide..."></textarea>
+    <button class="email-send-btn" id="emailSendBtn">✉️ Send via Email</button>
+  </div>
 </div>
 
 <script>
@@ -1215,6 +1256,43 @@
   commentsToggleBtn.addEventListener('click', () => { commentsOpen ? closeComments() : openComments(); });
   commentsCloseBtn.addEventListener('click', closeComments);
   commentsOverlay.addEventListener('click', closeComments);
+
+  // ---- Comments panel tabs: GitHub (giscus) vs. Email (no login required) ----
+  const tabGithub = document.getElementById('tabGithub');
+  const tabEmail = document.getElementById('tabEmail');
+  const githubTabPanel = document.getElementById('githubTabPanel');
+  const emailTabPanel = document.getElementById('emailTabPanel');
+
+  function switchCommentsTab(tab) {
+    const isGithub = tab === 'github';
+    tabGithub.classList.toggle('active', isGithub);
+    tabEmail.classList.toggle('active', !isGithub);
+    githubTabPanel.hidden = !isGithub;
+    emailTabPanel.hidden = isGithub;
+  }
+  tabGithub.addEventListener('click', () => switchCommentsTab('github'));
+  tabEmail.addEventListener('click', () => switchCommentsTab('email'));
+
+  // ---- Email fallback: no GitHub account needed, opens a pre-filled email to Joe ----
+  const emailNameField = document.getElementById('emailName');
+  const emailCommentField = document.getElementById('emailComment');
+  document.getElementById('emailSendBtn').addEventListener('click', () => {
+    const term = slideTerm(idx);
+    const nameVal = emailNameField.value.trim();
+    const commentVal = emailCommentField.value.trim();
+    const pageUrl = window.location.href.split('#')[0] + '#' + (idx + 1);
+    const subject = encodeURIComponent('RI Contracting Deck feedback — ' + term);
+    const bodyLines = [
+      'Slide: ' + term,
+      'Link: ' + pageUrl,
+      '',
+      commentVal || '(no comment entered, just flagging this slide)',
+      '',
+      nameVal ? ('From: ' + nameVal) : ''
+    ];
+    const body = encodeURIComponent(bodyLines.join('\n'));
+    window.location.href = 'mailto:jamlung@iu.edu?subject=' + subject + '&body=' + body;
+  });
 
   document.addEventListener('keydown', (e) => {
     if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { go(1); e.preventDefault(); }
