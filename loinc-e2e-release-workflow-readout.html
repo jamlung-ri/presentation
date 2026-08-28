@@ -338,11 +338,12 @@
     <div class="toc-eyebrow">Contents</div>
     <a href="#carryover">Carried in from Day 1</a>
     <a href="#decisions">Decisions</a>
+    <a href="#conflicts">Conflict detection</a>
     <a href="#open">Open / unresolved</a>
     <a href="#sources">Sources</a>
     <div class="toc-status">
       <span class="live-dot"></span><strong>Status:</strong> Meeting in progress<br>
-      <strong>Updated:</strong> 2026-08-28, 9:33am<br>
+      <strong>Updated:</strong> 2026-08-28, 9:52am<br>
       <strong>Session:</strong> HDS Team F2F, Day 2
     </div>
   </nav>
@@ -405,6 +406,45 @@
           </tbody>
         </table>
       </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section id="conflicts">
+      <div class="section-head">
+        <div class="section-head-text">
+          <div class="kicker">Live tooling demo</div>
+          <h2>Conflict detection across concurrent releases</h2>
+          <p class="section-dek">The mechanism that makes Day 1's "multiple releases authoring in parallel" model actually work when the same record gets touched by more than one release cohort.</p>
+        </div>
+      </div>
+      <div class="rtable-wrap">
+        <table class="rtable">
+          <thead><tr><th>Item</th><th>Detail</th></tr></thead>
+          <tbody>
+            <tr>
+              <td data-label="Item" class="col-what">Base data</td>
+              <td data-label="Detail">Every record in a workspace tracks a "base data" value &mdash; what that record looked like in production when you started editing it there.</td>
+            </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Conflict trigger</td>
+              <td data-label="Detail">If production has since diverged from your recorded base data &mdash; someone else's change from an earlier release published in the meantime &mdash; and you've also modified that record, it's highlighted as a conflict to resolve.</td>
+            </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Resolution options</td>
+              <td data-label="Detail">Accept the production version as correct (drop your workspace edit), or assert your workspace change is better and let it overwrite on publish.</td>
+            </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Worked example</td>
+              <td data-label="Detail">A CMS-related record targeted for 2.86 gets edited in your workspace. Meanwhile 2.84/2.85 ship first and happen to touch the same record. When your 2.86 work later touches it, you get a conflict error &mdash; the base data moved out from under you.</td>
+            </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Confirmed live</td>
+              <td data-label="Detail">You keep full editing capability regardless of what's on hold or not yet in production &mdash; the conflict flag is a signal to reconcile, not a block on working.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px; font-size: 13.5px;">Demo was mid-example (term 1000-2-5, showing workspace-vs-database divergence) when this chunk of transcript ended &mdash; more detail to follow as the demo continues.</p>
     </section>
 
     <!-- ============================================================ -->
