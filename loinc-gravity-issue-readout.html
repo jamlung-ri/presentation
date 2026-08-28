@@ -342,7 +342,7 @@
     <a href="#sources">Sources</a>
     <div class="toc-status">
       <span class="live-dot"></span><strong>Status:</strong> Meeting in progress<br>
-      <strong>Updated:</strong> 2026-08-28<br>
+      <strong>Updated:</strong> 2026-08-28, 9:06am<br>
       <strong>Session:</strong> HDS Team F2F, Day 2
     </div>
   </nav>
@@ -405,10 +405,22 @@
         <table class="rtable">
           <thead><tr><th>Decision / action</th><th>Owner</th><th>Due</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td data-label="Decision" class="col-what">&mdash;</td><td data-label="Owner" class="col-owner">&mdash;</td><td data-label="Due" class="col-due">&mdash;</td><td data-label="Status" class="col-status"><span class="status-chip pending">Pending</span></td></tr>
+            <tr>
+              <td data-label="Decision" class="col-what">Fix (LL5588-0 revert + new LL7622-5) exists in working data but isn't published yet.<span class="tsub">No pre-release preview mechanism applies here &mdash; that's for genuinely new content, not a correction to something already live in 2.83. Confirmed to USDA that the correction was made, but no visibility timeline was given at the time.</span></td>
+              <td data-label="Owner" class="col-owner">Elizabeth</td>
+              <td data-label="Due" class="col-due">Next regular release</td>
+              <td data-label="Status" class="col-status"><span class="status-chip progress">In progress</span></td>
+            </tr>
+            <tr>
+              <td data-label="Decision" class="col-what">Team's read: no expedited/urgent publish path needed. Susan Matney's Slack reply ("the new list we requested can be in the next release") was read live as USDA being fine with this landing in the next regular LOINC release.</td>
+              <td data-label="Owner" class="col-owner">&mdash;</td>
+              <td data-label="Due" class="col-due">&mdash;</td>
+              <td data-label="Status" class="col-status"><span class="status-chip decided">Working consensus</span></td>
+            </tr>
           </tbody>
         </table>
       </div>
+      <p style="margin-top:14px; font-size: 13.5px;"><em>Note: this segment of the Zoom transcript is single-account, so every line is labeled with one name regardless of who actually spoke &mdash; content and sequence are reliable, per-line speaker attribution is not.</em></p>
     </section>
 
     <!-- ============================================================ -->
@@ -423,8 +435,7 @@
         <table class="rtable">
           <thead><tr><th>Item</th></tr></thead>
           <tbody>
-            <tr><td data-label="Item">Whether the fix has landed in an official release yet, or is still pending the next one.</td></tr>
-            <tr><td data-label="Item">How an urgent post-release fix like this interacts with the new monthly-cadence model's "special use" tag mechanism.</td></tr>
+            <tr><td data-label="Item">How an urgent post-release fix like this interacts with the new monthly-cadence model's "special use" tag mechanism &mdash; not yet raised explicitly, though today's "no expedited path needed" conclusion functionally answers it for this case.</td></tr>
             <tr><td data-label="Item">Whether the USDA/CHW scoring guidance gets folded into LL7622-5 (and the 10/18-item panels) for the next release.</td></tr>
             <tr><td data-label="Item">Whether reusing an existing answer-list code for an instrument-specific change &mdash; letting it silently propagate to sibling panels &mdash; is a validation gap worth addressing.</td></tr>
             <tr><td data-label="Item">Whether there's a broader Gravity-related backlog beyond this one instrument family.</td></tr>
