@@ -348,7 +348,7 @@
     <a href="#sources">Sources</a>
     <div class="toc-status">
       <span class="live-dot"></span><strong>Status:</strong> Meeting in progress<br>
-      <strong>Updated:</strong> 2026-08-28, 11:39am<br>
+      <strong>Updated:</strong> 2026-08-28, 11:42am<br>
       <strong>Session:</strong> HDS Team F2F, Day 2
     </div>
   </nav>
@@ -621,10 +621,26 @@
               <td data-label="Item" class="col-what">Why the database work is hard</td>
               <td data-label="Detail">Substantial business logic lives directly in the database today &mdash; stored procedures, not application code &mdash; tightly coupled to specific tables and fields (Radiology and Document Ontology given as concrete examples). This coupling is a major obstacle to cleanly building out workspaces and decoupled architecture, directly relevant to today's workspace/conflict-detection demo.</td>
             </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Guiding philosophy</td>
+              <td data-label="Detail">Steven: "the database should just be a database, not a program." Internal/business logic in the data layer needs to be decoupled and pulled out.</td>
+            </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Confirmed: two parallel initiatives</td>
+              <td data-label="Detail">(1) Decouple business logic out of the database. (2) Overhaul requests/submissions, decoupled from the terminology database. Confirmed these can run in parallel rather than needing to be serialized.</td>
+            </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Capacity concern</td>
+              <td data-label="Detail">Raised, not resolved: the team already has a lot in flight (the monthly-release transition itself). Idea floated: draw on AI budget for this kind of internal-process work, not just content work. "We just got to figure that out."</td>
+            </tr>
+            <tr>
+              <td data-label="Item" class="col-what">Where does this get tracked?</td>
+              <td data-label="Detail">Explicit worry: "I don't want it to live in a parking lot and get lost forever." Leaning toward a <strong>"strategic priorities" master project/list in Basecamp</strong>, with individual projects spun up as items are ready to build out &mdash; not fully finalized.</td>
+            </tr>
           </tbody>
         </table>
       </div>
-      <p style="margin-top:14px; font-size: 13.5px;">Discussion was mid-explanation when this chunk ended &mdash; more detail to follow.</p>
+      <p style="margin-top:14px; font-size: 13.5px;">Discussion continuing &mdash; more detail to follow.</p>
     </section>
 
     <!-- ============================================================ -->
@@ -643,8 +659,8 @@
             <tr><td data-label="Item">How the group-decision governance applies to ad hoc/urgent items.</td></tr>
             <tr><td data-label="Item">Whether/how to fold cross-team priority alignment into the monthly planning call.</td></tr>
             <tr><td data-label="Item">What supporting other domain models actually requires &mdash; background from a Rob/Sam discussion earlier in the week, may need its own follow-up.</td></tr>
-            <tr><td data-label="Item">Sequencing of the database rebuild vs. the request/submission model overhaul &mdash; parallel or serial, not resolved.</td></tr>
-            <tr><td data-label="Item">Where notes on the database-rebuild initiative should live going forward &mdash; raised live, not answered.</td></tr>
+            <tr><td data-label="Item">How the database-rebuild and request/submission initiatives fit alongside the team's existing capacity (already stretched by the monthly-release transition) &mdash; raised, not resolved.</td></tr>
+            <tr><td data-label="Item">Final form of the tracking mechanism for strategic priorities (leaning Basecamp master project/list) &mdash; not fully finalized.</td></tr>
             <tr><td data-label="Item">"Slot in the first 12 months" reference from the mock-month walkthrough &mdash; unclear.</td></tr>
             <tr><td data-label="Item">Whether the mock-month calendar work is waiting on Felicia's return, and for what.</td></tr>
           </tbody>
