@@ -13,6 +13,12 @@ Previously published via GitLab Pages; fully migrated to GitHub Pages.
 | Survey Modeling Readout | [survey-modeling-readout.html](https://jamlung-ri.github.io/presentation/survey-modeling-readout.html) | 2026-08-26 |
 | Survey Model Deep Dive | [survey-model-deep-dive.html](https://jamlung-ri.github.io/presentation/survey-model-deep-dive.html) | 2026-08-26 |
 
+### LOINC Operations
+
+| Presentation | Link | Last Updated |
+|---|---|---|
+| Report Tracker | [loinc-report-tracker.html](https://jamlung-ri.github.io/presentation/loinc-report-tracker.html) | 2026-09-02 |
+
 ### CHD Study
 
 | Presentation | Link | Last Updated |
