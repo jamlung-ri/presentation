@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting Started with AI · CBMI Resource Library</title>
+<style>
+/* ── Regenstrief Institute Design System tokens (from regenstrief-design-system repo) ── */
+@font-face{font-family:'Averta';src:url('https://www.regenstrief.org/wp-content/themes/regenstrief-institute/fonts/averta-regular.woff2') format('woff2'),url('https://www.regenstrief.org/wp-content/themes/regenstrief-institute/fonts/averta-regular.woff') format('woff');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Averta';src:url('https://www.regenstrief.org/wp-content/themes/regenstrief-institute/fonts/Averta-Bold.woff2') format('woff2'),url('https://www.regenstrief.org/wp-content/themes/regenstrief-institute/fonts/Averta-Bold.woff') format('woff');font-weight:700;font-style:normal;font-display:swap}
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root{
+  --ri-azure:#24afdf;--cbmi-green:#5cbe5c;--chsr-blue:#0e5088;
+  --dark-slate:#323c43;--slate-700:#454f57;--slate-600:#636363;--slate-300:#c1c1c1;
+  --slate-200:#dae2e3;--slate-100:#ededed;--slate-50:#f7f9f9;--white:#ffffff;
+  --green-700:#2d6a4f;--green-100:#e7f3ed;--amber-600:#a8641a;--amber-100:#fbf0e0;
+
+  --font-sans:'Averta','Plus Jakarta Sans',Arial,Helvetica,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --text-h1:2.4375rem;--text-h2:1.875rem;--text-h4:1.0625rem;
+  --text-body-l:1.125rem;--text-body:1rem;--text-body-s:0.875rem;--text-caption:0.75rem;
+  --leading-tight:1.15;--leading-heading:1.3;--leading-body:1.6;
+  --tracking-wide:0.08em;
+
+  --text-primary:var(--dark-slate);--text-secondary:var(--slate-600);
+  --surface-page:var(--slate-50);--surface-card:var(--white);
+  --border-default:var(--slate-200);--border-strong:var(--slate-300);
+  --brand-primary:var(--ri-azure);--accent:var(--brand-primary);
+
+  --radius-m:5px;--radius-l:10px;--radius-pill:999px;
+  --shadow-s:0 1px 2px rgba(48,57,62,0.08);
+  --container-max:840px;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--surface-page); color:var(--text-primary);
+  font-family:var(--font-sans); line-height:var(--leading-body);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--container-max); margin:0 auto; padding:56px 28px 90px}
+
+/* ── Badge (per components/feedback/Badge.jsx) ── */
+.badge{
+  display:inline-flex; align-items:center; font-family:var(--font-sans);
+  font-size:var(--text-caption); font-weight:600; letter-spacing:var(--tracking-wide);
+  text-transform:uppercase; padding:3px 11px; border-radius:var(--radius-pill);
+}
+.badge-cbmi{ background:rgba(92,190,92,.14); color:#2d6a2d; }
+.badge-neutral{ background:var(--slate-100); color:var(--slate-700); }
+
+h1{
+  font-size:clamp(2rem,4.4vw,var(--text-h1)); font-weight:700; letter-spacing:-.01em;
+  line-height:var(--leading-tight); margin:16px 0 18px; color:var(--text-primary);
+}
+h1 .accent{ color:var(--brand-primary); }
+
+.lede{
+  font-size:var(--text-body-l); font-weight:400; color:var(--text-secondary);
+  max-width:620px; margin:0 0 40px; line-height:var(--leading-body);
+}
+
+/* ── Card (per components/data-display/Card.jsx) ── */
+.card{
+  background:var(--surface-card); border:1px solid var(--border-default);
+  border-radius:var(--radius-l); box-shadow:var(--shadow-s);
+  padding:20px 22px; font-family:var(--font-sans);
+}
+.card .eyebrow{
+  font-size:var(--text-caption); font-weight:700; letter-spacing:var(--tracking-wide);
+  text-transform:uppercase; color:var(--accent); margin-bottom:8px;
+}
+.card h3, .card h4{
+  margin:0 0 8px; font-size:var(--text-h4); font-weight:700; color:var(--text-primary);
+  line-height:var(--leading-heading);
+}
+.card .body{ font-size:var(--text-body-s); color:var(--text-secondary); line-height:var(--leading-body); }
+.card .meta{ font-size:var(--text-caption); color:var(--text-secondary); margin-bottom:10px; }
+.card .meta b{ color:var(--text-primary); font-weight:600; }
+.card .steps{ font-size:var(--text-body-s); color:var(--text-secondary); margin:0 0 10px; padding-left:18px; }
+.card .steps li{ margin-bottom:5px; }
+.card blockquote{
+  font-family:var(--font-mono); font-size:12px; line-height:1.6;
+  background:var(--slate-50); border-left:3px solid var(--brand-primary);
+  border-radius:0 var(--radius-m) var(--radius-m) 0;
+  margin:10px 0; padding:12px 14px; color:var(--text-primary);
+}
+
+/* ── Semantic callout panels (per Badge tone system) ── */
+.panel{ font-size:var(--text-body-s); border-radius:var(--radius-m); padding:10px 13px; margin-top:12px; line-height:var(--leading-body); }
+.panel b{ display:block; text-transform:uppercase; font-size:10px; letter-spacing:var(--tracking-wide); font-weight:700; margin-bottom:2px; }
+.panel-info{ background:rgba(36,175,223,.08); color:var(--chsr-blue); border-left:3px solid var(--brand-primary); }
+.panel-success{ background:var(--green-100); color:var(--green-700); border-left:3px solid var(--green-700); }
+.panel-warning{ background:var(--amber-100); color:var(--amber-600); border-left:3px solid var(--amber-600); }
+
+/* ── Framing section ── */
+.framing{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:56px; }
+.framing .card h3{ font-size:var(--text-caption); text-transform:uppercase; letter-spacing:var(--tracking-wide); color:var(--brand-primary); }
+.framing .card p{ font-size:var(--text-body-s); color:var(--text-secondary); margin:0; }
+.framing .card strong{ color:var(--text-primary); }
+
+/* ── Tier sections ── */
+section.tier{ margin-bottom:60px; }
+.tier-head{ display:flex; align-items:center; gap:12px; margin-bottom:8px; flex-wrap:wrap; }
+.tier-title{ font-size:var(--text-h2); font-weight:700; letter-spacing:-.01em; color:var(--text-primary); }
+.tier-sub{ font-size:var(--text-body-s); color:var(--text-secondary); margin:0 0 26px; max-width:620px; }
+
+.cards{ display:grid; grid-template-columns:1fr; gap:16px; }
+
+/* ── Personal / shared-team pairing ── */
+.pair-label{
+  font-family:var(--font-mono); font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--text-secondary); margin:30px 0 12px;
+}
+.gap-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.gap-panel .card{ height:100%; }
+.gap-panel.isolated .card{ background:var(--surface-page); }
+.gap-panel.connected .card{ border-color:var(--brand-primary); box-shadow:0 0 0 1px var(--brand-primary), var(--shadow-s); }
+.tag{
+  display:inline-flex; align-items:center; font-size:11px; font-weight:600;
+  letter-spacing:.04em; text-transform:uppercase; padding:4px 10px;
+  border-radius:var(--radius-m); border:1px solid var(--border-strong);
+  background:var(--surface-card); color:var(--text-secondary); margin-bottom:8px;
+}
+.gap-panel.connected .tag{ border-color:var(--brand-primary); color:var(--brand-primary); }
+
+@media (max-width:640px){ .framing, .gap-grid{ grid-template-columns:1fr; } }
+
+footer{
+  margin-top:60px; padding-top:24px; border-top:1px solid var(--border-default);
+  font-size:var(--text-body-s); color:var(--text-secondary);
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="badge badge-cbmi">CBMI · AI Resource Library</span>
+  <h1>Three tiers, two voices: <span class="accent">getting started with AI</span></h1>
+  <p class="lede">A handful of copy-paste-ready examples, organized by how big a stretch each one is — and paired up to show that AI work doesn't have to mean one person, one isolated chat thread.</p>
+
+  <div class="framing">
+    <div class="card">
+      <h3>Same ideas, more automation</h3>
+      <p>Every example below rests on the same few habits: <strong>ground</strong> the AI's output in real material, keep a consistent <strong>home</strong> for your work, stay the <strong>owner</strong> of the judgment calls, and build in a <strong>check</strong> before anything goes out. Tier 1 is a person doing all of that by hand in a chat box. Tier 3 is the same habits, with more of the legwork automated.</p>
+    </div>
+    <div class="card">
+      <h3>Not just a solo chat thread</h3>
+      <p>Tiers 2 and 3 each pair an <strong>individual</strong> example with a <strong>shared team</strong> version of the same idea — a team can work off the same source together, so the AI's answers are grounded in what everyone agreed to, not just what one person happened to paste in that day.</p>
+    </div>
+  </div>
+
+  <!-- TIER 1 -->
+  <section class="tier">
+    <div class="tier-head">
+      <span class="badge badge-neutral">Tier 1</span>
+      <span class="tier-title">Prompt-level</span>
+    </div>
+    <p class="tier-sub">Zero setup. Works in a plain ChatGPT or Gemini chat box, nothing to install.</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="eyebrow">Use case</div>
+        <h4>Research Synthesis → Summary</h4>
+        <div class="meta"><b>Tools:</b> ChatGPT or Gemini &nbsp;·&nbsp; <b>Time saved:</b> same-day turnaround on requests that used to take days</div>
+        <ol class="steps">
+          <li>Gather the question plus source material (reports, links, pasted text)</li>
+          <li>Ask the AI to synthesize the sources into a comparison table, tradeoffs, and a draft recommendation</li>
+          <li>Validate the findings and add your own judgment</li>
+          <li>Paste the result into an email, doc, or slide outline</li>
+        </ol>
+        <div class="panel panel-info"><b>Why it works</b>The comparison stays grounded in real sources; the recommendation stays yours.</div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Learning note</div>
+        <h4>How to Get Better Answers — the CLEAR method</h4>
+        <p class="body"><b>C</b>ontext, <b>L</b>ength, <b>E</b>xamples, <b>A</b>udience, <b>R</b>efine. Weak: "Write something about our project." Strong: "Summarize the status of the project in 4 bullets for a non-technical stakeholder who needs to know what's blocked and what's next."</p>
+        <p class="body" style="font-style:italic">Prompting is a skill you build in 10 minutes of practice, not 10 hours of reading.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIER 2 -->
+  <section class="tier">
+    <div class="tier-head">
+      <span class="badge badge-neutral">Tier 2</span>
+      <span class="tier-title">Practice-level</span>
+    </div>
+    <p class="tier-sub">A small stretch. Browser only, no IDE — a free account is all it takes.</p>
+
+    <div class="pair-label">— individual —</div>
+    <div class="gap-grid">
+      <div class="gap-panel isolated">
+        <div class="card">
+          <span class="tag">Personal use</span>
+          <h4>Meeting Transcript → GitHub Issues</h4>
+          <div class="meta"><b>Tools:</b> ChatGPT/Gemini + GitHub Issues + Projects (Kanban)</div>
+          <ol class="steps">
+            <li>Have a meeting transcript or email thread ready</li>
+            <li>Ask the AI to extract action items and suggest owner/priority labels</li>
+            <li>Confirm or edit before filing</li>
+            <li>File as a labeled GitHub Issue on your personal Kanban board</li>
+          </ol>
+          <div class="panel panel-success"><b>Meeting habit</b>Verbalize the task, owner, and due date out loud when a decision lands ("So, Name will do X by date") — the transcript already has what the AI needs, so there's far less cleanup after.</div>
+        </div>
+      </div>
+      <div class="gap-panel connected">
+        <div class="card">
+          <span class="tag">Shared team version</span>
+          <h4>Same workflow, shared team repo</h4>
+          <p class="body">The exact same extraction, but filed into a <b>shared</b> GitHub repo instead of a personal one — turning it into a group Kanban board everyone can see and trust, instead of tasks living only in one person's notes.</p>
+          <div class="panel panel-info"><b>Why it works</b>A real, structured home for tasks — now owned by the team, not just an individual.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pair-label">— shared team source —</div>
+    <div class="cards">
+      <div class="card">
+        <div class="eyebrow">Use case</div>
+        <h4>Shared Gemini Notebook as a Team's Meeting Memory</h4>
+        <div class="meta"><b>Tools:</b> a shared Gemini Notebook, fed with meeting transcripts &nbsp;·&nbsp; no GitHub, no repo — lives inside the AI tool itself</div>
+        <ol class="steps">
+          <li>Team uploads transcripts/notes into one shared Notebook as meetings happen, building a running library</li>
+          <li>Anyone asks the Notebook a question directly; it answers using only the uploaded material and cites the source</li>
+          <li>Spot-check the cited source before acting on anything important</li>
+          <li>Share the cited answer back in the team channel</li>
+        </ol>
+        <div class="panel panel-info"><b>Why it works</b>A shared source of truth living inside an approved AI tool itself — every answer traceable back to the meeting it came from.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIER 3 -->
+  <section class="tier">
+    <div class="tier-head">
+      <span class="badge badge-neutral">Tier 3</span>
+      <span class="tier-title">Advanced — same ideas, automated</span>
+    </div>
+    <p class="tier-sub">Where this direction can lead. Both examples run on ChatGPT Codex operating directly on a repo, not a pasted excerpt — Codex is approved, but it lives in an IDE, so this is still a bigger lift for a beginner audience than Tiers 1-2.</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="eyebrow">Use case</div>
+        <h4>Live Meeting Notes</h4>
+        <div class="meta"><b>Tools:</b> Zoom transcript + ChatGPT Codex + Markdown + a published HTML page</div>
+        <ol class="steps">
+          <li>Point the AI at the live Zoom transcript during the meeting</li>
+          <li>It drafts a chronological notes doc (decisions, owners, dates) plus a condensed readout as the meeting goes</li>
+          <li>Check speaker attribution and confirm decisions match what was actually agreed</li>
+          <li>Publish as an HTML page on the team site; share the readout</li>
+        </ol>
+        <div class="panel panel-info"><b>Full stack</b>A dedicated, consistent home for meeting records over time, a source captured automatically with zero extra meeting-time effort, and an explicit human check before anything publishes.</div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Use case</div>
+        <h4>AI Working Directly From a Shared Team Repository</h4>
+        <div class="meta"><b>Tools:</b> a shared GitHub repo with a structured issue template + approval workflow, plus an AI agent pointed at the whole repo — not just pasted excerpts</div>
+        <ol class="steps">
+          <li>A new question or proposed change comes in</li>
+          <li>The AI reads the shared repo directly — its template, its index, its past decisions — to draft a new entry in the right format, or check if it's already been answered</li>
+          <li>The team's existing approval process stays exactly as it was — AI drafts, humans still approve</li>
+          <li>The new entry gets filed back into the same shared repo, extending the same source of truth</li>
+        </ol>
+        <div class="panel panel-info"><b>The clearest example here</b>The AI reads the shared repo <i>and</i> writes new entries back into it — closing a loop the Tier 2 examples still leave to a person. The shared repo stays the source of truth, not any single conversation.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Have questions on any of these, or want the fully filled-in templates? Reach out — happy to walk through any of them.
+  </footer>
+
+</div>
+</body>
+</html>
