@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OCL Mapper @ LOINC — Slide Draft</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --line: #e0e0e0;
+    --accent: #1e2761;
+    --accent-soft: #eef0fa;
+    --placeholder-bg: #fff8e1;
+    --placeholder-border: #e0b400;
+    --slide-w: 960px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 32px 16px 80px;
+    background: #f4f4f4;
+    color: var(--ink);
+    font-family: Calibri, Arial, sans-serif;
+  }
+  .toolbar {
+    max-width: var(--slide-w);
+    margin: 0 auto 24px;
+    padding: 12px 20px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .toolbar strong { color: var(--ink); }
+  .slide {
+    max-width: var(--slide-w);
+    min-height: 540px;
+    margin: 0 auto 28px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 40px 56px;
+    position: relative;
+  }
+  .slide-num {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .slide-time {
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .slide h1 {
+    font-size: 30px;
+    margin: 24px 0 6px;
+    color: var(--accent);
+  }
+  .slide .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .slide .subtitle {
+    font-size: 16px;
+    color: var(--muted);
+    margin: 0 0 20px;
+  }
+  .slide ul {
+    font-size: 17px;
+    line-height: 1.55;
+    padding-left: 22px;
+  }
+  .slide ul li { margin-bottom: 10px; }
+  .slide ul ul { margin-top: 6px; font-size: 15px; color: #333; }
+  .two-col {
+    display: flex;
+    gap: 40px;
+    margin-top: 10px;
+  }
+  .two-col > div { flex: 1; }
+  .stat-row {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 16px 20px;
+    min-width: 140px;
+  }
+  .stat .num {
+    font-size: 30px;
+    font-weight: bold;
+    color: var(--accent);
+    display: block;
+  }
+  .stat .label {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .placeholder {
+    background: var(--placeholder-bg);
+    border: 1px dashed var(--placeholder-border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #7a5c00;
+    margin: 10px 0;
+  }
+  .placeholder::before {
+    content: "PLACEHOLDER — ";
+    font-weight: bold;
+  }
+  .divider {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 460px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 8px;
+  }
+  .divider h1 { color: #fff; font-size: 40px; }
+  .divider .subtitle { color: #cadcfc; font-size: 18px; }
+  .title-slide {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 460px;
+  }
+  .title-slide h1 { font-size: 40px; margin-top: 0; }
+  .presenters {
+    margin-top: 24px;
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .notes {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .notes strong { color: #444; }
+  code { background: #f0f0f0; padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+
+  /* ---- Per-slide comment button + panel (giscus, GitHub Discussions-backed) ---- */
+  .comment-btn {
+    position: absolute;
+    bottom: 16px;
+    right: 20px;
+    font-family: Calibri, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid var(--accent-soft);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  .comment-btn:hover { background: var(--accent); color: #fff; }
+  .divider .comment-btn {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border-color: rgba(255,255,255,0.35);
+  }
+  .divider .comment-btn:hover { background: rgba(255,255,255,0.3); }
+
+  .comments-overlay {
+    position: fixed; inset: 0; background: rgba(20,24,20,0.32);
+    opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 25;
+  }
+  .comments-overlay.open { opacity: 1; pointer-events: auto; }
+  .comments-panel {
+    position: fixed; top: 0; right: 0; height: 100vh; width: min(460px, 92vw);
+    background: #fff; border-left: 1px solid var(--line);
+    box-shadow: -10px 0 28px -14px rgba(0,0,0,0.3);
+    transform: translateX(100%); transition: transform 0.25s ease;
+    z-index: 30; display: flex; flex-direction: column;
+  }
+  .comments-panel.open { transform: translateX(0); }
+  .comments-panel-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 18px; border-bottom: 1px solid var(--line); flex-shrink: 0;
+  }
+  .comments-panel-title { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .comments-panel-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .comments-panel-close {
+    background: none; border: none; font-size: 18px; line-height: 1; color: var(--muted);
+    cursor: pointer; padding: 4px 8px;
+  }
+  .comments-panel-close:hover { color: var(--ink); }
+  .giscus-container { flex: 1; overflow-y: auto; padding: 4px 14px 20px; }
+  .giscus-container iframe.giscus-frame { width: 100%; border: none; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span><strong>OCL Mapper @ LOINC</strong> — content draft, working doc (not final design)</span>
+  <span>~10 min · 9 slides + live demo · 💬 use each slide's Comment button to leave feedback</span>
+</div>
+
+<!-- SLIDE 1: TITLE -->
+<div class="slide title-slide">
+  <span class="slide-num">1 / 9</span>
+  <p class="kicker">LOINC Conference · October 2026</p>
+  <h1>OCL Mapper: Where We Left Off, Where We Stand, What's Next</h1>
+  <div class="presenters">
+    <div>Joe Amlung — Regenstrief Institute / LOINC</div>
+  </div>
+  <div class="notes"><strong>Notes:</strong> Reuse title-slide styling from the Nov 2025 APHL deck (slide 1).</div>
+  <button class="comment-btn" data-term="OCL Mapper @ LOINC — Slide 1: Title">💬 Comment</button>
+</div>
+
+<!-- SLIDE 2: RECAP - PROBLEM -->
+<div class="slide">
+  <span class="slide-num">2 / 9</span>
+  <span class="slide-time">~0:45</span>
+  <p class="kicker">Recap</p>
+  <h1>The problem OCL Mapper set out to solve</h1>
+  <ul>
+    <li>Terminology mapping is a major bottleneck for interoperability worldwide</li>
+    <li>LOINC's high specificity makes mapping especially hard — missing metadata limits automation and pushes people toward generic codes, creating downstream risk</li>
+    <li>RELMA is still the gold standard, but shows signs of age</li>
+    <li>Mapping is usually done by non-experts; many Ministries of Health don't have a terminologist on staff</li>
+    <li>No solution existed that was open source, collaborative, terminology-agnostic, <em>and</em> AI-enabled</li>
+  </ul>
+  <div class="notes"><strong>Source:</strong> condensed from APHL deck slide 8.</div>
+  <button class="comment-btn" data-term="OCL Mapper @ LOINC — Slide 2: The problem OCL Mapper set out to solve">💬 Comment</button>
+</div>
+
+<!-- SLIDE 3: RECAP - HOW IT WORKS -->
+<div class="slide">
+  <span class="slide-num">3 / 9</span>
+  <span class="slide-time">~0:45</span>
+  <p class="kicker">Recap</p>
+  <h1>How OCL Mapper works</h1>
+  <div class="two-col">
+    <div>
+      <strong>Workflow</strong>
+      <ul>
+        <li>Load</li>
+        <li>Configure</li>
+        <li>Auto-match</li>
+        <li>Map &amp; Review</li>
+        <li>Export</li>
+      </ul>
+    </div>
+    <div>
+      <strong>Under the hood</strong>
+      <ul>
+        <li>Multi-algorithm candidate retrieval (keyword search, semantic similarity, bridge terminology, cross-maps, community maps)</li>
+        <li>AI Assistant reviews the candidate pool and returns Recommend / Conditional / Reject, with rationale</li>
+      </ul>
+    </div>
+  </div>
+  <div class="notes"><strong>Source:</strong> simplified from APHL deck slides 9–10. Don't reproduce the full pipeline diagram — this is a refresher, not a re-teach.</div>
+  <button class="comment-btn" data-term="OCL Mapper @ LOINC — Slide 3: How OCL Mapper works">💬 Comment</button>
+</div>
+
+<!-- SLIDE 4: RECAP - LOINC RESULTS -->
+<div class="slide">
+  <span class="slide-num">4 / 9</span>
+  <span class="slide-time">~0:45</span>
+  <p class="kicker">Recap</p>
+  <h1>Where LOINC results stood last time</h1>
+  <div class="stat-row">
+    <div class="stat"><span class="num">86%</span><span class="label">correct matches landed in the candidate pool (top-10, aggregate across algorithms)</span></div>
+    <div class="stat"><span class="num">88%</span><span class="label">AI Assistant correct-match identification when the right candidate was in the pool</span></div>
+    <div class="stat"><span class="num">200</span><span class="label">LOINC codes evaluated</span></div>
+  </div>
+  <ul>
+    <li>Status check for this talk: same state as last proven, no red flags</li>
+  </ul>
+  <div class="notes"><strong>Source:</strong> APHL deck slides 26–27, 33. Keep this to headline numbers — full methodology / UpSet analysis stays in appendix, not this slide.</div>
+  <button class="comment-btn" data-term="OCL Mapper @ LOINC — Slide 4: Where LOINC results stood last time">💬 Comment</button>
+</div>
+
+<!-- SLIDE 5: NEW - EARLY ACCESS PROGRAM -->
+<div class="slide">
+  <span class="slide-num">5 / 9</span>
+  <span class="slide-time">~0:45</span>
+  <p class="kicker">What's new</p>
+  <h1>From Early Access to Public Preview</h1>
+  <ul>
+    <li>The Early Access Program showed strong interest in the Mapper</li>
+    <li>It's being retired in favor of something bigger: a public preview, open to anyone</li>
+  </ul>
+  <div class="placeholder">
+    Jon is trying to pull Early Access numbers (sign-ups, interest level) to cite here. Still pending.
+  </div>
+  <div class="notes"><strong>Notes:</strong> keep this slide short. It's a bridge to the public preview news on slide 8, not the main event.</div>
+  <button class="comment-btn" data-term="OCL Mapper @ LOINC — Slide 5: From Early Access to Public Preview">💬 Comment</button>
+</div>
+
+<!-- SLIDE 6: NEW - ICD-11 + BRIDGE TERMINOLOGY -->
+<div class="slide">
+  <span class="slide-num">6 / 9</span>
+  <span class="slide-time">~1:30</span>
+  <p class="kicker">What's new · go deeper here</p>
+  <h1>ICD-11 results and bridge terminology</h1>
+  <div class="stat-row">
+    <div class="stat"><span class="num">60%</span><span class="label">exact-match accuracy from the CIEL bridge alone — nearly matching the full 4-algorithm system (59%)</span></div>
+    <div class="stat"><span class="num">+18</span><span class="label">point lift in exact-match accuracy from adding the CIEL bridge to a baseline API</span></div>
+    <div class="stat"><span class="num">14</span><span class="label">correct codes found <em>only</em> by the CIEL bridge — no other algorithm surfaced them</span></div>
+  </div>
+  <ul>
+    <li>The curated bridge terminology (CIEL) is the single most valuable, least-replaceable piece of the system — it carries most of the exact-match accuracy on its own. Generic search APIs and an AI agent add breadth, not precision</li>
+    <li>Direct relevance to this room: that's the same bridge mechanism (CIEL) behind LOINC mapping — this is the real story for LOINC</li>
+    <li>When the right answer was in the candidate pool, the AI Assistant picked it ~99% of the time — the limit is retrieval, not judgment</li>
+    <li>The AI also knows when to say "I don't know": on thin candidate pools it abstained 22 times, and was right to abstain 86% of the time</li>
+  </ul>
+  <div class="notes"><strong>Source:</strong> GDHF 2026 Bangkok abstract draft (accepted) — 100 high-frequency clinical/lab terms, expert-mapped to ICD-11, evaluated against OCL Mapper. Preliminary / pre-publication, single source (IMO Health) — say so if asked about sample size. This is the section to spend a couple of extra minutes on if time allows.</div>
+  <button class="comment-btn" data-term="OCL Mapper @ LOINC — Slide 6: ICD-11 results and bridge terminology">💬 Comment</button>
+</div>
+
+<!-- SLIDE 7: LIVE DEMO DIVIDER -->
+<div class="slide divider">
+  <span class="slide-num">7 / 9</span>
+  <span class="slide-time" style="color:#cadcfc;">~3:00</span>
+  <p class="kicker" style="color:#cadcfc;">Live demo</p>
+  <h1>Let's see it in action</h1>
+  <p class="subtitle">Mapping real LOINC content in the Mapper</p>
+  <button class="comment-btn" data-term="OCL Mapper @ LOINC — Slide 7: Live demo">💬 Comment</button>
+</div>
+
+<!-- SLIDE 7b: DEMO NOTES (not a real slide, prep notes only) -->
+<div class="slide">
+  <span class="slide-num">— demo prep, not a slide —</span>
+  <h1 style="font-size:22px; margin-top:8px;">Demo run-of-show</h1>
+  <ul>
+    <li>Load/configure a small LOINC set</li>
+    <li>Run auto-match</li>
+    <li>Walk 1–2 AI Assistant recommendations (aim for one Recommend, one Conditional, if time allows)</li>
+    <li>Export</li>
+  </ul>
+  <button class="comment-btn" data-term="OCL Mapper @ LOINC — Demo prep notes (not a slide)">💬 Comment</button>
+</div>
+
+<!-- SLIDE 8: NEW - PUBLIC PREVIEW -->
+<div class="slide">
+  <span class="slide-num">8 / 9</span>
+  <span class="slide-time">~1:00</span>
+  <p class="kicker">What's next</p>
+  <h1>Public preview is live</h1>
+  <ul>
+    <li>By the time we're in Cologne, the Mapper's public preview will be live: anyone can sign up for an account and get preview access. No OCL involvement needed</li>
+    <li>It's <strong>heavily throttled by design</strong> — that's the mechanism to keep it supportable at scale, and this launch is the first real-world stress test of it</li>
+    <li>Everyone is expected to hit the throttle limits — that's intentional, not a bug. Set expectations accordingly rather than over-promising open access</li>
+  </ul>
+  <div class="notes"><strong>Notes:</strong> per Jon (transcript, 2026-09-15): public preview replaces the Early Access Program and should be in place by end of September, ahead of the conference. This is also the closing call to action — make sure slide 9 points here directly.</div>
+  <button class="comment-btn" data-term="OCL Mapper @ LOINC — Slide 8: Public preview is live">💬 Comment</button>
+</div>
+
+<!-- SLIDE 9: THANK YOU / GET INVOLVED -->
+<div class="slide">
+  <span class="slide-num">9 / 9</span>
+  <span class="slide-time">~0:30</span>
+  <p class="kicker">Get involved</p>
+  <h1>Thank you</h1>
+  <ul>
+    <li>Sign up for the Mapper's public preview: <code>map.openconceptlab.org</code></li>
+    <li>Explore the OCL community site: <code>openconceptlab.org</code></li>
+  </ul>
+  <div class="notes"><strong>Source:</strong> APHL deck slides 35–36, updated per Jon (transcript, 2026-09-15) — public preview is the closing call to action, not a generic sign-up ask. Blog post link deferred for now; add once published.</div>
+  <button class="comment-btn" data-term="OCL Mapper @ LOINC — Slide 9: Thank you / Get involved">💬 Comment</button>
+</div>
+
+<div class="comments-overlay" id="commentsOverlay"></div>
+<div class="comments-panel" id="commentsPanel" aria-hidden="true">
+  <div class="comments-panel-head">
+    <div>
+      <div class="comments-panel-title" id="commentsPanelTitle">Comments</div>
+      <div class="comments-panel-sub">Backed by GitHub Discussions on this repo · each slide has its own thread</div>
+    </div>
+    <button class="comments-panel-close" id="commentsClose" aria-label="Close comments">✕</button>
+  </div>
+  <div class="giscus-container" id="giscusContainer"></div>
+</div>
+
+<script>
+  // ---- Comments panel (giscus, backed by GitHub Discussions on this repo) ----
+  const GISCUS_REPO = 'jamlung-ri/presentation';
+  const GISCUS_REPO_ID = 'R_kgDOUFLvew';
+  const GISCUS_CATEGORY = 'General';
+  const GISCUS_CATEGORY_ID = 'DIC_kwDOUFLve84DEYYF';
+
+  const commentsPanel = document.getElementById('commentsPanel');
+  const commentsOverlay = document.getElementById('commentsOverlay');
+  const commentsCloseBtn = document.getElementById('commentsClose');
+  const commentsPanelTitle = document.getElementById('commentsPanelTitle');
+  const giscusContainer = document.getElementById('giscusContainer');
+
+  function sendGiscusMessage(message) {
+    const iframe = giscusContainer.querySelector('iframe.giscus-frame');
+    if (!iframe) return;
+    iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+  }
+
+  function loadOrUpdateGiscus(term) {
+    commentsPanelTitle.textContent = term.replace('OCL Mapper @ LOINC — ', '');
+    if (giscusContainer.querySelector('iframe.giscus-frame')) {
+      sendGiscusMessage({ setConfig: { term: term } });
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.setAttribute('data-repo', GISCUS_REPO);
+    script.setAttribute('data-repo-id', GISCUS_REPO_ID);
+    script.setAttribute('data-category', GISCUS_CATEGORY);
+    script.setAttribute('data-category-id', GISCUS_CATEGORY_ID);
+    script.setAttribute('data-mapping', 'specific');
+    script.setAttribute('data-term', term);
+    script.setAttribute('data-strict', '0');
+    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'top');
+    script.setAttribute('data-theme', 'preferred_color_scheme');
+    script.setAttribute('data-lang', 'en');
+    script.setAttribute('crossorigin', 'anonymous');
+    script.async = true;
+    giscusContainer.appendChild(script);
+  }
+
+  function openComments(term) {
+    commentsPanel.classList.add('open');
+    commentsPanel.setAttribute('aria-hidden', 'false');
+    commentsOverlay.classList.add('open');
+    loadOrUpdateGiscus(term);
+  }
+  function closeComments() {
+    commentsPanel.classList.remove('open');
+    commentsPanel.setAttribute('aria-hidden', 'true');
+    commentsOverlay.classList.remove('open');
+  }
+  document.querySelectorAll('.comment-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () { openComments(btn.dataset.term); });
+  });
+  commentsCloseBtn.addEventListener('click', closeComments);
+  commentsOverlay.addEventListener('click', closeComments);
+</script>
+
+</body>
+</html>

@@ -19,6 +19,12 @@ Previously published via GitLab Pages; fully migrated to GitHub Pages.
 |---|---|---|
 | Report Tracker | [loinc-report-tracker.html](https://jamlung-ri.github.io/presentation/loinc-report-tracker.html) | 2026-09-02 |
 
+### LOINC Conference (Oct 2026)
+
+| Presentation | Link | Last Updated |
+|---|---|---|
+| OCL Mapper Talk — Draft (comment on any slide) | [loinc-mapper-conference-oct2026.html](https://jamlung-ri.github.io/presentation/loinc-mapper-conference-oct2026.html) | 2026-09-15 |
+
 ### CHD Study
 
 | Presentation | Link | Last Updated |
