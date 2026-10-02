@@ -33,6 +33,7 @@ Previously published via GitLab Pages; fully migrated to GitHub Pages.
 | Care Journey Map | [journey-map.html](https://jamlung-ri.github.io/presentation/journey-map.html) | 2026-06-24 |
 | Care Journey Map (Core Codes Only) | [journey-map-core-codes.html](https://jamlung-ri.github.io/presentation/journey-map-core-codes.html) | 2026-08-14 |
 | Solution Concepts — Riley Meeting | [concept-sketches.html](https://jamlung-ri.github.io/presentation/concept-sketches.html) | 2026-06-24 |
+| AHA 2026 Moderated Poster: Slide Flow | [aha-mdp1927-slide-flow.html](https://jamlung-ri.github.io/presentation/aha-mdp1927-slide-flow.html) | 2026-10-02 |
 
 ### Regenstrief
 
