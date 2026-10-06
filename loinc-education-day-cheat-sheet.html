@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-build="0600AM-40285">
+<html lang="en" data-build="0836AM-50248">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -62,7 +62,7 @@ section.panel::before{content:attr(data-title);display:block;font-size:1.2rem;fo
 <body>
 <header class="top"><div class="wrap">
 <h1>Cheat sheet: Education Day, LOINC Conference 2026</h1>
-<p class="sub">Last updated <b>06:00 AM</b>. Generated from live captions, so it may contain errors.
+<p class="sub">Last updated <b>08:36 AM</b>. Generated from live captions, so it may contain errors.
 <span class="dag">&dagger;</span> added for clarity, not said in the session. (?) unclear in the recording.</p>
 </div></header>
 <nav class="tabs" aria-label="Layers"><div class="wrap" role="tablist">
@@ -72,50 +72,41 @@ section.panel::before{content:attr(data-title);display:block;font-size:1.2rem;fo
 </div></nav>
 <main><div class="wrap">
 <section class="panel on" id="panel-live" data-title="Live">
-<p class="context">Now covering: <b>Session 1, part 3: Domain-specific concept models</b></p>
+<p class="context">Now covering: <b>Session 2: LOINC in analytics</b></p>
 <article class="card now" id="right-now"><h2>Right now</h2>
-<p><strong>The morning session is wrapping up.</strong> Please scan the QR code on screen and answer the four feedback questions. The group is now going back through the Kahoot questions that were skipped earlier, starting with "how would you describe LOINC?" ("standard" was the most common answer). Slides will be available online to registered participants in a few weeks.</p>
+<p><strong>This page stops at 08:36 AM, partway through Session 2. Later parts of the day are not included.</strong></p>
+<p>The last topic covered was what an ontology is, told as "a tale of two dogs":</p>
+<ul><li class="row">Start with a list of dog breeds: Pomeranian, American Eskimo dog.</li><li class="row">Beside it, keep a separate hierarchy of coat types. Link both breeds to "double coat" with a relationship called <em>has coat type</em>.</li><li class="row">Add another hierarchy, geographic origin, and another relationship: Pomeranian to Europe, American Eskimo dog to North America.</li></ul>
+<p>Clinical documents work the same way. Two cardiology notes (a medical student's admission evaluation and an attending's progress note) both link, through the <em>subject matter</em> relationship, to "cardiovascular disease," which sits under "internal medicine" in the subject matter hierarchy.</p>
 </article>
 <article class="card " id="recently"><h2>Recently</h2>
-<ol><li class="row"><strong>Q: Is there similar modeling work for radiology?</strong> Yes, already started in the Radiology Committee, and new members are welcome. There is a radiology roundtable on Thursday, and a survey roundtable where the new survey model will be shown.</li><li class="row"><strong>Q: With monthly releases, how will translations keep up?</strong> Acknowledged as hard. The name history file should make changes easier to find, and the aim is for translations to come out alongside releases. More tomorrow and at Thursday afternoon's roundtable.</li><li class="row"><strong>Q: Could better-named axes allow relationships to be inferred with formal logic?</strong> Yes, that is the intent. The document ontology is already published in OWL. The LOINC ontology covers lab first, with clinical observations expected next.</li></ol>
+<ol><li class="row"><strong>Exercise 2 fell short, as promised.</strong> Nephrology notes by physicians: search and part links both find the nephrology notes (35 to 42) but cannot narrow them to physicians, because the part links carry no hierarchy. To be revisited. See <a href="#worked-examples">Worked examples</a>.</li><li class="row"><strong>The document ontology is published as an OWL file,</strong> the only part of LOINC distributed that way. It holds the hierarchies as well as the part links.</li><li class="row"><strong>Document Ontology.csv:</strong> an accessory file with the document part links only, and no hierarchies.</li></ol>
 </article>
-<article class="card " id="earlier-in-session-1"><h2>Earlier in Session 1</h2>
-<ul><li class="row"><strong>Part 1, core concepts (03:19 to 03:41):</strong> why health data is coded, LOINC's history and reach, how it stays current, and its four content areas.</li><li class="row"><strong>Part 2, history and principles (03:42 to 04:57):</strong> name-value pairs, where the LOINC code sits in a message, the six axes, pre- and post-coordination, combinatorial explosion, and what a code never includes. See <a href="#rules-of-thumb">Rules of thumb</a>.</li><li class="row"><strong>Hands-on (04:57 to 05:16):</strong> three concepts built from their six parts. The three sticking points: a titer is always semi-quantitative (scale); a specimen like umbilical cord blood is its own system; method is optional and can be empty. See <a href="#worked-examples">Worked examples</a>.</li></ul>
+<article class="card " id="earlier-today"><h2>Earlier today</h2>
+<ul><li class="row"><strong>Session 1, the foundations (03:19 to 04:57):</strong> why health data is coded; name-value pairs; the six axes; pre- and post-coordination; what a LOINC code never includes. See <a href="#rules-of-thumb">Rules of thumb</a> and <a href="#six-axes-at-a-glance">Six axes at a glance</a>.</li><li class="row"><strong>Hands-on (04:57 to 05:16):</strong> three concepts built from their six parts. See <a href="#worked-examples">Worked examples</a>.</li><li class="row"><strong>Domain-specific models (05:16 to 06:06):</strong> a proposal to give documents, radiology, and surveys their own models; monthly releases from March 2027. See <a href="#all-questions">All questions</a>.</li></ul>
 </article>
 <article class="card " id="core-terms-in-use-now"><h2>Core terms in use now</h2>
-<ul><li class="row"><strong>LOINC:</strong> the Kahoot recap asked the room to describe it in a word. "Standard" came out on top</li></ul>
+<ul><li class="row"><strong>Part hierarchy and relationship type</strong> (in Full): the two ingredients of the dog example. Separate hierarchies, joined by named relationships</li><li class="row"><strong>LOINC ontology</strong> (in Full): what this part of the session is building up to</li></ul>
 </article>
-<article class="card " id="latest-terms-this-part"><h2>Latest terms (this part)</h2>
+<article class="card " id="latest-terms-this-session"><h2>Latest terms (this session)</h2>
 <div class="tablewrap"><table>
 <thead><tr><th>Term</th><th>Plain-language meaning</th><th>As used here</th></tr></thead>
 <tbody>
-<tr class="row"><td><strong>OWL</strong></td><td>Web Ontology Language: a standard format for publishing an ontology so software can reason over it <sup class="dag" title="Added for clarity, not said in the session">†</sup></td><td>The document ontology is already published this way</td></tr>
-<tr class="row"><td><strong>Description logic</strong></td><td>A formal way of defining concepts so that relationships between them can be worked out automatically, not just listed <sup class="dag" title="Added for clarity, not said in the session">†</sup></td><td>Raised in a question; confirmed as the direction for the LOINC ontology</td></tr>
-<tr class="row"><td><strong>Translation</strong></td><td>A version of LOINC's names in another language</td><td>Must be updated when names or parts change, which monthly releases make harder</td></tr>
-<tr class="row"><td><strong>LOINC part</strong></td><td>One building block of a LOINC code's name, such as a single component or system value, with its own identifier <sup class="dag" title="Added for clarity, not said in the session">†</sup></td><td>Some parts exist only to join two document elements into one six-axis slot</td></tr>
-<tr class="row"><td><strong>Versioning</strong></td><td>How releases are numbered so you can tell which one you have</td><td>One view offered: the whole of LOINC keeps one version, even if areas are published separately</td></tr>
-<tr class="row"><td><strong>Terminology-model boundary</strong></td><td>The line between what a code means by itself and what the surrounding data structure adds</td><td>Each implementer draws it differently. LOINC is designed to allow that</td></tr>
-<tr class="row"><td><strong>Model-driven</strong></td><td>Designing around the data structure first and choosing codes to fit it, not the other way round</td><td>The presenter's advice to implementers</td></tr>
-<tr class="row"><td><strong>Monthly release</strong></td><td>LOINC will be published every month from March 2027. Today it is published twice a year</td><td>Each release is complete, so releases can be skipped</td></tr>
+<tr class="row"><td><strong>Ontology</strong></td><td>A set of concepts arranged in hierarchies and connected to each other by named relationships</td><td>Explained with dog breeds linked to coat types and places of origin, then with documents linked to subject matters</td></tr>
+<tr class="row"><td><strong>OWL file</strong></td><td>A file in Web Ontology Language: a standard format that holds both the links and the hierarchies, so software can reason over them</td><td>The document ontology is the only part of LOINC published this way</td></tr>
+<tr class="row"><td><strong>Accessory file</strong></td><td>An extra file in the LOINC release that supplements the main table</td><td>Document Ontology.csv is one</td></tr>
+<tr class="row"><td><strong>Parallel models</strong></td><td>Two ways of describing the same code, published side by side</td><td>Document and radiology codes carry both the original six parts and their own model's parts in the primary part link file</td></tr>
+<tr class="row"><td><strong>Subfraction</strong></td><td>A subtype within a measured substance, reported as its own test</td><td>LDL 3 and LDL 7 are subfractions of LDL. They match a search for "LDL" but are not the patient's LDL cholesterol</td></tr>
+<tr class="row"><td><strong>Reference lab</strong></td><td>An outside laboratory that runs tests on behalf of clinics and hospitals <sup class="dag" title="Added for clarity, not said in the session">†</sup></td><td>Different reference labs may report the same test with different LOINC codes</td></tr>
+<tr class="row"><td><strong>Number concentration (NCnc)</strong></td><td>A property for counts of things per volume, such as cells per milliliter</td><td>The property for a sperm count. Typing the abbreviation narrows a search</td></tr>
+<tr class="row"><td><strong>Deprecated code</strong></td><td>A LOINC code that should no longer be used</td><td>Shows up in search results and part-based lists, so remove it at the end</td></tr>
 </tbody></table></div>
 </article>
-<article class="card " id="questions-in-this-part"><h2>Questions in this part</h2>
-<div class="tablewrap"><table>
-<thead><tr><th>Question</th><th>Short answer</th><th>Asked by</th></tr></thead>
-<tbody>
-<tr class="row"><td>If a nurse wrote the pediatric cardiology consult note, where would that go?</td><td>In the role element. The example has no role, so it covers any author: nurse, medical student, attending</td><td>Audience (in room)</td></tr>
-<tr class="row"><td>The same measurement is taken in many settings (hospital, home). How do you find the setting for secondary use?</td><td>It is not in the code. It belongs in the data model around the code, where it can be searched</td><td>Audience (in room)</td></tr>
-<tr class="row"><td>Would area-specific releases have different dates or teams, or stay one package?</td><td>Not decided. One view offered: same release and same version for everything; an area may simply have no changes in a given release</td><td>Audience (in room)</td></tr>
-<tr class="row"><td>Would the current six-axis model be provided alongside a new one, with a conversion between them?</td><td>Not decided. One view offered: a conversion would be needed, the same concept keeps the same code, and there would be a transition period</td><td>Audience (in room)</td></tr>
-<tr class="row"><td>How many releases are there a year?</td><td>Two today. Monthly from March 2027</td><td>Audience (in room)</td></tr>
-<tr class="row"><td>Is there a tool to validate against a release when you are behind?</td><td>No tool named. Every release is complete, so you can skip straight to the latest. More tomorrow</td><td>Audience (in room)</td></tr>
-<tr class="row"><td>Could better-named axes let relationships be inferred with formal logic?</td><td>Yes. The document ontology is already in OWL; the LOINC ontology covers lab first, clinical observations next</td><td>Audience (in room)</td></tr>
-<tr class="row"><td>With monthly releases, how will translations keep up?</td><td>Hard, and being worked on. The name history file should help. More tomorrow and Thursday</td><td>Audience (online)</td></tr>
-<tr class="row"><td>Is there similar modeling work for radiology?</td><td>Yes, under way in the Radiology Committee. Roundtable on Thursday</td><td>Audience (in room)</td></tr>
-</tbody></table></div>
+<article class="card " id="questions-in-this-session"><h2>Questions in this session</h2>
+<p>None yet.</p>
 <p><strong>Still open, carried forward:</strong></p>
 <ul><li class="row">Why is the method empty for <em>platelet count in cord blood</em>? Asked of the room at 05:14.</li><li class="row">When will the pre- to post-coordinated map be published? Intent stated at 04:50, no date given.</li></ul>
-<p><strong>Put to the audience by the presenter:</strong></p>
+<p><strong>Put to the audience earlier today:</strong></p>
 <ul><li class="row">Should each area get its own release files and search?</li><li class="row">If a concept is rebuilt under a new model, is it the same code or a new one?</li></ul>
 </article>
 </section>
@@ -159,6 +150,12 @@ section.panel::before{content:attr(data-title);display:block;font-size:1.2rem;fo
 <div class="tools"><input id="q" type="search" placeholder="Search everything so far: a term, an acronym, a question" aria-label="Search"><div class="chips"><a href="#rules-of-thumb">Rules of thumb</a><a href="#six-axes-at-a-glance">Six axes at a glance</a><a href="#topic-log">Topic log</a><a href="#all-terms-a-to-z">All terms, A to Z</a><a href="#worked-examples">Worked examples</a><a href="#easily-confused">Easily confused</a><a href="#acronyms">Acronyms</a><a href="#quick-facts">Quick facts</a><a href="#all-questions">All questions</a><a href="#mentioned-resources">Mentioned resources</a></div></div>
 <p id="none" class="empty hide">Nothing matches that search.</p>
 <article class="card " id="rules-of-thumb"><h2>Rules of thumb</h2>
+<p><strong>Part links tell you what a code is made of, not what kind of thing each part is.</strong> To ask "any kind of physician," you need the hierarchy as well.</p>
+<p><strong>Do not rely on a general-purpose AI chatbot for a complete list of codes.</strong> In the session's test it was close but both added a wrong code and missed a right one.</p>
+<p><strong>To find every code for something, filter by parts; do not rely on text search.</strong> Search returns near-misses. Intersecting the codes linked to the right component, property, and system parts returns exactly the set.</p>
+<p><strong>When searching, use LOINC's wording and check the dropdown.</strong> "Spermatozoa," not "sperm." Codes, not parts.</p>
+<p><strong>Do not open the part link files in Excel.</strong> Together they have over 2 million rows.</p>
+<p><strong>LOINC names are generated, not written.</strong> If a name reads oddly, that is the price of every name being built from parts by the same rules.</p>
 <p><strong>The code is the identifier; the name can change.</strong> Do not use a code's name to check that a code is correct, unless you check it against the name history file.</p>
 <p><strong>No code system should carry all the data.</strong> Decide what goes in the code and what goes in the data model around it. Be model-driven, not terminology-driven.</p>
 <p><strong>Ask "what am I actually examining?"</strong> For a heart rate, the thing examined is the rate, not the heart. Where it was taken (wrist, fetus) is the body part.</p>
@@ -217,6 +214,31 @@ section.panel::before{content:attr(data-title);display:block;font-size:1.2rem;fo
 <tr class="row"><td><strong>Method</strong></td><td>(optional)</td><td>(optional)</td><td>Subject matter and role</td></tr>
 </tbody></table></div>
 <p><strong>Proposed labels for clinical observations</strong> (not yet adopted): examination, measurement obtained, timing, body part or body system, scale, method.</p>
+<p><strong>One code, all its parts:</strong> 17856-6, hemoglobin A1c / hemoglobin total in blood by HPLC</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Part type</th><th>Value for 17856-6</th></tr></thead>
+<tbody>
+<tr class="row"><td>Component</td><td>Hemoglobin A1c / hemoglobin total</td></tr>
+<tr class="row"><td>...split into analyte core</td><td>Hemoglobin A1c (the numerator)</td></tr>
+<tr class="row"><td>...and divisor</td><td>Hemoglobin total</td></tr>
+<tr class="row"><td>Property</td><td>Mass fraction</td></tr>
+<tr class="row"><td>Timing</td><td>Point in time</td></tr>
+<tr class="row"><td>System</td><td>Blood</td></tr>
+<tr class="row"><td>Scale</td><td>Quantitative</td></tr>
+<tr class="row"><td>Method</td><td>HPLC</td></tr>
+<tr class="row"><td>Class</td><td>Chemistry</td></tr>
+</tbody></table></div>
+<p><strong>Where part information is published</strong></p>
+<div class="tablewrap"><table>
+<thead><tr><th>File in the part download</th><th>What each row is</th><th>Notes</th></tr></thead>
+<tbody>
+<tr class="row"><td><strong>Part</strong></td><td>One part</td><td>Part type, name, display name, part number</td></tr>
+<tr class="row"><td><strong>LOINC part link, primary</strong></td><td>One link between a part and a code</td><td>The six main axes. For document and radiology codes, also the parts of their own models</td></tr>
+<tr class="row"><td><strong>LOINC part link, supplementary</strong></td><td>One link between a part and a code</td><td>Everything else: analyte core, divisor, class, category</td></tr>
+<tr class="row"><td><strong>Part related code mapping</strong></td><td>(to be covered later in the session)</td><td></td></tr>
+<tr class="row"><td><strong>Document Ontology.csv</strong> (accessory file)</td><td>One link between a document code and a document ontology part</td><td>Documents only. No hierarchies</td></tr>
+<tr class="row"><td><strong>Document ontology OWL file</strong></td><td>Links and hierarchies together</td><td>The only part of LOINC published as OWL</td></tr>
+</tbody></table></div>
 <p><strong>The same slots, relabeled</strong> (lab unchanged; clinical labels are proposed)</p>
 <div class="tablewrap"><table>
 <thead><tr><th></th><th>Lab example: <em>testosterone, mass/volume, in serum or plasma, detection limit under 1 ng/dL</em></th><th>Clinical example: <em>fetal heart rate by auscultation</em></th></tr></thead>
@@ -302,6 +324,27 @@ section.panel::before{content:attr(data-title);display:block;font-size:1.2rem;fo
 <tr class="row"><td>05:46</td><td>S1 part 3</td><td>Q&amp;A: release frequency (monthly from March 2027); full releases; name history file</td></tr>
 <tr class="row"><td>05:51</td><td>S1 part 3</td><td>Q&amp;A: formal logic and OWL; translations under monthly releases; radiology modeling</td></tr>
 <tr class="row"><td>05:56</td><td>S1 wrap-up</td><td>Committees and how to join; session feedback; Kahoot recap</td></tr>
+<tr class="row"><td>06:06</td><td>Break</td><td>Lunch. Session 2 (LOINC in analytics) follows</td></tr>
+<tr class="row"><td>07:40</td><td>S2</td><td>LOINC in analytics begins: session plan; the search page; from text strings to parts</td></tr>
+<tr class="row"><td>07:45</td><td>S2</td><td>LOINC parts and LP codes; the Lego picture</td></tr>
+<tr class="row"><td>07:48</td><td>S2</td><td>Part types beyond the six axes; relationship types; code 17856-6 taken apart</td></tr>
+<tr class="row"><td>07:51</td><td>S2</td><td>Parts have definitions and are reused; names are built from parts by rule</td></tr>
+<tr class="row"><td>07:53</td><td>S2</td><td>Demo: looking up parts on the search page and the LOINC FHIR server</td></tr>
+<tr class="row"><td>07:56</td><td>S2</td><td>The part download and its four files; primary and supplementary links</td></tr>
+<tr class="row"><td>07:58</td><td>S2</td><td>Hierarchies in LOINC are hierarchies of parts; which hierarchies exist</td></tr>
+<tr class="row"><td>08:00</td><td>S2</td><td>Demo: the hierarchy browser at loinc.org/tree</td></tr>
+<tr class="row"><td>08:01</td><td>S2</td><td>Why codes themselves cannot be put in one hierarchy</td></tr>
+<tr class="row"><td>08:02</td><td>S2</td><td>Pre-exercise demo: finding sperm count codes by text search (27 to 14) and by parts (20 to 5)</td></tr>
+<tr class="row"><td>08:07</td><td>S2</td><td>The hierarchy browser as a stand-in for the part link file</td></tr>
+<tr class="row"><td>08:09</td><td>S2</td><td>Exercise 1: find all LDL cholesterol codes reported as a mass concentration (5 minutes)</td></tr>
+<tr class="row"><td>08:14</td><td>S2</td><td>Exercise 1 answer: text search gives 55, then 21; filtering by parts gives 18, then 9</td></tr>
+<tr class="row"><td>08:18</td><td>S2</td><td>A general-purpose AI chatbot on the same task: 8 of 9 right, 1 wrong, 1 missed</td></tr>
+<tr class="row"><td>08:19</td><td>S2</td><td>Stretch break</td></tr>
+<tr class="row"><td>08:22</td><td>S2</td><td>LOINC as an ontology begins, starting from the document ontology</td></tr>
+<tr class="row"><td>08:25</td><td>S2</td><td>Document ontology recap with a third example; parallel models in the part link file</td></tr>
+<tr class="row"><td>08:28</td><td>S2</td><td>Where document model information is published: Document Ontology.csv and the OWL file</td></tr>
+<tr class="row"><td>08:30</td><td>S2</td><td>Exercise 2 (worked together): nephrology notes written by physicians. Search and part links both fall short</td></tr>
+<tr class="row"><td>08:34</td><td>S2</td><td>Computability and ontology begins: "a tale of two dogs"</td></tr>
 </tbody></table></div>
 </article>
 <article class="card " id="all-terms-a-to-z"><h2>All terms, A to Z</h2>
@@ -310,17 +353,26 @@ section.panel::before{content:attr(data-title);display:block;font-size:1.2rem;fo
 <thead><tr><th>Term</th><th>First seen</th><th>Meaning or usage</th></tr></thead>
 <tbody>
 <tr class="row"><td><strong>Attachments</strong></td><td>S1 part 3 05:18</td><td>Supporting documents sent with a claim or request <sup class="dag" title="Added for clarity, not said in the session">†</sup>. One of LOINC's content areas</td></tr>
+<tr class="row"><td><strong>Accessory file</strong></td><td>S2 08:28</td><td>An extra file in the LOINC release that supplements the main table, such as Document Ontology.csv</td></tr>
+<tr class="row"><td><strong>Analyte</strong></td><td>S2 08:05</td><td>The specific thing a test measures. A relationship type that can be filtered on</td></tr>
+<tr class="row"><td><strong>Analyte core</strong></td><td>S2 07:50</td><td>The main thing being measured, once any divisor or challenge is set aside</td></tr>
+<tr class="row"><td><strong>Answer list</strong></td><td>S2 07:53</td><td>A defined set of allowed answers for a LOINC code <sup class="dag" title="Added for clarity, not said in the session">†</sup></td></tr>
 <tr class="row"><td><strong>Archetype</strong></td><td>S1 03:58</td><td>An early form of information model; a forerunner of FHIR profiles and resource definitions</td></tr>
+<tr class="row"><td><strong>Class</strong></td><td>S2 07:50</td><td>A broad grouping every LOINC code belongs to, such as chemistry</td></tr>
 <tr class="row"><td><strong>Clinical LOINC</strong></td><td>S1 ~03:40</td><td>Codes for direct patient measurements and examinations that are not lab tests: body weight, blood pressure, heart rate, range of motion, reflexes. Started 1996. The component is an aspect of the patient, not a substance</td></tr>
 <tr class="row"><td><strong>Challenge test</strong></td><td>S1 04:34</td><td>A test done at a set time after something is given to the patient, such as glucose 1 hour after a glucose dose</td></tr>
 <tr class="row"><td><strong>Clinical decision support</strong></td><td>S1 04:18</td><td>Software that uses patient data to prompt or guide clinicians <sup class="dag" title="Added for clarity, not said in the session">†</sup>. A reason to use LOINC even for data stored only in your own system</td></tr>
 <tr class="row"><td><strong>Coded data</strong> (Core)</td><td>S1 03:19</td><td>The reason data becomes "usable, shareable, actionable"</td></tr>
+<tr class="row"><td><strong>Component by system hierarchy</strong></td><td>S2 07:59</td><td>The component hierarchy, further divided by specimen type and class. Formerly the multi-axial hierarchy</td></tr>
+<tr class="row"><td><strong>Computable LOINC</strong></td><td>S2 07:42</td><td>Using LOINC's structure to find groups of codes with the same clinical meaning for a particular use</td></tr>
 <tr class="row"><td><strong>Coded value</strong></td><td>S1 03:52</td><td>An answer that is itself a code from a terminology, not a number or free text</td></tr>
 <tr class="row"><td><strong>Combinatorial explosion</strong></td><td>S1 04:07</td><td>Runaway growth in codes when every combination gets its own code. Two forms: a yes/no code per finding, and a code per specimen type. Real LOINC codes of the second form exist. Not an absolute rule: pre-coordinated codes are still made when ordering or analytics needs them</td></tr>
-<tr class="row"><td><strong>Common name</strong></td><td>S1 04:43</td><td>A human-readable, still unique name for a LOINC code (the long common name <sup class="dag" title="Added for clarity, not said in the session">†</sup>)</td></tr>
+<tr class="row"><td><strong>Common name</strong></td><td>S1 04:43</td><td>A human-readable, still unique name for a LOINC code (the long common name <sup class="dag" title="Added for clarity, not said in the session">†</sup>). Generated from the code's parts by rule</td></tr>
 <tr class="row"><td><strong>Community submissions</strong></td><td>S1 ~03:28</td><td>Requests from users for new LOINC codes; "the lifeblood of LOINC"</td></tr>
 <tr class="row"><td><strong>Component</strong> (Core)</td><td>S1 03:55</td><td>Sodium was the running example. From the IUPAC Silver Book</td></tr>
+<tr class="row"><td><strong>Deprecated code</strong></td><td>S2 08:04</td><td>A LOINC code that should no longer be used. Still appears in search results</td></tr>
 <tr class="row"><td><strong>Description logic</strong></td><td>S1 part 3 05:51</td><td>A formal way of defining concepts so relationships between them can be worked out automatically <sup class="dag" title="Added for clarity, not said in the session">†</sup></td></tr>
+<tr class="row"><td><strong>Divisor</strong></td><td>S2 07:50</td><td>The thing a result is divided by, when the result is a ratio or fraction</td></tr>
 <tr class="row"><td><strong>Document ontology axes</strong></td><td>S1 part 3 05:20</td><td>Kind of document, type of service, setting, subject matter domain, role. See Document ontology at a glance, under Six axes at a glance</td></tr>
 <tr class="row"><td><strong>Document type</strong></td><td>S1 04:30</td><td>The kind of clinical document a document code names, such as an admission evaluation note</td></tr>
 <tr class="row"><td><strong>Curly brace placeholder</strong></td><td>S1 04:46</td><td>A slot in a code's name naming the kind of information to send separately. Replaces "XXX"</td></tr>
@@ -330,6 +382,7 @@ section.panel::before{content:attr(data-title);display:block;font-size:1.2rem;fo
 <tr class="row"><td><strong>FHIR Observation</strong></td><td>S1 03:46</td><td>The FHIR record for one result. Parts: code (what), subject (patient), encounter, effective date/time, value, interpretation</td></tr>
 <tr class="row"><td><strong>Full release</strong></td><td>S1 part 3 05:47</td><td>A release that contains everything, not just the changes</td></tr>
 <tr class="row"><td><strong>Fully specified name</strong></td><td>S1 04:23</td><td>The complete, formal name of a LOINC code: the six parts separated by colons</td></tr>
+<tr class="row"><td><strong>Hierarchy browser</strong></td><td>S2 08:00</td><td>The page at loinc.org/tree for drilling down through LOINC's hierarchies</td></tr>
 <tr class="row"><td><strong>Information model</strong></td><td>S1 04:21</td><td>A defined structure saying which pieces of data go together and how they relate. See also Archetype</td></tr>
 <tr class="row"><td><strong>Kind of property</strong> (Core)</td><td>S1 03:55</td><td>"What did I measure about the component?" Not the same as units: "substance concentration," not mmol/L</td></tr>
 <tr class="row"><td><strong>Laboratory LOINC</strong></td><td>S1 ~03:37</td><td>Codes for lab tests across chemistry, microbiology, serology, hematology, molecular pathology, drug/toxicology. Covers hospital, outpatient, office, at-home, send-out, newborn, veterinary, and public health testing</td></tr>
@@ -337,38 +390,53 @@ section.panel::before{content:attr(data-title);display:block;font-size:1.2rem;fo
 <tr class="row"><td><strong>Learning health system</strong></td><td>S1 ~03:22</td><td>A health system that keeps improving by studying its own real-world data</td></tr>
 <tr class="row"><td><strong>Local codes</strong> (Core)</td><td>S1 04:04</td><td>LOINC names were made human-readable and computable because local codes would be mapped to them</td></tr>
 <tr class="row"><td><strong>LOINC</strong> (Core)</td><td>Opening</td><td>Created 1994 at Regenstrief</td></tr>
-<tr class="row"><td><strong>LOINC part</strong></td><td>S1 part 3 05:44</td><td>One building block of a LOINC code's name, with its own identifier <sup class="dag" title="Added for clarity, not said in the session">†</sup></td></tr>
-<tr class="row"><td><strong>LOINC ontology</strong></td><td>S1 part 3 05:24</td><td>A model under construction that uses formal logic to define each LOINC concept from its parts. Covers lab first; clinical observations expected next</td></tr>
+<tr class="row"><td><strong>LOINC part</strong></td><td>S1 part 3 05:44</td><td>One reusable building block of a LOINC code, with its own identifier starting with LP. Only parts used by a code in the release are distributed</td></tr>
+<tr class="row"><td><strong>LP code</strong></td><td>S2 07:45</td><td>The identifier of a LOINC part. Starts with "LP"</td></tr>
+<tr class="row"><td><strong>LOINC FHIR server</strong></td><td>S2 07:54</td><td>An online service at fhir.loinc.org; a lookup on a code returns all of its parts</td></tr>
+<tr class="row"><td><strong>LOINC ontology</strong></td><td>S1 part 3 05:24</td><td>A model under construction that uses formal logic to define each LOINC concept from its parts. Covers lab first; clinical observations expected next. Taken up again in Session 2 at 08:22</td></tr>
 <tr class="row"><td><strong>LOINC committees</strong></td><td>Opening</td><td>Volunteer expert groups that review and guide content. Five active; Laboratory, Clinical, and Document Ontology named so far</td></tr>
 <tr class="row"><td><strong>Mapping</strong></td><td>S1 04:50</td><td>A table linking one set of codes or names to another</td></tr>
+<tr class="row"><td><strong>Mass fraction</strong></td><td>S2 07:44</td><td>A property for results that are one mass divided by another, such as hemoglobin A1c over total hemoglobin</td></tr>
 <tr class="row"><td><strong>Method</strong></td><td>S1 04:15</td><td>How the test was performed. Matters when methods give different reference ranges for the same analyte. Added to the model after version 1 work showed it distinguished real tests</td></tr>
 <tr class="row"><td><strong>Model-driven</strong></td><td>S1 part 3 05:40</td><td>Designing around the data structure first and choosing codes to fit it</td></tr>
 <tr class="row"><td><strong>Monthly release</strong></td><td>S1 part 3 05:41</td><td>LOINC moves from two releases a year to monthly releases in March 2027. Each release is complete</td></tr>
 <tr class="row"><td><strong>Name history file</strong></td><td>S1 part 3 05:48</td><td>A file listing every change to each code's names, cumulative back to 2020</td></tr>
+<tr class="row"><td><strong>Multi-axial</strong></td><td>S2 08:01</td><td>Built from several independent dimensions at once. Why two codes often cannot be ranked as parent and child</td></tr>
 <tr class="row"><td><strong>Name-value pair</strong> (Core)</td><td>S1 03:43</td><td>Example: <em>age</em> = <em>30 years</em>. Also called entity-attribute-value or question-answer</td></tr>
 <tr class="row"><td><strong>NPU</strong></td><td>S1 03:58</td><td>A Scandinavian lab coding standard built on the same component / system / property idea as LOINC</td></tr>
 <tr class="row"><td><strong>Observation vs. order</strong> (Core)</td><td>S1 ~03:36</td><td>Mentioned in passing when describing scope</td></tr>
+<tr class="row"><td><strong>Number concentration (NCnc)</strong></td><td>S2 08:04</td><td>A property for counts of things per volume</td></tr>
 <tr class="row"><td><strong>OBX segment</strong></td><td>S1 03:49</td><td>The line in an HL7 v2 message that carries one result: LOINC code, value, value type, units, status</td></tr>
 <tr class="row"><td><strong>OBX-3</strong></td><td>S1 04:04</td><td>The OBX field that says what was measured; the slot LOINC was designed to fill</td></tr>
+<tr class="row"><td><strong>Ontology</strong></td><td>S2 08:35</td><td>A set of concepts arranged in hierarchies and connected to each other by named relationships</td></tr>
 <tr class="row"><td><strong>Orderable vs. resultable</strong></td><td>S1 04:23</td><td>A test you can request vs. a test that returns a value <sup class="dag" title="Added for clarity, not said in the session">†</sup></td></tr>
 <tr class="row"><td><strong>Ordinal vs. nominal</strong></td><td>S1 04:42</td><td>Ordinal answers can be ranked; nominal answers are coded categories with no order</td></tr>
-<tr class="row"><td><strong>OWL</strong></td><td>S1 part 3 05:51</td><td>Web Ontology Language: a standard format for publishing an ontology <sup class="dag" title="Added for clarity, not said in the session">†</sup>. The document ontology is published in it</td></tr>
+<tr class="row"><td><strong>OWL</strong></td><td>S1 part 3 05:51</td><td>Web Ontology Language: a standard format for publishing an ontology. The document ontology is the only part of LOINC published as an OWL file; it includes the hierarchies as well as the part links</td></tr>
 <tr class="row"><td><strong>Panel</strong> (Core)</td><td>S1 04:04</td><td>Electrolyte panel = sodium + potassium + chloride. "Chem 7" also mentioned</td></tr>
+<tr class="row"><td><strong>Parallel models</strong></td><td>S2 08:27</td><td>Two ways of describing the same code, published side by side. Document and radiology codes carry both in the primary part link file</td></tr>
+<tr class="row"><td><strong>Part hierarchy</strong></td><td>S2 07:58</td><td>An arrangement of parts from broad to specific. Exists for component, system, method, class, component by system, and documents</td></tr>
+<tr class="row"><td><strong>Part link file</strong></td><td>S2 07:56</td><td>A release file with one row for each link between a part and a code; primary and supplementary versions</td></tr>
 <tr class="row"><td><strong>Post-coordination</strong> (Core)</td><td>S1 04:01</td><td>Generic "gonorrhea DNA" code, with specimen and method sent separately. Units, interpretation, and priority always travel this way</td></tr>
 <tr class="row"><td><strong>Pre-coordination</strong> (Core)</td><td>S1 04:10</td><td>Gonorrhea DNA + genital specimen + DNA probe method in one code</td></tr>
 <tr class="row"><td><strong>Primary vs. secondary use</strong></td><td>S1 04:51</td><td>Direct patient care vs. later uses such as registries, research, and public health <sup class="dag" title="Added for clarity, not said in the session">†</sup></td></tr>
+<tr class="row"><td><strong>Reference lab</strong></td><td>S2 08:09</td><td>An outside laboratory that runs tests on behalf of clinics and hospitals <sup class="dag" title="Added for clarity, not said in the session">†</sup></td></tr>
+<tr class="row"><td><strong>Relationship type</strong></td><td>S2 07:49</td><td>How a part is linked to a code: as its component, as its system, and so on</td></tr>
+<tr class="row"><td><strong>Primary vs. supplementary parts</strong></td><td>S2 07:57</td><td>Primary parts fill the six main axes; supplementary parts add analyte core, divisor, class, category</td></tr>
 <tr class="row"><td><strong>Release files</strong></td><td>S1 part 3 05:31</td><td>The downloadable files in which LOINC is published</td></tr>
 <tr class="row"><td><strong>Repeating structure</strong></td><td>S1 04:21</td><td>A block of fields that can be filled in as many times as needed</td></tr>
-<tr class="row"><td><strong>Retired code</strong></td><td>S1 part 3 05:31</td><td>A code no longer recommended for use but not deleted <sup class="dag" title="Added for clarity, not said in the session">†</sup></td></tr>
+<tr class="row"><td><strong>Retired code</strong></td><td>S1 part 3 05:31</td><td>A code no longer recommended for use but not deleted <sup class="dag" title="Added for clarity, not said in the session">†</sup>. See also Deprecated code</td></tr>
 <tr class="row"><td><strong>Role (document)</strong></td><td>S1 part 3 05:35</td><td>Who authored a document, by function: attending, nurse, medical student. Optional</td></tr>
 <tr class="row"><td><strong>Result status</strong></td><td>S1 03:52</td><td>Whether a result is preliminary or final</td></tr>
 <tr class="row"><td><strong>Six-axis model</strong> (Core)</td><td>S1 03:19</td><td>Called a unique feature of LOINC. Named at 04:26: first five parts mandatory, method optional. Example: sodium, substance concentration, point in time, in blood</td></tr>
+<tr class="row"><td><strong>Rule-based name</strong></td><td>S2 07:52</td><td>A name generated from a code's parts by fixed rules, not written by hand</td></tr>
 <tr class="row"><td><strong>Scale</strong></td><td>S1 04:26</td><td>What kind of answer comes back. Six values: quantitative, semi-quantitative, ordinal, nominal, narrative, document</td></tr>
+<tr class="row"><td><strong>Search part</strong></td><td>S2 07:50</td><td>A part attached to a code to help people find it</td></tr>
 <tr class="row"><td><strong>Short name</strong></td><td>S1 04:43</td><td>An abbreviated name for a LOINC code</td></tr>
 <tr class="row"><td><strong>Sparse hierarchy</strong></td><td>S1 part 3 05:25</td><td>A shallow, incomplete tree of broader and narrower terms. Describes the document ontology today</td></tr>
 <tr class="row"><td><strong>Standards development organization</strong></td><td>S1 ~03:15</td><td>A body that creates and maintains shared standards</td></tr>
 <tr class="row"><td><strong>Subject matter domain</strong></td><td>S1 part 3 05:26</td><td>The field of knowledge a document's content belongs to, such as surgery</td></tr>
 <tr class="row"><td><strong>Subset</strong></td><td>S1 part 3 05:26</td><td>A chosen group of codes pulled out for a purpose</td></tr>
+<tr class="row"><td><strong>Subfraction</strong></td><td>S2 08:15</td><td>A subtype within a measured substance, reported as its own test, such as LDL 3</td></tr>
 <tr class="row"><td><strong>Survey instruments</strong></td><td>S1 ~03:36</td><td>Codes for questionnaires and their questions <sup class="dag" title="Added for clarity, not said in the session">†</sup>. One of the four categories; not yet explained</td></tr>
 <tr class="row"><td><strong>System</strong> (Core)</td><td>S1 03:55</td><td>"I'm looking for sodium in a sample type." Has a second part saying whose specimen it is: patient, fetus, donor, control</td></tr>
 <tr class="row"><td><strong>Terminology-model boundary</strong></td><td>S1 part 3 05:39</td><td>The line between what a code means by itself and what the surrounding data structure adds</td></tr>
@@ -382,6 +450,14 @@ section.panel::before{content:attr(data-title);display:block;font-size:1.2rem;fo
 </tbody></table></div>
 </article>
 <article class="card " id="worked-examples"><h2>Worked examples</h2>
+<p><strong>Finding a set of codes: sperm count as a concentration in semen</strong> (Session 2 demo)</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Approach</th><th>Steps</th><th>Result</th></tr></thead>
+<tbody>
+<tr class="row"><td><strong>Text search</strong> on the LOINC search page</td><td>Search "sperm count" (27 hits). Switch to LOINC's own wording, "spermatozoa" and "NCnc" for number concentration (17). Add "semen" (14)</td><td>Still includes unwanted codes, such as "cells other than spermatozoa" and a deprecated code</td></tr>
+<tr class="row"><td><strong>Filtering by parts</strong> using the part link file</td><td>Take every code linked to the spermatozoa part as analyte (about 20). Keep those also linked to the number concentration part (8). Keep those also linked to the semen part (6). Drop the deprecated one</td><td>5 codes, all of them wanted</td></tr>
+<tr class="row"><td><strong>Hierarchy browser</strong> as a stand-in</td><td>Drill down at loinc.org/tree to the spermatozoa part; the codes that use it are listed beneath. Pick those with the right property and system</td><td>The same 5 codes, without opening the part link file</td></tr>
+</tbody></table></div>
 <div class="tablewrap"><table>
 <thead><tr><th>Question (LOINC)</th><th>Answer</th><th>Answer comes from</th></tr></thead>
 <tbody>
@@ -406,15 +482,40 @@ section.panel::before{content:attr(data-title);display:block;font-size:1.2rem;fo
 <tr class="row"><td>Activity 3: <em>Platelet count in cord blood</em></td><td>Component: platelets. Property: numeric concentration. Timing: point in time. System: umbilical cord blood. Scale: quantitative. Method: none</td><td>Built from the six parts in the hands-on activity</td></tr>
 <tr class="row"><td>Document: <em>Surgery attending ICU admission evaluation note</em></td><td>Kind: note. Service: admission evaluation. Setting: ICU. Subject: surgery. Role: attending</td><td>A document code, described by five elements instead of six axes</td></tr>
 <tr class="row"><td>Testosterone, mass/volume, in serum or plasma, detection limit under 1 ng/dL</td><td>A concentration</td><td>Component: testosterone. Property: mass concentration. Timing: point in time. System: serum or plasma. Scale: quantitative. Method slot holds the detection limit</td></tr>
+<tr class="row"><td>Document: <em>Cardiology medical student hospital admission evaluation note</em></td><td>Kind: note. Service: admission evaluation. Setting: hospital. Subject: cardiovascular disease. Role: medical student</td><td>A document code with all five elements filled</td></tr>
 <tr class="row"><td>Document: <em>Pediatric cardiology hospital consult note</em></td><td>Kind: note. Service: consult. Setting: hospital. Subject: pediatric cardiology. Role: none given</td><td>A document code with no role, so it covers any author</td></tr>
+<tr class="row"><td>17856-6, hemoglobin A1c / hemoglobin total in blood by HPLC</td><td>A fraction</td><td>A number; property is mass fraction. Component splits into analyte core (hemoglobin A1c) and divisor (hemoglobin total). Class: chemistry</td></tr>
+<tr class="row"><td>Calcium in cord blood vs. ionized calcium in blood</td><td>(comparison)</td><td>Neither is the parent of the other: one is more specific by component, the other by system</td></tr>
 <tr class="row"><td>Appearance of urine</td><td>Amber, bloody, or purulent</td><td>Coded answer, instead of a yes/no code per appearance</td></tr>
 </tbody></table></div>
+<p><strong>Exercise 1 (Session 2): all LDL cholesterol codes reported as a mass concentration (mg/dL)</strong></p>
+<div class="tablewrap"><table>
+<thead><tr><th>Approach</th><th>What you get</th></tr></thead>
+<tbody>
+<tr class="row"><td>Text search for "LDL cholesterol"</td><td>About 55 results, including deprecated codes, value sets for other tests, and LDL subfractions</td></tr>
+<tr class="row"><td>Add "mass concentration"</td><td>About 21 results. Subfractions and other near-misses are still in the list</td></tr>
+<tr class="row"><td>Filter by parts: codes linked to the LDL cholesterol part</td><td>About 18 codes</td></tr>
+<tr class="row"><td>...that are also linked to the mass concentration part</td><td><strong>9 codes.</strong> They differ mainly by method, and they include the codes the reference labs in the example use</td></tr>
+<tr class="row"><td>Hierarchy browser (if you do not have the part link file)</td><td>Open cholesterol in LDL, skip the more specific sub-entries, and take the mass concentration codes listed beneath: the same 9</td></tr>
+</tbody></table></div>
+<p><strong>Exercise 2 (Session 2): nephrology notes written by physicians</strong> (first attempt)</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Approach</th><th>Result</th></tr></thead>
+<tbody>
+<tr class="row"><td>Search for "nephrology"</td><td>42 codes for nephrology notes</td></tr>
+<tr class="row"><td>Add "physician"</td><td>Nothing</td></tr>
+<tr class="row"><td>Try a specific kind of physician, "attending"</td><td>1 code. But how would you know you had found every kind of physician?</td></tr>
+<tr class="row"><td>Hierarchy browser: nephrology in the document hierarchy</td><td>The same list as the search</td></tr>
+<tr class="row"><td>Part links: notes linked to the nephrology subject matter part</td><td>About 35 notes</td></tr>
+<tr class="row"><td>...that are also linked to the physician part</td><td>Nothing</td></tr>
+</tbody></table></div>
+<p><strong>Why it falls short:</strong> the part link table says which parts a code has, but nothing about hierarchy. It does not know that an attending is a kind of physician. A better approach comes later in the session.</p>
 </article>
 <article class="card " id="easily-confused"><h2>Easily confused</h2>
-<ul><li class="row"><strong>Antibody vs. antigen as the component:</strong> the test in activity example 1 looks for the patient's antibody to the organism, not the organism's antigen or the species itself.</li><li class="row"><strong>A dot in the system vs. post-coordination:</strong> "body part.left" is still one pre-coordinated system. Post-coordination means sending a part separately in the message.</li><li class="row"><strong>Fully specified name vs. common name vs. short name:</strong> three names for the same code. The first is for computers, the other two for people.</li><li class="row"><strong>Ordinal vs. nominal:</strong> both are picked from a list. Ordinal lists have an order (mild, moderate, severe); nominal lists do not (colors).</li><li class="row"><strong>Semi-quantitative vs. ordinal:</strong> a titer is a range of numbers; "2+" only tells you it is more than "1+".</li><li class="row"><strong>Property vs. units:</strong> the property is the kind of quantity (substance concentration). The units (moles per volume in some specific unit) are sent in the message, never in the code.</li><li class="row"><strong>How the form looks vs. how the data is stored:</strong> a screen of yes/no tick boxes does not force yes/no codes in the database. The two can be designed separately.</li><li class="row"><strong>Same analyte, different method:</strong> two albumin methods usually agree, but not in every patient. Whether they count as "the same test" depends on the use case.</li><li class="row"><strong>Finding in the question vs. finding in the answer:</strong> "Klebsiella pneumoniae found? yes/no" puts the organism in the question. "Bacteria identified = Klebsiella pneumoniae" puts it in the answer. LOINC prefers the second.</li><li class="row"><strong>Laboratory LOINC vs. clinical LOINC:</strong> in lab, the thing measured is a substance or cell in a specimen. In clinical, it is an aspect of the patient (weight, blood pressure, a reflex).</li><li class="row"><strong>"Component" and "system" across areas:</strong> the same column names mean a substance and a specimen in lab, but an examination and a body part in clinical.</li><li class="row"><strong>The six axes in document codes:</strong> only component, system, and method carry meaning (type of service and kind of document; setting; subject matter and role). Property, timing, and scale are fixed values.</li><li class="row"><strong>Document codes vs. observation codes:</strong> a document code names a type of document; it does not ask a question with a short answer.</li><li class="row"><strong>FHIR Observation vs. OBX segment:</strong> the same job in two generations of HL7 standards (FHIR is newer, v2 is older).</li><li class="row"><strong>LOINC vs. NPU:</strong> two standards for lab measurements built on the same component / system / property idea.</li></ul>
+<ul><li class="row"><strong>"Property" the axis vs. "property" the column:</strong> in the part link files, the column headed "property" holds the relationship type (as component, as system...). It is not the property axis of a code.</li><li class="row"><strong>A LOINC code vs. a LOINC part:</strong> a code identifies a whole observation. A part (identifier starting LP) is one building block of a code's name. Parts are not a terminology to record data with.</li><li class="row"><strong>Antibody vs. antigen as the component:</strong> the test in activity example 1 looks for the patient's antibody to the organism, not the organism's antigen or the species itself.</li><li class="row"><strong>A dot in the system vs. post-coordination:</strong> "body part.left" is still one pre-coordinated system. Post-coordination means sending a part separately in the message.</li><li class="row"><strong>Fully specified name vs. common name vs. short name:</strong> three names for the same code. The first is for computers, the other two for people.</li><li class="row"><strong>Ordinal vs. nominal:</strong> both are picked from a list. Ordinal lists have an order (mild, moderate, severe); nominal lists do not (colors).</li><li class="row"><strong>Semi-quantitative vs. ordinal:</strong> a titer is a range of numbers; "2+" only tells you it is more than "1+".</li><li class="row"><strong>Property vs. units:</strong> the property is the kind of quantity (substance concentration). The units (moles per volume in some specific unit) are sent in the message, never in the code.</li><li class="row"><strong>How the form looks vs. how the data is stored:</strong> a screen of yes/no tick boxes does not force yes/no codes in the database. The two can be designed separately.</li><li class="row"><strong>Same analyte, different method:</strong> two albumin methods usually agree, but not in every patient. Whether they count as "the same test" depends on the use case.</li><li class="row"><strong>Finding in the question vs. finding in the answer:</strong> "Klebsiella pneumoniae found? yes/no" puts the organism in the question. "Bacteria identified = Klebsiella pneumoniae" puts it in the answer. LOINC prefers the second.</li><li class="row"><strong>Laboratory LOINC vs. clinical LOINC:</strong> in lab, the thing measured is a substance or cell in a specimen. In clinical, it is an aspect of the patient (weight, blood pressure, a reflex).</li><li class="row"><strong>"Component" and "system" across areas:</strong> the same column names mean a substance and a specimen in lab, but an examination and a body part in clinical.</li><li class="row"><strong>The six axes in document codes:</strong> only component, system, and method carry meaning (type of service and kind of document; setting; subject matter and role). Property, timing, and scale are fixed values.</li><li class="row"><strong>Document codes vs. observation codes:</strong> a document code names a type of document; it does not ask a question with a short answer.</li><li class="row"><strong>FHIR Observation vs. OBX segment:</strong> the same job in two generations of HL7 standards (FHIR is newer, v2 is older).</li><li class="row"><strong>LOINC vs. NPU:</strong> two standards for lab measurements built on the same component / system / property idea.</li></ul>
 </article>
 <article class="card " id="acronyms"><h2>Acronyms</h2>
-<ul><li class="row"><strong>C-CDA:</strong> Consolidated Clinical Document Architecture, an HL7 standard for clinical documents</li><li class="row"><strong>CDC:</strong> US Centers for Disease Control and Prevention</li><li class="row"><strong>CDISC:</strong> Clinical Data Interchange Standards Consortium, standards for clinical research data <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>DICOM:</strong> Digital Imaging and Communications in Medicine, the standard for medical images <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>EHDS:</strong> European Health Data Space</li><li class="row"><strong>FHIR:</strong> Fast Healthcare Interoperability Resources, the newer HL7 standard <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>HGNC:</strong> HUGO Gene Nomenclature Committee, which assigns standard gene names</li><li class="row"><strong>HL7:</strong> Health Level Seven, the organization behind the main health messaging standards <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>HL7 v2:</strong> the older, widely used HL7 message format <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>ICD:</strong> International Classification of Diseases, used for billing diagnoses <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>IUPAC:</strong> International Union of Pure and Applied Chemistry</li><li class="row"><strong>LOINC:</strong> Logical Observation Identifiers Names and Codes</li><li class="row"><strong>NPU:</strong> Nomenclature for Properties and Units <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>OWL:</strong> Web Ontology Language <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>RxNorm:</strong> a US standard terminology for medications <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>SHIELD:</strong> a US collaboration on lab data interoperability <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>SNOMED CT:</strong> a large clinical terminology for diagnoses, findings, organisms, and more <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>UCUM (?):</strong> Unified Code for Units of Measure, also stewarded at Regenstrief <sup class="dag" title="Added for clarity, not said in the session">†</sup></li></ul>
+<ul><li class="row"><strong>C-CDA:</strong> Consolidated Clinical Document Architecture, an HL7 standard for clinical documents</li><li class="row"><strong>CDC:</strong> US Centers for Disease Control and Prevention</li><li class="row"><strong>CDISC:</strong> Clinical Data Interchange Standards Consortium, standards for clinical research data <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>DICOM:</strong> Digital Imaging and Communications in Medicine, the standard for medical images <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>EHDS:</strong> European Health Data Space</li><li class="row"><strong>FHIR:</strong> Fast Healthcare Interoperability Resources, the newer HL7 standard <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>HGNC:</strong> HUGO Gene Nomenclature Committee, which assigns standard gene names</li><li class="row"><strong>HPLC:</strong> high-performance liquid chromatography, a lab method <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>HL7:</strong> Health Level Seven, the organization behind the main health messaging standards <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>HL7 v2:</strong> the older, widely used HL7 message format <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>ICD:</strong> International Classification of Diseases, used for billing diagnoses <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>IUPAC:</strong> International Union of Pure and Applied Chemistry</li><li class="row"><strong>LOINC:</strong> Logical Observation Identifiers Names and Codes</li><li class="row"><strong>NCnc:</strong> number concentration, a LOINC property abbreviation</li><li class="row"><strong>NPU:</strong> Nomenclature for Properties and Units <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>OWL:</strong> Web Ontology Language</li><li class="row"><strong>RxNorm:</strong> a US standard terminology for medications <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>SHIELD:</strong> a US collaboration on lab data interoperability <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>SNOMED CT:</strong> a large clinical terminology for diagnoses, findings, organisms, and more <sup class="dag" title="Added for clarity, not said in the session">†</sup></li><li class="row"><strong>UCUM (?):</strong> Unified Code for Units of Measure, also stewarded at Regenstrief <sup class="dag" title="Added for clarity, not said in the session">†</sup></li></ul>
 </article>
 <article class="card " id="quick-facts"><h2>Quick facts</h2>
 <div class="tablewrap"><table>
@@ -423,6 +524,7 @@ section.panel::before{content:attr(data-title);display:block;font-size:1.2rem;fo
 <tr class="row"><td>Size</td><td>111,000+ concepts; "up to 115,000" was also quoted. Version 1 had about 1,500</td></tr>
 <tr class="row"><td>Reach</td><td>Used in 180+ countries; national standard in 30+</td></tr>
 <tr class="row"><td>Releases</td><td>Twice a year today; monthly from March 2027. Every release is complete</td></tr>
+<tr class="row"><td>Parts</td><td>About 75,000 in release 2.83. Each used about 9 times across the six main axes, about 28 times counting all relationship types</td></tr>
 <tr class="row"><td>Languages</td><td>17 translations, 22 linguistic variants</td></tr>
 <tr class="row"><td>Structure</td><td>4 high-level content categories (laboratory, clinical, survey instruments, documents); 7 domains when listed in full (adding radiology, nursing, attachments). 5 active committees</td></tr>
 </tbody></table></div>
@@ -453,7 +555,7 @@ section.panel::before{content:attr(data-title);display:block;font-size:1.2rem;fo
 </tbody></table></div>
 </article>
 <article class="card " id="mentioned-resources"><h2>Mentioned resources</h2>
-<ul><li class="row"><strong>LOINC committees:</strong> loinc.org/committee has each committee's details, open agendas and minutes, and how to apply</li><li class="row"><strong>Later this week:</strong> "What is LOINC doing for you" session (tomorrow); radiology roundtable, survey roundtable, and a roundtable covering translations (Thursday)</li><li class="row"><strong>Slides</strong> from today will be available online to registered participants in a few weeks</li><li class="row"><strong>Name history file:</strong> shipped with every release, cumulative back to 2020</li><li class="row">Latest LOINC release: new drug/toxicology and microbiology content</li><li class="row">Work under way to modernize the document ontology, radiology, and survey models. Documents and radiology first; a new survey model is expected within six months to a year</li><li class="row">European Health Data Space (EU policy initiative)</li><li class="row">Gravity Project (social needs data) (?)</li></ul>
+<ul><li class="row"><strong>LOINC search page:</strong> the dropdown on the left switches between codes, parts, answer lists, and groups</li><li class="row"><strong>LOINC FHIR server:</strong> fhir.loinc.org. A code system lookup on a LOINC code returns all of its parts</li><li class="row"><strong>Hierarchy browser:</strong> loinc.org/tree. Drill down through the component, system, method, class, and document hierarchies</li><li class="row"><strong>Knowledge base pages</strong> on the LOINC website describe the radiology and document ontology models</li><li class="row"><strong>Part download:</strong> a zip file in the LOINC release with the full list of parts and every part-to-code link</li><li class="row"><strong>LOINC committees:</strong> loinc.org/committee has each committee's details, open agendas and minutes, and how to apply</li><li class="row"><strong>Later this week:</strong> "What is LOINC doing for you" session (tomorrow); radiology roundtable, survey roundtable, and a roundtable covering translations (Thursday)</li><li class="row"><strong>Slides</strong> from today will be available online to registered participants in a few weeks</li><li class="row"><strong>Name history file:</strong> shipped with every release, cumulative back to 2020</li><li class="row">Latest LOINC release: new drug/toxicology and microbiology content</li><li class="row">Work under way to modernize the document ontology, radiology, and survey models. Documents and radiology first; a new survey model is expected within six months to a year</li><li class="row">European Health Data Space (EU policy initiative)</li><li class="row">Gravity Project (social needs data) (?)</li></ul>
 </article>
 </section>
 </div></main>
