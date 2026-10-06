@@ -24,6 +24,7 @@ Previously published via GitLab Pages; fully migrated to GitHub Pages.
 | Presentation | Link | Last Updated |
 |---|---|---|
 | OCL Mapper Talk — Draft (comment on any slide) | [loinc-mapper-conference-oct2026.html](https://jamlung-ri.github.io/presentation/loinc-mapper-conference-oct2026.html) | 2026-09-15 |
+| Meet the LOINC Team (draft card format) | [loinc-team/](https://jamlung-ri.github.io/presentation/loinc-team/) | 2026-10-06 |
 
 ### CHD Study
 
